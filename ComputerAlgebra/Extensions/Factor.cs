@@ -39,19 +39,19 @@ namespace ComputerAlgebra
                     catch (Exception) { }
                 }
 
-                List<Expression> terms = s.Terms.Select(i => i.Factor()).ToList();
+                IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
                 
                 // All of the distinct factors.
-                List<Expression> factors = terms.SelectMany(i => Product.TermsOf(i)).Distinct().ToList();
+                IEnumerable<Expression> factors = terms.SelectMany(i => Product.TermsOf(i)).Distinct();
                 // Choose the most common factor to use.
                 Expression factor = factors.ArgMax(i => terms.Count(j => Product.TermsOf(j).Contains(i)));
                 // Find the terms that contain the factor.
-                List<Expression> contains = terms.Where(i => Product.TermsOf(i).Contains(factor)).ToList();
+                IEnumerable<Expression> contains = terms.Where(i => Product.TermsOf(i).Contains(factor)).Buffer();
                 // If more than one term contains the factor, pull it out and factor the resulting expression (again).
-                if (contains.Count > 1)
+                if (contains.Count() > 1)
                     return Sum.New(
-                        Product.New(factor, Sum.New(contains.Select(i => Product.New(Product.TermsOf(i).Except(factor))))),
-                        Sum.New(terms.Except(contains, Expression.RefComparer))).Factor();
+                        Product.New(factor, Sum.New(contains.Select(i => Product.New(Product.TermsOf(i).Except(factor)))).Evaluate()),
+                        Sum.New(terms.Except(contains, Expression.RefComparer))).Factor(null);
             }
 
             return f;

@@ -15,20 +15,25 @@ namespace ComputerAlgebra
         protected Function target;
         public Function Target { get { return target; } }
 
-        protected List<Expression> arguments;
+        protected IEnumerable<Expression> arguments;
         public IEnumerable<Expression> Arguments { get { return arguments; } }
 
         protected Call(Function Target, IEnumerable<Expression> Args) 
         {
             Debug.Assert(Target != null);
             target = Target; 
-            arguments = Args.ToList(); 
+            arguments = Args; 
         }
 
-        public static Call New(Function Target, IEnumerable<Expression> Args) { return new Call(Target, Args); }
-        public static Call New(Function Target, params Expression[] Args) { return new Call(Target, Args); }
-        public static Call New(string Target, IEnumerable<Expression> Args) { return new Call(Namespace.Global.Resolve(Target, Args), Args); }
-        public static Call New(string Target, params Expression[] Args) { return new Call(Namespace.Global.Resolve(Target, Args), Args); }
+        public static Call New(Function Target, IEnumerable<Expression> Args) { return new Call(Target, Args.Buffer()); }
+        public static Call New(string Target, IEnumerable<Expression> Args) 
+        {
+            Args = Args.Buffer();
+            return new Call(Namespace.Global.Resolve(Target, Args), Args); 
+        }
+
+        public static Call New(Function Target, params Expression[] Args) { return New(Target, Args.AsEnumerable()); }
+        public static Call New(string Target, params Expression[] Args) { return New(Target, Args.AsEnumerable()); }
 
         public override bool Matches(Expression E, MatchContext Matched)
         {
@@ -38,7 +43,7 @@ namespace ComputerAlgebra
                 if (target != EF.Target || arguments.Count() != EF.Arguments.Count())
                     return false;
 
-                return Matched.TryMatch(() => arguments.AsEnumerable().Reverse().Zip(EF.Arguments.Reverse(), (p, e) => p.Matches(e, Matched)).All());
+                return Matched.TryMatch(() => arguments.Reverse().Zip(EF.Arguments.Reverse(), (p, e) => p.Matches(e, Matched)).All());
             }
 
             return false;

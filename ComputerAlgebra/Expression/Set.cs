@@ -11,16 +11,16 @@ namespace ComputerAlgebra
     /// </summary>
     public class Set : Expression
     {
-        protected List<Expression> members;
+        protected IEnumerable<Expression> members;
         /// <summary>
         /// Elements contained in this set.
         /// </summary>
         public IEnumerable<Expression> Members { get { return members; } }
 
-        protected Set(IEnumerable<Expression> Members) { members = Members.OrderBy(i => i).ToList(); }
+        protected Set(IEnumerable<Expression> Members) { members = Members; }
 
-        public static Set New(IEnumerable<Expression> Members) { return new Set(Members); }
-        public static Set New(params Expression[] Members) { return new Set(Members); }
+        public static Set New(IEnumerable<Expression> Members) { return new Set(Members.OrderBy(i => i).Distinct().Buffer()); }
+        public static Set New(params Expression[] Members) { return New(Members.AsEnumerable()); }
 
         public override bool Matches(Expression Expr, MatchContext Matched)
         {
@@ -60,7 +60,7 @@ namespace ComputerAlgebra
             if (E is Set)
                 return (E as Set).Members;
             else
-                return new Expression[] { E };
+                return new[] { E };
         }
 
         public static Set Union(Set A, Set B) { return Set.New(A.Members.Union(B.Members)); }

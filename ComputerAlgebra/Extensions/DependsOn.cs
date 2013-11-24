@@ -10,9 +10,9 @@ namespace ComputerAlgebra
     /// </summary>
     class SearchVisitor : RecursiveExpressionVisitor
     {
-        protected List<Expression> x;
+        protected IEnumerable<Expression> x;
 
-        public SearchVisitor(IEnumerable<Expression> x) { this.x = x.ToList(); }
+        public SearchVisitor(IEnumerable<Expression> x) { this.x = x; }
 
         public override Expression Visit(Expression E)
         {
@@ -32,11 +32,11 @@ namespace ComputerAlgebra
         /// <returns>true if f is a function of any variable in x.</returns>
         public static bool DependsOn(this Expression f, IEnumerable<Expression> x)
         {
-            return ReferenceEquals(new SearchVisitor(x).Visit(f), null);
+            return ReferenceEquals(new SearchVisitor(x.AsBuffer()).Visit(f), null);
         }
         public static bool DependsOn(this IEnumerable<Expression> f, IEnumerable<Expression> x)
         {
-            SearchVisitor V = new SearchVisitor(x);
+            SearchVisitor V = new SearchVisitor(x.AsBuffer());
             return f.Any(i => ReferenceEquals(V.Visit(i), null));
         }
 

@@ -12,22 +12,10 @@ namespace ComputerAlgebra
     /// </summary>
     class Add : Sum
     {
-        protected List<Expression> terms;
+        protected IEnumerable<Expression> terms;
         public override IEnumerable<Expression> Terms { get { return terms; } }
         
-        private Add(List<Expression> Terms) { terms = Terms; }
-
-        private static IEnumerable<Expression> FlattenTerms(IEnumerable<Expression> Terms)
-        {
-            foreach (Expression i in Terms)
-            {
-                if (i is Sum)
-                    foreach (Expression j in FlattenTerms(((Sum)i).Terms))
-                        yield return j;
-                else if (!i.EqualsZero())
-                    yield return i;
-            }
-        }
+        private Add(IEnumerable<Expression> Terms) { terms = Terms; }
 
         /// <summary>
         /// Create a new sum expression in canonical form.
@@ -39,13 +27,25 @@ namespace ComputerAlgebra
             Debug.Assert(!Terms.Contains(null));
 
             // Canonicalize the terms.
-            List<Expression> terms = FlattenTerms(Terms).OrderBy(i => i).ToList();
+            IEnumerable<Expression> terms = FlattenTerms(Terms).OrderBy(i => i).Buffer();
 
-            switch (terms.Count)
+            switch (terms.Count())
             {
                 case 0: return 0;
                 case 1: return terms.First();
                 default: return new Add(terms);
+            }
+        }
+
+        private static IEnumerable<Expression> FlattenTerms(IEnumerable<Expression> Terms)
+        {
+            foreach (Expression i in Terms)
+            {
+                if (i is Sum)
+                    foreach (Expression j in FlattenTerms(((Sum)i).Terms))
+                        yield return j;
+                else if (!i.EqualsZero())
+                    yield return i;
             }
         }
     }

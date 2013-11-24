@@ -15,17 +15,18 @@ namespace ComputerAlgebra
         private Expression body;
         public Expression Body { get { return body; } }
 
-        private List<Variable> parameters;
+        private IEnumerable<Variable> parameters;
         public override IEnumerable<Variable> Parameters { get { return parameters; } }
 
-        private ExprFunction(string Name, Expression Body, IEnumerable<Variable> Params) : base(Name) { body = Body; parameters = Params.ToList(); }
+        private ExprFunction(string Name, Expression Body, IEnumerable<Variable> Params) : base(Name) { body = Body; parameters = Params; }
 
-        public static ExprFunction New(Expression Body, IEnumerable<Variable> Params) { return new ExprFunction("<Anonymous>", Body, Params); }
-        public static ExprFunction New(Expression Body, params Variable[] Params) { return new ExprFunction("<Anonymous>", Body, Params); }
-        public static ExprFunction New(string Name, Expression Body, IEnumerable<Variable> Params) { return new ExprFunction(Name, Body, Params); }
-        public static ExprFunction New(string Name, Expression Body, params Variable[] Params) { return new ExprFunction(Name, Body, Params); }
-        public static ExprFunction New(string Name, IEnumerable<Variable> Params) { return new ExprFunction(Name, null, Params); }
-        public static ExprFunction New(string Name, params Variable[] Params) { return new ExprFunction(Name, null, Params); }
+        public static ExprFunction New(Expression Body, IEnumerable<Variable> Params) { return new ExprFunction("<Anonymous>", Body, Params.Buffer()); }
+        public static ExprFunction New(string Name, Expression Body, IEnumerable<Variable> Params) { return new ExprFunction(Name, Body, Params.Buffer()); }
+        public static ExprFunction New(string Name, IEnumerable<Variable> Params) { return new ExprFunction(Name, null, Params.Buffer()); }
+
+        public static ExprFunction New(Expression Body, params Variable[] Params) { return New(Body, Params.AsEnumerable()); }
+        public static ExprFunction New(string Name, Expression Body, params Variable[] Params) { return New(Name, Body, Params.AsEnumerable()); }
+        public static ExprFunction New(string Name, params Variable[] Params) { return New(Name, Params.AsEnumerable()); }
 
         public override Expression Call(IEnumerable<Expression> Args)
         {

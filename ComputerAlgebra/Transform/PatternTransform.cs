@@ -11,19 +11,14 @@ namespace ComputerAlgebra
     public abstract class PatternTransform : ITransform
     {
         protected Expression pattern;
-        private List<Expression> conditions = null;
+        private IEnumerable<Expression> conditions = null;
 
         protected abstract Expression ApplyTransform(Expression x, MatchContext Matched);
 
         protected PatternTransform(Expression Pattern, IEnumerable<Expression> PreConditions)
         {
             pattern = Pattern;
-            conditions = PreConditions.ToList();
-        }
-
-        protected PatternTransform(Expression Pattern, params Expression[] PreConditions) 
-            : this(Pattern, PreConditions.AsEnumerable()) 
-        { 
+            conditions = PreConditions.Buffer();
         }
 
         /// <summary>

@@ -12,22 +12,10 @@ namespace ComputerAlgebra
     /// </summary>
     class Multiply : Product
     {
-        protected List<Expression> terms;
+        protected IEnumerable<Expression> terms;
         public override IEnumerable<Expression> Terms { get { return terms; } }
         
-        private Multiply(List<Expression> Terms) { terms = Terms; }
-
-        private static IEnumerable<Expression> FlattenTerms(IEnumerable<Expression> Terms)
-        {
-            foreach (Expression i in Terms)
-            {
-                if (i is Product)
-                    foreach (Expression j in FlattenTerms(((Product)i).Terms))
-                        yield return j;
-                else if (!i.EqualsOne())
-                    yield return i;
-            }
-        }
+        private Multiply(IEnumerable<Expression> Terms) { terms = Terms; }
 
         /// <summary>
         /// Create a new product expression in canonical form.
@@ -39,13 +27,25 @@ namespace ComputerAlgebra
             Debug.Assert(!Terms.Contains(null));
 
             // Canonicalize the terms.
-            List<Expression> terms = FlattenTerms(Terms).OrderBy(i => i).ToList();
+            IEnumerable<Expression> terms = FlattenTerms(Terms).OrderBy(i => i).Buffer();
 
-            switch (terms.Count)
+            switch (terms.Count())
             {
                 case 0: return 1;
                 case 1: return terms.First();
                 default: return new Multiply(terms);
+            }
+        }
+
+        private static IEnumerable<Expression> FlattenTerms(IEnumerable<Expression> Terms)
+        {
+            foreach (Expression i in Terms)
+            {
+                if (i is Product)
+                    foreach (Expression j in FlattenTerms(((Product)i).Terms))
+                        yield return j;
+                else if (!i.EqualsOne())
+                    yield return i;
             }
         }
     }

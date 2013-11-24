@@ -43,6 +43,38 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
+        /// Ensure This is some form of buffered enumerable (List or Array).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="This"></param>
+        /// <returns></returns>
+        [DebuggerStepThrough]
+        public static IEnumerable<T> AsBuffer<T>(this IEnumerable<T> This)
+        {
+            if (This is T[])
+                return This;
+            if (This is List<T>)
+                return This;
+            return This.Buffer();
+        }
+
+        /// <summary>
+        /// Create a buffered enumerable.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="This"></param>
+        /// <returns></returns>
+        [DebuggerStepThrough]
+        public static IEnumerable<T> Buffer<T>(this IEnumerable<T> This) 
+        {
+            // TODO: Shouldn't this be faster?
+            //if (This is ICollection<T>)
+            //    return This.ToArray();
+            //else
+                return This.ToList();
+        }
+
+        /// <summary>
         /// Enumerate an IEnumerable, except elements in E.
         /// </summary>
         /// <typeparam name="T"></typeparam>
