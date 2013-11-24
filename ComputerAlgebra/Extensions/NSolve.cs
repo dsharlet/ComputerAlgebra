@@ -97,7 +97,7 @@ namespace ComputerAlgebra
                 if (EvalJ(JxF, x) < epsilon)
                     return Enumerable.Range(0, N).Select(i => Arrow.New(x0[i].Left, x[i])).ToList();
 
-                // solve for dx.
+                // Solve for dx.
                 // For each variable in the system...
                 for (int j = 0; j < N; ++j)
                 {
@@ -126,8 +126,9 @@ namespace ComputerAlgebra
                     for (int i = j + 1; i < M; ++i)
                     {
                         double s = JxF[i, j] / p;
-                        for (int ij = j + 1; ij <= N; ++ij)
-                            JxF[i, ij] -= JxF[j, ij] * s;
+                        if (s != 0.0)
+                            for (int ij = j + 1; ij <= N; ++ij)
+                                JxF[i, ij] -= JxF[j, ij] * s;
                     }
                 }
 
@@ -135,8 +136,8 @@ namespace ComputerAlgebra
                 for (int j = N - 1; j >= 0; --j)
                 {
                     double r = JxF[j, N];
-                    for (int ji = j + 1; ji < N; ++ji)
-                        r += JxF[j, ji] * dx[ji];
+                    for (int ij = j + 1; ij < N; ++ij)
+                        r += JxF[j, ij] * dx[ij];
 
                     double dxj = -r / JxF[j, j];
                     dx[j] = dxj;

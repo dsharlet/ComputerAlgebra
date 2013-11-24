@@ -104,11 +104,11 @@ namespace ComputerAlgebra
         public void AddRange(IEnumerable<IEnumerable<KeyValuePair<Expression, Expression>>> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i))); }
 
         // Find the best pivot in the column j.
-        private KeyValuePair<int, Real> PartialPivot(int i, Expression j)
+        private KeyValuePair<int, Real> PartialPivot(int i1, int i2, Expression j)
         {
             int row = -1;
-            Real max = 0;
-            for (; i < equations.Count; ++i)
+            Real max = -1;
+            for (int i = i1; i < i2; ++i)
             {
                 Expression ij = equations[i][j];
                 if (!ij.EqualsZero())
@@ -130,23 +130,20 @@ namespace ComputerAlgebra
         }
 
         // Find the best pivot from all of the columns. This is important to avoid non-constant terms from blowing up the system.
-        private KeyValuePair<int, int> FullPivot(int i, int j, IList<Expression> Columns)
+        private KeyValuePair<int, int> FullPivot(int i1, int i2, int j1, IList<Expression> Columns)
         {
             int row = -1;
             Real max = -1;
             int col = -1;
-            for (; i < equations.Count; ++i)
+            for (int j = j1; j < Columns.Count; ++j)
             {
-                for (int _j = j; _j < Columns.Count; ++_j)
-                {
-                    KeyValuePair<int, Real> partial = PartialPivot(i, Columns[_j]);
+                KeyValuePair<int, Real> partial = PartialPivot(i1, i2, Columns[j]);
 
-                    if ((partial.Key != -1 && partial.Value > max))
-                    {
-                        row = partial.Key;
-                        max = partial.Value;
-                        col = _j;
-                    }
+                if ((partial.Key != -1 && partial.Value > max))
+                {
+                    row = partial.Key;
+                    max = partial.Value;
+                    col = j;
                 }
             }
 
@@ -154,12 +151,12 @@ namespace ComputerAlgebra
         }
 
         // Find the best pivot using full or partial pivoting.
-        private KeyValuePair<int, int> Pivot(int i, int j, IList<Expression> Columns, bool FullPivoting)
+        private KeyValuePair<int, int> Pivot(int i1, int i2, int j, IList<Expression> Columns, bool FullPivoting)
         {
             if (FullPivoting)
-                return FullPivot(i, j, Columns);
+                return FullPivot(i1, i2, j, Columns);
             else
-                return new KeyValuePair<int, int>(PartialPivot(i, Columns[j]).Key, j);
+                return new KeyValuePair<int, int>(PartialPivot(i1, i2, Columns[j]).Key, j);
         }
 
         // Swap rows i1 and i2.
@@ -181,36 +178,40 @@ namespace ComputerAlgebra
         // Eliminate the pivot position from row t using row s.
         private void Eliminate(int s, int t, Expression p)
         {
-            if (equations[t][p].EqualsZero())
+            Equation S = equations[s];
+            Equation T = equations[t];
+            if (T[p].EqualsZero())
                 return;
 
-            Expression scale = -equations[t][p] / equations[s][p];
+            Expression scale = -T[p] / S[p];
             foreach (Expression j in unknowns.Append(1))
-                equations[t][j] += equations[s][j] * scale;
+                T[j] += Product.New(S[j], scale);
 
             // Verify that the pivot position in the target is zero.
-            Debug.Assert(equations[t][p].EqualsZero());
+            Debug.Assert(T[p].EqualsZero());
         }
 
-        private void RowReduce(int Row, IList<Expression> Columns, bool FullPivoting)
+        private void RowReduce(int i1, IList<Expression> Columns, bool FullPivoting)
         {
+            int i2 = equations.Count;
+
             for (int _j = 0; _j < Columns.Count; ++_j)
             {
                 // Find the best pivot to use.
-                KeyValuePair<int, int> pivot = Pivot(Row, _j, Columns, FullPivoting);
+                KeyValuePair<int, int> pivot = Pivot(i1, i2, _j, Columns, FullPivoting);
                 if (pivot.Key != -1)
                 {
                     // Found a pivot, swap the rows and eliminate the remaining rows.
-                    Expression j = Columns[pivot.Value];
-                    if (pivot.Key != Row)
-                        Swap(pivot.Key, Row);
+                    if (pivot.Key != i1)
+                        Swap(pivot.Key, i1);
                     if (_j != pivot.Value)
                         Swap(Columns, _j, pivot.Value);
 
-                    for (int i = Row + 1; i < equations.Count; ++i)
-                        Eliminate(Row, i, j);
+                    Expression j = Columns[_j];
+                    for (int i = i1 + 1; i < i2; ++i)
+                        Eliminate(i1, i, j);
 
-                    ++Row;
+                    ++i1;
                 }
             }
         }
@@ -219,7 +220,7 @@ namespace ComputerAlgebra
         /// Row reduce the system in terms of the given columns with partial pivoting.
         /// </summary>
         /// <param name="Columns"></param>
-        public void RowReduce(IEnumerable<Expression> Columns) { RowReduce(0, Columns.ToList(), false); }
+        public void RowReduce(IEnumerable<Expression> Columns) { RowReduce(0, Columns.AsList(), false); }
         /// <summary>
         /// Row reduce the system in terms of the given columns with full pivoting. The Columns will be reordered according to a full pivot solution.
         /// </summary>
@@ -238,7 +239,7 @@ namespace ComputerAlgebra
                 Expression j = x[_j];
 
                 // While we still haven't reached a pivot row...
-                while (i >= 0 && Enumerable.Range(0, _j).All(j2 => equations[i][x[j2]].EqualsZero()))
+                while (i >= 0 && x.Take(_j).All(j2 => equations[i][j2].EqualsZero()))
                 {
                     if (!equations[i][j].EqualsZero())
                     {
@@ -272,7 +273,7 @@ namespace ComputerAlgebra
                 Expression j = x[_j];
 
                 // While we still haven't reached a pivot row...
-                while (i >= 0 && Enumerable.Range(0, _j).All(j2 => equations[i][x[j2]].EqualsZero()))
+                while (i >= 0 && x.Take(_j).All(j2 => equations[i][j2].EqualsZero()))
                 {
                     if (!equations[i][j].EqualsZero())
                     {
@@ -285,7 +286,8 @@ namespace ComputerAlgebra
                             // Remove the equation and unknown.
                             equations.RemoveAt(i--);
                             x.RemoveAt(_j);
-                            unknowns.Remove(j);
+                            if (!ReferenceEquals(x, unknowns))
+                                unknowns.Remove(j);
                         }
                         break;
                     }
