@@ -15,24 +15,17 @@ namespace ComputerAlgebra
     public static class NSolveExtension
     {
         /// <summary>
-        /// Compute the Jacobian of F(x).
+        /// Compute the gradient of f(x).
         /// </summary>
-        /// <param name="F"></param>
+        /// <param name="f"></param>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static List<LinearCombination> Jacobian(this IEnumerable<Expression> F, IEnumerable<Arrow> x)
+        public static Dictionary<Expression, Expression> Gradient(this Expression f, IEnumerable<Expression> x)
         {
-            List<Expression> B = x.Select(i => i.Right).ToList();
-            List<LinearCombination> J = new List<LinearCombination>();
-            foreach (Expression i in F)
-            {
-                LinearCombination Ji = new LinearCombination(B);
-                Ji.Tag = i;
-                foreach (Arrow j in x)
-                    Ji[j.Right] = i.Differentiate(j.Left);
-                J.Add(Ji);
-            }
-            return J;
+            Dictionary<Expression, Expression> gradient = new Dictionary<Expression, Expression>();
+            foreach (Expression j in x)
+                gradient[j] = f.Differentiate(j);
+            return gradient;
         }
 
         /// <summary>
@@ -41,9 +34,9 @@ namespace ComputerAlgebra
         /// <param name="F"></param>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static List<LinearCombination> Jacobian(this IEnumerable<Expression> F, IEnumerable<Expression> x)
+        public static IEnumerable<Dictionary<Expression, Expression>> Jacobian(this IEnumerable<Expression> F, IEnumerable<Expression> x)
         {
-            return Jacobian(F, x.Select(i => Arrow.New(i, i)));
+            return F.Select(i => i.Gradient(x));
         }
         
         // Use neton's method to solve F(x) = 0, with initial guess x0.
@@ -51,7 +44,7 @@ namespace ComputerAlgebra
         {
             // Numerically approximate the solution of F = 0 with Newton's method, 
             // i.e. solve JF(x0)*(x - x0) = -F(x0) for x.
-            List<LinearCombination> J = Jacobian(F, x0.Select(i => i.Left));
+            List<Dictionary<Expression, Expression>> J = Jacobian(F, x0.Select(i => i.Left)).ToList();
 
             int M = F.Count;
             int N = x0.Count;

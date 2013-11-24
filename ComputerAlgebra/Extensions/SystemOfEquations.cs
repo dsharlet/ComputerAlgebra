@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -9,7 +10,7 @@ namespace ComputerAlgebra
     /// <summary>
     /// List of equations and unknowns that supports row reduction and substitution of linear systems of equations. 
     /// </summary>
-    public class SystemOfEquations
+    public class SystemOfEquations : IEnumerable<LinearCombination>, IEnumerable
     {
         // Single equation (linear combination of terms).
         private class Equation : DefaultDictionary<Expression, Expression>
@@ -31,11 +32,19 @@ namespace ComputerAlgebra
                 this[1] += t;
             }
 
-            public Equation(Equal Eq, IEnumerable<Expression> Terms) : base(0)
+            public Equation(Equal Eq, IEnumerable<Expression> Terms)
+                : base(0)
             {
                 Expression f = Eq.Left - Eq.Right;
                 foreach (Expression i in Sum.TermsOf(f.Expand()))
                     AddTerm(Terms, i);
+            }
+
+            public Equation(IEnumerable<KeyValuePair<Expression, Expression>> Terms)
+                : base(0)
+            {
+                foreach (KeyValuePair<Expression, Expression> i in Terms)
+                    this[i.Key] = i.Value;
             }
 
             public Expression Solve(Expression x)
@@ -61,7 +70,7 @@ namespace ComputerAlgebra
         /// <summary>
         /// Enumerate the equations in the system in the form F(x) == 0.
         /// </summary>
-        public IEnumerable<Equal> Equations { get { return equations.Select(i => Equal.New(i.Expression, 0)); } }
+        public IEnumerable<LinearCombination> Equations { get { return equations.Select(i => LinearCombination.New(i)); } }
         
         /// <summary>
         /// Create a new system of equations with the given equations and unknowns.
@@ -69,6 +78,12 @@ namespace ComputerAlgebra
         /// <param name="Equations"></param>
         /// <param name="Unknowns"></param>
         public SystemOfEquations(IEnumerable<Equal> Equations, IEnumerable<Expression> Unknowns)
+        {
+            unknowns = Unknowns.ToList();
+            AddRange(Equations);
+        }
+
+        public SystemOfEquations(IEnumerable<IEnumerable<KeyValuePair<Expression, Expression>>> Equations, IEnumerable<Expression> Unknowns)
         {
             unknowns = Unknowns.ToList();
             AddRange(Equations);
@@ -84,7 +99,9 @@ namespace ComputerAlgebra
         }
 
         public void Add(Equal Eq) { equations.Add(new Equation(Eq, unknowns)); }
+        public void Add(IEnumerable<KeyValuePair<Expression, Expression>> Eq) { equations.Add(new Equation(Eq)); }
         public void AddRange(IEnumerable<Equal> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i, unknowns))); }
+        public void AddRange(IEnumerable<IEnumerable<KeyValuePair<Expression, Expression>>> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i))); }
 
         // Find the best pivot in the column j.
         private KeyValuePair<int, Real> PartialPivot(int i, Expression j)
@@ -215,7 +232,7 @@ namespace ComputerAlgebra
 
         private void BackSubstitute(IList<Expression> x)
         {
-            int i = equations.Count - 1;
+            int i = Math.Min(x.Count, equations.Count) - 1;
             for (int _j = x.Count - 1; _j >= 0; --_j)
             {
                 Expression j = x[_j];
@@ -249,7 +266,7 @@ namespace ComputerAlgebra
         {
             List<Arrow> solutions = new List<Arrow>();
 
-            int i = equations.Count - 1;
+            int i = Math.Min(x.Count, equations.Count) - 1;
             for (int _j = x.Count - 1; _j >= 0; --_j)
             {
                 Expression j = x[_j];
@@ -261,12 +278,13 @@ namespace ComputerAlgebra
                     {
                         // Solve this row for the pivot.
                         Expression s = equations[i].Solve(j);
-                        if (!s.DependsOn(unknowns))
+                        if (!s.DependsOn(x))
                         {
                             solutions.Add(Arrow.New(j, s));
 
                             // Remove the equation and unknown.
                             equations.RemoveAt(i--);
+                            x.RemoveAt(_j);
                             unknowns.Remove(j);
                         }
                         break;
@@ -296,5 +314,10 @@ namespace ComputerAlgebra
         /// </summary>
         /// <returns></returns>
         public List<Arrow> Solve() { return Solve(unknowns); }
+
+        // IEnumerable<LinearCombination>
+        public IEnumerator<LinearCombination> GetEnumerator() { return Equations.GetEnumerator(); }
+
+        IEnumerator IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
     }
 }

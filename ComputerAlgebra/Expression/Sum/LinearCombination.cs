@@ -1,39 +1,33 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace ComputerAlgebra
-{    
+{
     /// <summary>
     /// Decompose an expression into a linear combination of basis variables.
     /// </summary>
-    public class LinearCombination
+    public class LinearCombination : Sum, IEnumerable<KeyValuePair<Expression, Expression>>, IEnumerable
     {
-        private class Term
+        private DefaultDictionary<Expression, Expression> terms = new DefaultDictionary<Expression, Expression>(0);
+
+        public override IEnumerable<Expression> Terms
         {
-            public Expression b, A;
-            public int bh;
-            public Expression Ab 
-            { 
-                get 
-                {
-                    if (b.EqualsOne())
-                        return A;
-                    if (A.EqualsZero())
-                        return 0;
-                    return Product.New(A, b);
-                } 
-            }
-
-            public Term(Expression b) { this.b = b; this.A = 0; bh = b.GetHashCode(); }
-
-            public override string ToString()
+            get
             {
-                return Ab.ToString();
+                foreach (KeyValuePair<Expression, Expression> i in terms)
+                {
+                    if (i.Value.EqualsOne())
+                        yield return i.Key;
+                    else if (i.Key.EqualsOne())
+                        yield return i.Value;
+                    else
+                        yield return Product.New(i.Key, i.Value);
+                }
             }
-        };
-        private List<Term> terms;
+        }
 
         private void AddTerm(IEnumerable<Expression> B, Expression t)
         {
@@ -44,84 +38,54 @@ namespace ComputerAlgebra
                     Expression Tb = t / b;
                     if (!Tb.DependsOn(B))
                     {
-                        this[b] += Tb;
+                        terms[b] += Tb;
                         return;
                     }
                 }
             }
-            this[1] += t;
+            terms[1] += t;
         }
 
         /// <summary>
         /// Basis variables of this linear combination.
         /// </summary>
-        public IEnumerable<Expression> Basis { get { return terms.Select(i => i.b); } }
+        public IEnumerable<Expression> Basis { get { return terms.Keys; } }
 
         /// <summary>
         /// Coefficients of this linear combination.
         /// </summary>
         /// <param name="b">Basis variable to access the coefficient for.</param>
         /// <returns></returns>
-        public Expression this[Expression b]
-        {
-            get { int bh = b.GetHashCode(); return terms.Single(i => i.bh == bh && i.b.Equals(b)).A; }
-            set { int bh = b.GetHashCode(); terms.SingleOrDefault(i => i.bh == bh && i.b.Equals(b)).A = value; }
-        }
+        public Expression this[Expression b] { get { return terms[b]; } }
 
-        private object tag;
-        public object Tag { get { return tag; } set { tag = value; } }
-
-        /// <summary>
-        /// Create a new empty linear combination.
-        /// </summary>
-        /// <param name="B">Basis variables.</param>
-        public LinearCombination(IEnumerable<Expression> B)
+        private LinearCombination() { }
+        private LinearCombination(IEnumerable<KeyValuePair<Expression, Expression>> Terms)
         {
-            // Add terms for the basis.
-            terms = B.Select(i => new Term(i)).ToList();
-            terms.Add(new Term(1));
+            foreach (KeyValuePair<Expression, Expression> i in Terms)
+                terms[i.Key] = i.Value;
         }
 
         /// <summary>
-        /// Create a new linear combination.
+        /// Create a new linear combination expression equal to x.
         /// </summary>
-        /// <param name="B">Basis variables.</param>
-        /// <param name="E">Expression to get coefficients from.</param>
-        public LinearCombination(IEnumerable<Expression> B, Expression E) : this(B)
+        /// <param name="A"></param>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public static LinearCombination New(IEnumerable<Expression> A, Expression x)
         {
-            foreach (Expression t in Sum.TermsOf(E.Expand()))
-                AddTerm(B, t);
-        }
-
-        public void SwapColumns(IEnumerable<Expression> NewBasis)
-        {
-            List<Term> old = terms;
-            terms = new List<Term>();
-            foreach (Expression i in NewBasis)
-                terms.Add(old.Single(j => j.b.Equals(i)));
-            terms.Add(old.Single(i => i.b.EqualsOne()));
+            LinearCombination ret = new LinearCombination();
+            foreach (Expression t in Sum.TermsOf(x.Expand()))
+                ret.AddTerm(A, t);
+            return ret;
         }
 
         /// <summary>
-        /// Create an Expression equal to this linear combination.
+        /// Createa  new linear combination with the given list of terms.
         /// </summary>
-        public Expression ToExpression() { return Sum.New(terms.Select(i => i.Ab).Where(i => !i.EqualsZero())); }
-
-        public bool DependsOn(IEnumerable<Expression> x) { return ToExpression().DependsOn(x); }
-        public bool DependsOn(params Expression[] x) { return DependsOn(x.AsEnumerable()); }
-
-        /// <summary>
-        /// The pivot is the first term in this expression.
-        /// </summary>
-        private Term Pivot { get { return terms.FirstOrDefault(i => !i.A.EqualsZero() && !i.b.EqualsOne()); } }
-        public Expression PivotCoefficient { get { return Pivot != null ? Pivot.A : null; } }
-        public Expression PivotVariable { get { return Pivot != null ? Pivot.b : null; } }
-
-        /// <summary>
-        /// Column index of the pivot in the linear combination.
-        /// </summary>
-        public int PivotPosition { get { return terms.FindIndex(i => !i.A.EqualsZero()); } }
-
+        /// <param name="Terms"></param>
+        /// <returns></returns>
+        public static LinearCombination New(IEnumerable<KeyValuePair<Expression, Expression>> Terms) { return new LinearCombination(Terms); }
+        
         /// <summary>
         /// Solve the expression for the variable v.
         /// </summary>
@@ -129,26 +93,15 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public Expression Solve(Expression v)
         {
-            int vh = v.GetHashCode();
             // Subtract independent terms.
-            Expression R = Sum.New(terms.Where(x => vh != x.bh || !x.b.Equals(v)).Select(x => x.Ab));
+            Expression R = Sum.New(terms.Where(x => !x.Key.Equals(v)).Select(x => x.Key * x.Value));
             // Divide coefficient from dependent term.
             return R / Unary.Negate(this[v]);
         }
-        public Expression SolveForPivot() { return Solve(PivotVariable); }
 
-        public void Scale(Expression R)
-        {
-            foreach (Term i in terms)
-                i.A = i.A * R;
-        }
+        // IEnumerable<KeyValuePair<Expression, Expression>>
+        public IEnumerator<KeyValuePair<Expression, Expression>> GetEnumerator() { return terms.GetEnumerator(); }
 
-        public void AddScaled(Expression M, LinearCombination S)
-        {
-            foreach (Expression i in Basis)
-                this[i] = this[i] + Binary.Multiply(S[i], M);
-        }
-
-        public override string ToString() { return terms.Select(i => i.Ab).Where(i => !i.EqualsZero()).UnSplit(" + "); }
+        IEnumerator IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
     }
 }
