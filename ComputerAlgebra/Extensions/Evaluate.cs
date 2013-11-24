@@ -68,7 +68,11 @@ namespace ComputerAlgebra
             {
                 if (i is Constant)
                 {
-                    C *= (Real)i;
+                    Real Ci = (Real)i;
+                    // Early exit if 0.
+                    if (Ci.EqualsZero())
+                        return 0;
+                    C *= Ci;
                 }
                 else
                 {
@@ -81,11 +85,7 @@ namespace ComputerAlgebra
             }
 
             // Build a new expression with the accumulated terms.
-            if (C.EqualsZero())
-            {
-                return 0;
-            }
-            else if (!C.EqualsOne())
+            if (!C.EqualsOne())
             {
                 // Find a sum term that has a constant term to distribute into.
                 KeyValuePair<Expression, Real> A = terms.FirstOrDefault(i => Real.Abs(i.Value).EqualsOne() && i.Key is Sum);
@@ -129,15 +129,19 @@ namespace ComputerAlgebra
             Product M = L as Product;
             if (!ReferenceEquals(M, null))
                 return Visit(Product.New(M.Terms.Select(i => Power.New(i, P.Right))));
-            
-            Expression R = Visit(P.Right);
+
+            Expression R;
 
             // Transform (x^y)^z => x^(y*z)
             Power LP = L as Power;
             if (!ReferenceEquals(LP, null))
             {
                 L = LP.Left;
-                R = Visit(Product.New(R, LP.Right)); // TODO: Redundant visit of R?
+                R = Visit(Product.New(P.Right, LP.Right));
+            }
+            else
+            {
+                R = Visit(P.Right);
             }
 
             // Handle identities.
