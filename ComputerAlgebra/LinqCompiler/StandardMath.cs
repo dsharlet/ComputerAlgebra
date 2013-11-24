@@ -12,8 +12,8 @@ namespace ComputerAlgebra.LinqCompiler
     /// </summary>
     public class StandardMath
     {
-        public static double Abs(double x) { return x < 0 ? -x : x; }
-        public static double Sign(double x) { return x < 0 ? -1 : 1; }
+        public static double Abs(double x) { return Math.Abs(x); }
+        public static double Sign(double x) { return Math.Sign(x); }
 
         public static double Min(double x, double y) { return Math.Min(x, y); }
         public static double Max(double x, double y) { return Math.Max(x, y); }
@@ -58,8 +58,8 @@ namespace ComputerAlgebra.LinqCompiler
         public static double If(bool x, double t, double f) { return x ? t : f; }
         public static double If(double x, double t, double f) { return If(x != 0, t, f); }
 
-        public static float Abs(float x) { return x < 0.0f ? -x : x; }
-        public static float Sign(float x) { return x < 0.0f ? -1.0f : 1.0f; }
+        public static float Abs(float x) { return Math.Abs(x); }
+        public static float Sign(float x) { return Math.Sign(x); }
 
         public static float Min(float x, float y) { return Math.Min(x, y); }
         public static float Max(float x, float y) { return Math.Max(x, y); }
