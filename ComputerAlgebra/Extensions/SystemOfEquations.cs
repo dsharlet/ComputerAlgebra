@@ -35,6 +35,8 @@ namespace ComputerAlgebra
             public Equation(Equal Eq, IEnumerable<Expression> Terms)
                 : base(0)
             {
+                Terms = Terms.AsList();
+
                 Expression f = Eq.Left - Eq.Right;
                 foreach (Expression i in Sum.TermsOf(f.Expand()))
                     AddTerm(Terms, i);
