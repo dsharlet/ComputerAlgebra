@@ -129,7 +129,7 @@ namespace ComputerAlgebra
         }
         public static BigRational operator ^(BigRational a, BigRational b) 
         {
-            if (b.d != 1)
+            if (!b.d.IsOne)
                 return Math.Pow((double)a, (double)b);
             else
                 return a ^ (int)b.n; 
