@@ -180,17 +180,19 @@ namespace ComputerAlgebra
         // Eliminate the pivot position from row t using row s.
         private void Eliminate(int s, int t, Expression p)
         {
-            Equation S = equations[s];
             Equation T = equations[t];
             if (T[p].EqualsZero())
                 return;
 
+            Equation S = equations[s];
+
             Expression scale = -T[p] / S[p];
-            foreach (Expression j in unknowns.Append(1))
+            foreach (Expression j in unknowns.Except(p).Append(1))
                 T[j] += Product.New(S[j], scale);
 
-            // Verify that the pivot position in the target is zero.
-            Debug.Assert(T[p].EqualsZero());
+            //Debug.Assert(T[p].EqualsZero());
+            // We aren't quite good enough yet to rely on the evaluation of this to be true.
+            T[p] = 0;
         }
 
         private void RowReduce(int i1, IList<Expression> Columns, bool FullPivoting)
