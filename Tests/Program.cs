@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ComputerAlgebra;
+using ComputerAlgebra.LinqCompiler;
 
 namespace Tests
 {
@@ -33,16 +34,26 @@ namespace Tests
 
         static bool RunTest(Expression fx, Func<double, double> Result)
         {
+            Variable vx = Variable.New("x");
+
             try
             {
+                Func<double, double> compiled = ExprFunction.New(fx, vx).Compile<Func<double, double>>();
+
                 int N = 1000;
                 for (int i = 0; i < N; ++i)
                 {
                     double x = (((double)i / N) * 2 - 1) * Math.PI;
 
-                    if (Math.Abs((double)fx.Evaluate("x", x) - Result(x)) > 1e-6)
+                    if (Math.Abs((double)fx.Evaluate(vx, x) - Result(x)) > 1e-6)
                     {
-                        Console.WriteLine("{0} -> {1} != {2}", fx, fx.Evaluate("x", x), Result(x));
+                        Console.WriteLine("{0} -> {1} != {2}", fx, fx.Evaluate(vx, x), Result(x));
+                        return false;
+                    }
+
+                    if (Math.Abs(compiled(x) - Result(x)) > 1e-6)
+                    {
+                        Console.WriteLine("Miscompile: {0} -> {1} != {2}", fx, compiled(x), Result(x));
                         return false;
                     }
                 }
@@ -63,7 +74,7 @@ namespace Tests
             List<KeyValuePair<Expression, Func<double, double>>> functions = new List<KeyValuePair<Expression, Func<double, double>>>()
             {
                 Test("Abs[x]", Math.Abs),
-                Test("Sign[x]", x => x > 0 ? 1 : 0),
+                Test("Sign[x]", x => x > 0 ? 1 : (x < 0 ? -1 : 0)),
 
                 Test("Sin[x]", Math.Sin),
                 Test("Cos[x]", Math.Cos),
