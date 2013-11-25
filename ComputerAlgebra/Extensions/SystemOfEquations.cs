@@ -197,9 +197,7 @@ namespace ComputerAlgebra
 
         private void RowReduce(int i1, IList<Expression> Columns, bool FullPivoting)
         {
-            int i2 = equations.Count;
-
-            for (int _j = 0; _j < Columns.Count; ++_j)
+            for (int i2 = equations.Count, _j = 0; _j < Columns.Count; ++_j)
             {
                 // Find the best pivot to use.
                 KeyValuePair<int, int> pivot = Pivot(i1, i2, _j, Columns, FullPivoting);
@@ -237,8 +235,7 @@ namespace ComputerAlgebra
 
         private void BackSubstitute(IList<Expression> x)
         {
-            int i = Math.Min(x.Count, equations.Count) - 1;
-            for (int _j = x.Count - 1; _j >= 0; --_j)
+            for (int i = Math.Min(x.Count, equations.Count) - 1, _j = x.Count - 1; _j >= 0; --_j)
             {
                 Expression j = x[_j];
 
@@ -271,8 +268,7 @@ namespace ComputerAlgebra
         {
             List<Arrow> solutions = new List<Arrow>();
 
-            int i = Math.Min(x.Count, equations.Count) - 1;
-            for (int _j = x.Count - 1; _j >= 0; --_j)
+            for (int i = Math.Min(x.Count, equations.Count) - 1, _j = x.Count - 1; _j >= 0; --_j)
             {
                 Expression j = x[_j];
 
@@ -301,7 +297,7 @@ namespace ComputerAlgebra
                     }
                 }
             }
-
+            
             return solutions;
         }
 
@@ -320,7 +316,16 @@ namespace ComputerAlgebra
         /// </summary>
         /// <returns></returns>
         public List<Arrow> Solve() { return Solve(unknowns); }
-
+        
+        /// <summary>
+        /// Find independent systems of equations within this system.
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<SystemOfEquations> Partition()
+        {
+            yield return this;
+        }
+        
         // IEnumerable<LinearCombination>
         public IEnumerator<LinearCombination> GetEnumerator() { return Equations.GetEnumerator(); }
 
