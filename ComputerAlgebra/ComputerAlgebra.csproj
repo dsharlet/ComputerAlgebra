@@ -36,7 +36,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,6 +57,9 @@
     <Compile Include="Expression\Equal.cs" />
     <Compile Include="Expression\Product\Multiply.cs" />
     <Compile Include="Extensions\AlgebraicEquivalents.cs" />
+    <Compile Include="Plotting\Series.cs" />
+    <Compile Include="Plotting\SeriesCollection.cs" />
+    <Compile Include="Plotting\Plot.cs" />
     <Compile Include="Extensions\SolutionSet.cs" />
     <Compile Include="Extensions\SystemOfEquations.cs" />
     <Compile Include="LinqCompiler\CompileExtension.cs" />
