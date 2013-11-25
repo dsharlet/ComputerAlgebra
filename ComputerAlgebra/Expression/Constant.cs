@@ -39,6 +39,12 @@ namespace ComputerAlgebra
 
         protected override int TypeRank { get { return 0; } }
 
+        public static implicit operator Constant(Real x) { return Constant.New(x); }
+        public static implicit operator Constant(BigRational x) { return Constant.New(x); }
+        public static implicit operator Constant(decimal x) { return Constant.New(x); }
+        public static implicit operator Constant(double x) { return Constant.New(x); }
+        public static implicit operator Constant(int x) { return Constant.New(x); }
+
         // object interface.
         public override int GetHashCode() { return x.GetHashCode(); }
         public override string ToString() { return x.ToString("G6"); }
