@@ -59,7 +59,7 @@ namespace ComputerAlgebra
     /// <summary>
     /// Implements "precedence climbing": http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm#classic
     /// </summary>
-    class Parser
+    public class Parser
     {
         private Namespace context;
         private TokenStream tokens;
@@ -159,15 +159,16 @@ namespace ComputerAlgebra
             }
         }
 
-        public Parser(Namespace Context, string s) { context = Context; tokens = new TokenStream(s); }
-        
+        public Parser(Namespace Context) { context = Context; }
+
         //Eparser is
         //   var t : Tree
         //   t := Exp( 0 )
         //   expect( end )
         //   return t
-        public Expression Parse()
+        public Expression Parse(string s)
         {
+            tokens = new TokenStream(s);
             Expression t = Exp(0);
             tokens.ExpectEnd();
             return t;            

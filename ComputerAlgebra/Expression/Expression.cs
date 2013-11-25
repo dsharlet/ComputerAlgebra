@@ -77,7 +77,8 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static Expression Parse(string s) { return new Parser(Namespace.Global, s).Parse(); }
+        private static Parser parser = new Parser(Namespace.Global);
+        public static Expression Parse(string s) { return parser.Parse(s); }
 
         // Expression operators.
         public static Expression operator +(Expression L, Expression R) { return Sum.New(L, R).Evaluate(); }
