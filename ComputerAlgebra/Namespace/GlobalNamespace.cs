@@ -21,59 +21,59 @@ namespace ComputerAlgebra
         }
 
         // Some useful constants.
-        public static readonly Expression Pi = Constant.New(Math.PI);
-        public static readonly Expression e = Constant.New(Math.E);
+        public static readonly Expression Pi = Math.PI;
+        public static readonly Expression e = Math.E;
 
-        public static readonly Expression False = 0;
-        public static readonly Expression True = 1;
+        public static readonly Expression False = Constant.New(false);
+        public static readonly Expression True = Constant.New(true);
 
-        public static Expression Abs(Constant x) { return Constant.New(Real.Abs(x)); }
-        public static Expression Sign(Constant x) { return Constant.New(Real.Sign(x)); }
+        public static Expression Abs(Constant x) { return Real.Abs(x); }
+        public static Expression Sign(Constant x) { return Real.Sign(x); }
 
-        public static Expression Min(Constant x, Constant y) { return Real.Min((Real)x, (Real)y); }
-        public static Expression Max(Constant x, Constant y) { return Real.Max((Real)x, (Real)y); }
+        public static Expression Min(Constant x, Constant y) { return Real.Min(x, y); }
+        public static Expression Max(Constant x, Constant y) { return Real.Max(x, y); }
 
-        public static Expression Sin(Constant x) { return Constant.New(Real.Sin(x)); }
-        public static Expression Cos(Constant x) { return Constant.New(Real.Cos(x)); }
-        public static Expression Tan(Constant x) { return Constant.New(Real.Tan(x)); }
-        public static Expression Sec(Constant x) { return Constant.New(Real.Sec(x)); }
-        public static Expression Csc(Constant x) { return Constant.New(Real.Csc(x)); }
-        public static Expression Cot(Constant x) { return Constant.New(Real.Cot(x)); }
+        public static Expression Sin(Constant x) { return Real.Sin(x); }
+        public static Expression Cos(Constant x) { return Real.Cos(x); }
+        public static Expression Tan(Constant x) { return Real.Tan(x); }
+        public static Expression Sec(Constant x) { return Real.Sec(x); }
+        public static Expression Csc(Constant x) { return Real.Csc(x); }
+        public static Expression Cot(Constant x) { return Real.Cot(x); }
 
-        public static Expression ArcSin(Constant x) { return Constant.New(Real.ArcSin(x)); }
-        public static Expression ArcCos(Constant x) { return Constant.New(Real.ArcCos(x)); }
-        public static Expression ArcTan(Constant x) { return Constant.New(Real.ArcTan(x)); }
-        public static Expression ArcSec(Constant x) { return Constant.New(Real.ArcSec(x)); }
-        public static Expression ArcCsc(Constant x) { return Constant.New(Real.ArcCsc(x)); }
-        public static Expression ArcCot(Constant x) { return Constant.New(Real.ArcCot(x)); }
+        public static Expression ArcSin(Constant x) { return Real.ArcSin(x); }
+        public static Expression ArcCos(Constant x) { return Real.ArcCos(x); }
+        public static Expression ArcTan(Constant x) { return Real.ArcTan(x); }
+        public static Expression ArcSec(Constant x) { return Real.ArcSec(x); }
+        public static Expression ArcCsc(Constant x) { return Real.ArcCsc(x); }
+        public static Expression ArcCot(Constant x) { return Real.ArcCot(x); } 
 
-        public static Expression Sinh(Constant x) { return Constant.New(Real.Sinh(x)); }
-        public static Expression Cosh(Constant x) { return Constant.New(Real.Cosh(x)); }
-        public static Expression Tanh(Constant x) { return Constant.New(Real.Tanh(x)); }
-        public static Expression Sech(Constant x) { return Constant.New(Real.Sech(x)); }
-        public static Expression Csch(Constant x) { return Constant.New(Real.Csch(x)); }
-        public static Expression Coth(Constant x) { return Constant.New(Real.Coth(x)); }
+        public static Expression Sinh(Constant x) { return Real.Sinh(x); }
+        public static Expression Cosh(Constant x) { return Real.Cosh(x); }
+        public static Expression Tanh(Constant x) { return Real.Tanh(x); }
+        public static Expression Sech(Constant x) { return Real.Sech(x); }
+        public static Expression Csch(Constant x) { return Real.Csch(x); }
+        public static Expression Coth(Constant x) { return Real.Coth(x); }
 
-        public static Expression ArcSinh(Constant x) { return Constant.New(Real.ArcSinh(x)); }
-        public static Expression ArcCosh(Constant x) { return Constant.New(Real.ArcCosh(x)); }
-        public static Expression ArcTanh(Constant x) { return Constant.New(Real.ArcTanh(x)); }
-        public static Expression ArcSech(Constant x) { return Constant.New(Real.ArcSech(x)); }
-        public static Expression ArcCsch(Constant x) { return Constant.New(Real.ArcCsch(x)); }
-        public static Expression ArcCoth(Constant x) { return Constant.New(Real.ArcCoth(x)); }
+        public static Expression ArcSinh(Constant x) { return Real.ArcSinh(x); }
+        public static Expression ArcCosh(Constant x) { return Real.ArcCosh(x); }
+        public static Expression ArcTanh(Constant x) { return Real.ArcTanh(x); }
+        public static Expression ArcSech(Constant x) { return Real.ArcSech(x); }
+        public static Expression ArcCsch(Constant x) { return Real.ArcCsch(x); }
+        public static Expression ArcCoth(Constant x) { return Real.ArcCoth(x); }
 
-        public static Expression Sqrt(Constant x) { return Constant.New(Real.Sqrt(x)); }
-        public static Expression Exp(Constant x) { return Constant.New(Real.Exp(x)); }
-        public static Expression Ln(Constant x) { return Constant.New(Real.Ln(x)); }
-        public static Expression Log(Constant x, Constant b) { return Constant.New(Real.Log(x, b)); }
+        public static Expression Sqrt(Constant x) { return Real.Sqrt(x); }
+        public static Expression Exp(Constant x) { return Real.Exp(x); }
+        public static Expression Ln(Constant x) { return Real.Ln(x); }
+        public static Expression Log(Constant x, Constant b) { return Real.Log(x, b); }
 
-        public static Expression Floor(Constant x) { return Constant.New(Real.Floor(x)); }
-        public static Expression Ceiling(Constant x) { return Constant.New(Real.Ceiling(x)); }
-        public static Expression Round(Constant x) { return Constant.New(Real.Round(x)); }
+        public static Expression Floor(Constant x) { return Real.Floor(x); }
+        public static Expression Ceiling(Constant x) { return Real.Ceiling(x); }
+        public static Expression Round(Constant x) { return Real.Round(x); }
 
         public static Expression Factorial(Constant x)
         {
             if ((Real)x % 1 == 0)
-                return Constant.New(new Real(Factorial((BigInteger)(Real)x)));
+                return new Real(Factorial((BigInteger)(Real)x));
             else
                 throw new ArgumentException("Factorial cannot be called for non-integer value.");
         }
@@ -82,7 +82,7 @@ namespace ComputerAlgebra
         public static Expression IsInteger(Constant x) { return Constant.New((Real)x % 1 == 0); }
         public static Expression IsNatural(Constant x) { return Constant.New((Real)x % 1 == 0 && (Real)x > 0); }
 
-        public static Expression IsFunctionOf(Expression f, Expression x) { return Constant.New(f.DependsOn(x)); }
+        public static Expression DependsOn(Expression f, Expression x) { return Constant.New(f.DependsOn(x)); }
         
         public static Expression Simplify(Expression x) { return x.Simplify(); }
 

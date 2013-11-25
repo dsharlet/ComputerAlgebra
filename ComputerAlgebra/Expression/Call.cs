@@ -84,7 +84,7 @@ namespace ComputerAlgebra
 
         public static Expression If(Expression c, Expression t, Expression f) { return Call.New("If", c, t, f); }
 
-        public static Expression IsFunctionOf(Expression f, Expression x) { return Call.New("IsFunctionOf", f, x); }
+        public static Expression DependsOn(Expression f, Expression x) { return Call.New("DependsOn", f, x); }
         public static Expression IsConstant(Expression x) { return Call.New("IsConstant", x); }
         public static Expression IsInteger(Expression x) { return Call.New("IsInteger", x); }
         public static Expression IsNatural(Expression x) { return Call.New("IsNatural", x); }
