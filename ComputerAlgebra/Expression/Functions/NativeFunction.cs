@@ -22,28 +22,28 @@ namespace ComputerAlgebra
     /// </summary>
     public class NativeFunction : Function
     {
+        private object _this = null;
+        public object This { get { return _this; } }
+
         private MethodInfo method;
         public MethodInfo Method { get { return method; } }
 
-        public override IEnumerable<Variable> Parameters
+        public override IEnumerable<Variable> Parameters { get { return Method.GetParameters().Select(i => Variable.New(i.Name)); } }
+
+        protected NativeFunction(string Name, object This, MethodInfo Method)
+            : base(Name) 
         {
-            get { return Method.GetParameters().Select(i => Variable.New(i.Name)); }
+            _this = This;
+            method = Method; 
         }
 
-        private NativeFunction(MethodInfo Method) : base(Method.Name) { method = Method; }
-
-        public static NativeFunction New(MethodInfo Method) { return new NativeFunction(Method); }
+        public static NativeFunction New(MethodInfo Method) { return new NativeFunction(Method.Name, null, Method); }
+        public static NativeFunction New(string Name, object This, MethodInfo Method) { return new NativeFunction(Name, This, Method); }
+        public static NativeFunction New(string Name, Delegate Method) { return new NativeFunction(Name, Method, Method.GetMethodInfo()); }
+        public static NativeFunction New<T>(string Name, T Method) { return new NativeFunction(Name, Method, typeof(T).GetMethod("Invoke")); }
 
         public override Expression Call(IEnumerable<Expression> Args)
         {
-            object _this = null;
-            if (!Method.IsStatic)
-            {
-                _this = Args.First();
-                if (!Method.DeclaringType.IsAssignableFrom(_this.GetType()))
-                    return null;
-                Args = Args.Skip(1);
-            }
             if (!Args.Zip(Method.GetParameters(), (a, p) => p.ParameterType.IsAssignableFrom(a.GetType())).All())
                 return null;
 
@@ -63,9 +63,6 @@ namespace ComputerAlgebra
 
         public override bool CanCall(IEnumerable<Expression> Args)
         {
-            if (!Method.IsStatic)
-                Args = Args.Skip(1);
-
             return Method.GetParameters().Length == Args.Count();
         }
         
