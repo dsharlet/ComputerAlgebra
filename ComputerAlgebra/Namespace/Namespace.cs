@@ -72,6 +72,7 @@ namespace ComputerAlgebra
             }
             values.Add(x); 
         }
+        public void Add(Function f) { Add(f.Name, f); }
 
         public Namespace() { }
 
