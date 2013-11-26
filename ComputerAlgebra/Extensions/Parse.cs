@@ -61,103 +61,8 @@ namespace ComputerAlgebra
     /// </summary>
     public class Parser
     {
-        private Namespace context;
+        private Namespace context = Namespace.Global;
         private TokenStream tokens;
-
-        static bool IsBinaryOperator(string tok, ref Operator op)
-        {
-            switch (tok)
-            {
-                case "+": op = Operator.Add; return true;
-                case "-": op = Operator.Subtract; return true;
-                case "*": op = Operator.Multiply; return true;
-                case "/": op = Operator.Divide; return true;
-                case "^": op = Operator.Power; return true;
-                case "&": op = Operator.And; return true;
-                case "|": op = Operator.Or; return true;
-                case ":": op = Operator.Substitute; return true;
-                case "->": op = Operator.Arrow; return true;
-                case "==": op = Operator.Equal; return true;
-                case "!=": op = Operator.NotEqual; return true;
-                case ">": op = Operator.Greater; return true;
-                case "<": op = Operator.Less; return true;
-                case ">=": op = Operator.GreaterEqual; return true;
-                case "<=": op = Operator.LessEqual; return true;
-                case "~=": op = Operator.ApproxEqual; return true;
-                default: return false;
-            }
-        }
-
-        static bool IsUnaryPreOperator(string tok, ref Operator op)
-        {
-            switch (tok)
-            {
-                case "-": op = Operator.Negate; return true;
-                case "!": op = Operator.Not; return true;
-                default: return false;
-            }
-        }
-
-        static bool IsUnaryPostOperator(string tok, ref Operator op)
-        {
-            switch (tok)
-            {
-                case "'": op = Operator.Prime; return true;
-                default: return false;
-            }
-        }
-
-        public static int Precedence(Expression x)
-        {
-            if (x is Sum)
-                return Precedence(Operator.Add);
-            else if (x is Product)
-                return Precedence(Operator.Multiply);
-            else if (x is Binary)
-                return Precedence(((Binary)x).Operator);
-            else if (x is Unary)
-                return Precedence(((Unary)x).Operator);
-            else if (x is Atom)
-                return 100;
-            return Precedence(Operator.Equal);
-        }
-
-        public static int Precedence(Operator op)
-        {
-            switch (op)
-            {
-                case Operator.And:
-                case Operator.Not:
-                    return 3;
-                case Operator.Or: 
-                    return 4;
-                case Operator.Add:
-                case Operator.Subtract: 
-                    return 5;
-                case Operator.Negate: 
-                    return 6;
-                case Operator.Multiply:
-                case Operator.Divide: 
-                    return 7;
-                case Operator.Power: 
-                    return 8;
-                case Operator.Prime:
-                    return 9;
-                case Operator.Arrow:
-                    return 2;
-                default: 
-                    return 1;
-            }
-        }
-
-        private static bool IsLeftAssociative(Operator op)
-        {
-            switch (op)
-            {
-                case Operator.Power: return false;
-                default: return true;
-            }
-        }
 
         public Parser(Namespace Context) { context = Context; }
 
@@ -331,5 +236,102 @@ namespace ComputerAlgebra
                 return Variable.New(Token);
             }
         }
+
+
+        static bool IsBinaryOperator(string tok, ref Operator op)
+        {
+            switch (tok)
+            {
+                case "+": op = Operator.Add; return true;
+                case "-": op = Operator.Subtract; return true;
+                case "*": op = Operator.Multiply; return true;
+                case "/": op = Operator.Divide; return true;
+                case "^": op = Operator.Power; return true;
+                case "&": op = Operator.And; return true;
+                case "|": op = Operator.Or; return true;
+                case ":": op = Operator.Substitute; return true;
+                case "->": op = Operator.Arrow; return true;
+                case "==": op = Operator.Equal; return true;
+                case "!=": op = Operator.NotEqual; return true;
+                case ">": op = Operator.Greater; return true;
+                case "<": op = Operator.Less; return true;
+                case ">=": op = Operator.GreaterEqual; return true;
+                case "<=": op = Operator.LessEqual; return true;
+                case "~=": op = Operator.ApproxEqual; return true;
+                default: return false;
+            }
+        }
+
+        static bool IsUnaryPreOperator(string tok, ref Operator op)
+        {
+            switch (tok)
+            {
+                case "-": op = Operator.Negate; return true;
+                case "!": op = Operator.Not; return true;
+                default: return false;
+            }
+        }
+
+        static bool IsUnaryPostOperator(string tok, ref Operator op)
+        {
+            switch (tok)
+            {
+                case "'": op = Operator.Prime; return true;
+                default: return false;
+            }
+        }
+
+        public static int Precedence(Expression x)
+        {
+            if (x is Sum)
+                return Precedence(Operator.Add);
+            else if (x is Product)
+                return Precedence(Operator.Multiply);
+            else if (x is Binary)
+                return Precedence(((Binary)x).Operator);
+            else if (x is Unary)
+                return Precedence(((Unary)x).Operator);
+            else if (x is Atom)
+                return 100;
+            return Precedence(Operator.Equal);
+        }
+
+        public static int Precedence(Operator op)
+        {
+            switch (op)
+            {
+                case Operator.And:
+                case Operator.Not:
+                    return 3;
+                case Operator.Or:
+                    return 4;
+                case Operator.Add:
+                case Operator.Subtract:
+                    return 5;
+                case Operator.Negate:
+                    return 6;
+                case Operator.Multiply:
+                case Operator.Divide:
+                    return 7;
+                case Operator.Power:
+                    return 8;
+                case Operator.Prime:
+                    return 9;
+                case Operator.Arrow:
+                    return 2;
+                default:
+                    return 1;
+            }
+        }
+
+        private static bool IsLeftAssociative(Operator op)
+        {
+            switch (op)
+            {
+                case Operator.Power: return false;
+                default: return true;
+            }
+        }
+
     }
 }
