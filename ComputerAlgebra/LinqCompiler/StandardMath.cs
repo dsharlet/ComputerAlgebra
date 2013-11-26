@@ -51,6 +51,9 @@ namespace ComputerAlgebra.LinqCompiler
         public static double Ln(double x) { return Math.Log(x); }
         public static double Log(double x, double b) { return Math.Log(x, b); }
 
+        private const double LinExpKnee = GlobalNamespace.LinExpKnee;
+        public static double LinExp(double x) { return x < LinExpKnee ? Exp(x) : Exp(LinExpKnee) * (1.0 + x - LinExpKnee); }
+
         public static double Floor(double x) { return Math.Floor(x); }
         public static double Ceiling(double x) { return Math.Ceiling(x); }
         public static double Round(double x) { return Math.Round(x); }

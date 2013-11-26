@@ -63,6 +63,8 @@ namespace ComputerAlgebra
 
         public static Expression Sqrt(Constant x) { return Real.Sqrt(x); }
         public static Expression Exp(Constant x) { return Real.Exp(x); }
+        public const double LinExpKnee = 40.0;
+        public static Expression LinExp(Constant x) { return (Real)x < LinExpKnee ? Real.Exp(x) : Real.Exp(LinExpKnee) * (1.0 + (Real)x - LinExpKnee); }
         public static Expression Ln(Constant x) { return Real.Ln(x); }
         public static Expression Log(Constant x, Constant b) { return Real.Log(x, b); }
 
