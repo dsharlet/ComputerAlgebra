@@ -25,19 +25,19 @@ namespace ComputerAlgebra
                 return Product.New(Product.TermsOf(l).Select(i => Power.New(i, r)));
             }
 
+            if (!ReferenceEquals(x, null))
+            {
+                // If f is a polynomial of x, factor it.
+                try
+                {
+                    return Polynomial.New(f, x).Factor();
+                }
+                catch (Exception) { }
+            }
+
             if (f is Sum)
             {
                 Sum s = (Sum)f;
-
-                // If f is a polynomial of x, factor it.
-                if (!ReferenceEquals(x, null))
-                {
-                    try
-                    {
-                        return Polynomial.New(f, x).Factor(x);
-                    }
-                    catch (Exception) { }
-                }
 
                 IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
                 
