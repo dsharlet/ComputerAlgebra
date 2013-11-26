@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
+using LinqExprs = System.Linq.Expressions;
+using LinqExpr = System.Linq.Expressions.Expression;
+using ParamExpr = System.Linq.Expressions.ParameterExpression;
+
 namespace ComputerAlgebra.LinqCompiler
 {
     public enum Scope
@@ -16,7 +20,7 @@ namespace ComputerAlgebra.LinqCompiler
     }
 
     /// <summary>
-    /// Represents a chunk of compiled code.
+    /// Represents the global context of code generation.
     /// </summary>
     public class Module : DeclContext
     {
@@ -31,6 +35,25 @@ namespace ComputerAlgebra.LinqCompiler
                 libraries = new Type[] { typeof(StandardMath) };
             else
                 libraries = Libraries.ToArray();
+        }
+        
+        /// <summary>
+        /// Declare a new global in this module mapped to expression Map.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Map"></param>
+        /// <returns></returns>
+        public GlobalExpr<T> Declare<T>(Expression Map) 
+        {
+            GlobalExpr<T> decl = new GlobalExpr<T>();
+            base.Declare(Map, decl); 
+            return decl; 
+        }
+        public GlobalExpr<T> Declare<T>(Expression Map, T Init) 
+        {
+            GlobalExpr<T> decl = new GlobalExpr<T>(Init);
+            base.Declare(Map, decl); 
+            return decl; 
         }
 
         public MethodInfo Compile(Function f, Type[] ArgTypes)

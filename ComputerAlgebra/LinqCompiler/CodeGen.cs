@@ -19,8 +19,6 @@ namespace ComputerAlgebra.LinqCompiler
     {
         private class ScopeDeclContext : DeclContext
         {
-            public void Map(Expression Expr, LinqExpr To) { map[Expr] = To; }
-
             public ScopeDeclContext(DeclContext Parent) : base(Parent) { }
         }
 
@@ -141,9 +139,9 @@ namespace ComputerAlgebra.LinqCompiler
         {
             switch (Scope)
             {
-                case Scope.Local: scope.Map(Expr, To); break;
+                case Scope.Local: scope.Declare(Expr, To); break;
                 case Scope.Intermediate: intermediates[Expr] = To; break;
-                case Scope.Parameter: map[Expr] = To; break;
+                case Scope.Parameter: Declare(Expr, To); break;
                 default: throw new ArgumentException("Scope is not valid for mapping.");
             }
         }
@@ -177,8 +175,8 @@ namespace ComputerAlgebra.LinqCompiler
             switch (Scope)
             {
                 case Scope.Parameter: parameters.AddRange(Vars); break;
-                case Scope.Local: decls.AddRange(Vars); scope.Declare(Vars); break;
-                case Scope.Intermediate: decls.AddRange(Vars); break;
+                case Scope.Local: base.Declare(Vars); scope.Declare(Vars); break;
+                case Scope.Intermediate: base.Declare(Vars); break;
                 default: throw new InvalidOperationException("Unknown variable scope.");
             }
         }

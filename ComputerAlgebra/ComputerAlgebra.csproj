@@ -57,6 +57,7 @@
     <Compile Include="Expression\Equal.cs" />
     <Compile Include="Expression\Product\Multiply.cs" />
     <Compile Include="Extensions\AlgebraicEquivalents.cs" />
+    <Compile Include="LinqCompiler\GlobalExpr.cs" />
     <Compile Include="Plotting\Series.cs" />
     <Compile Include="Plotting\SeriesCollection.cs" />
     <Compile Include="Plotting\Plot.cs" />

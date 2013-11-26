@@ -14,8 +14,8 @@ namespace ComputerAlgebra.LinqCompiler
     /// </summary>
     public class DeclContext
     {
-        protected List<ParamExpr> decls = new List<ParamExpr>();
-        protected Dictionary<Expression, LinqExpr> map = new Dictionary<Expression,LinqExpr>();
+        private List<ParamExpr> decls = new List<ParamExpr>();
+        private Dictionary<Expression, LinqExpr> map = new Dictionary<Expression, LinqExpr>();
 
         private DeclContext parent = null;
         public DeclContext Parent { get { return parent; } }
@@ -26,6 +26,7 @@ namespace ComputerAlgebra.LinqCompiler
         public IEnumerable<ParamExpr> Decls { get { return decls; } }
 
         public void Declare(IEnumerable<ParamExpr> Decls) { decls.AddRange(Decls); }
+        public void Declare(Expression Map, LinqExpr To) { map[Map] = To; }
 
         public virtual LinqExpr LookUp(Expression Expr)
         {
