@@ -80,7 +80,7 @@ namespace ComputerAlgebra
         {
             foreach (MethodInfo i in T.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance))
                 Add(i.Name, NativeFunction.New(i));
-            foreach (FieldInfo i in T.GetFields(BindingFlags.Public | BindingFlags.Static))
+            foreach (FieldInfo i in T.GetFields(BindingFlags.Public | BindingFlags.Static).Where(i => i.FieldType.IsAssignableFrom(typeof(Expression))))
                 Add(i.Name, (Expression)i.GetValue(null));
         }
 
