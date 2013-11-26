@@ -7,32 +7,30 @@ using ComputerAlgebra.LinqCompiler;
 
 namespace Console
 {
-    class ConsoleNamespace : Namespace
+    class Program
     {
-        public ConsoleNamespace() : base(typeof(ConsoleNamespace)) { }
-
-        public override IEnumerable<Expression> LookupName(string Name) 
-        {
-            return Global.LookupName(Name).Concat(base.LookupName(Name));
-        }
-
         public static void Plot(Expression f, Variable x, Constant x0, Constant x1)
         {
-            ComputerAlgebra.Plotting.Plot p = new ComputerAlgebra.Plotting.Plot() { x0 = (double)x0, x1 = (double)x1 };
-            foreach (Expression i in Set.MembersOf(f))
+            ComputerAlgebra.Plotting.Plot p = new ComputerAlgebra.Plotting.Plot()
             {
-                p.Series.Add(new ComputerAlgebra.Plotting.Function(ExprFunction.New(i, x).Compile<Func<double, double>>()));
-            }
+                x0 = (double)x0,
+                x1 = (double)x1,
+                Title = f.ToString(),
+                xLabel = x.ToString(),
+            };
+            foreach (Expression i in Set.MembersOf(f))
+                p.Series.Add(new ComputerAlgebra.Plotting.Function(ExprFunction.New(i, x)) { Name = i.ToString() });
         }
-
-        public static void Plot(Expression f, Variable x) { Plot(f, x, -10, 10); }
-    };
-
-    class Program
-    {   
+        
         static void Main(string[] args)
         {
-            Parser parser = new Parser(new ConsoleNamespace());
+            List<KeyValuePair<Expression, Expression>> InOut = new List<KeyValuePair<Expression, Expression>>();
+
+            Namespace.Global.Add(NativeFunction.New<Action<Expression, Variable, Constant, Constant>>("Plot", (f, x, x0, x1) => Plot(f, x, x0, x1)));
+            Namespace.Global.Add(NativeFunction.New<Action<Expression, Variable>>("Plot", (f, x) => Plot(f, x, -10, 10)));
+            Namespace.Global.Add(NativeFunction.New<Action>("Clear", () => System.Console.Clear()));
+            Namespace.Global.Add(NativeFunction.New<Func<Expression, Expression>>("In", x => InOut[(int)x].Key));
+            Namespace.Global.Add(NativeFunction.New<Func<Expression, Expression>>("Out", x => InOut[(int)x].Value));
 
             while (true)
             {
@@ -42,12 +40,19 @@ namespace Console
                     string s = System.Console.ReadLine();
                     System.Console.WriteLine();
 
-                    if (s == "exit")
+                    if (s == "Exit")
                         break;
 
-                    Expression E = parser.Parse(s);
+                    Expression input = Expression.Parse(s);
+                    Expression output = input.Evaluate();
 
-                    System.Console.WriteLine(Arrow.New(E, E.Evaluate()).ToPrettyString());
+                    int n = InOut.Count;
+
+                    InOut.Add(new KeyValuePair<Expression, Expression>(input, output));
+
+                    System.Console.WriteLine(Arrow.New("In[" + n + "]", input).ToPrettyString());
+                    System.Console.WriteLine();
+                    System.Console.WriteLine(Arrow.New("Out[" + n + "]", output).ToPrettyString());
                     System.Console.WriteLine();
                 }
                 catch (Exception Ex)
