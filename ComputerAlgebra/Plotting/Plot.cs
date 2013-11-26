@@ -93,61 +93,71 @@ namespace ComputerAlgebra.Plotting
             Font titleFont = new Font(font.FontFamily, font.Size * 1.5f, FontStyle.Bold);
 
             // Compute plot area.
-            SizeF marginTopLeft = new SizeF(30.0f, 10.0f);
-            SizeF marginBottomRight = new SizeF(10.0f, 20.0f);
-
-            if (title != null)
-                marginTopLeft.Height += 20.0f;
-            if (ylabel != null)
-                marginTopLeft.Width += 20.0f;
-            if (xlabel != null)
-                marginBottomRight.Height += 20.0f;
-            RectangleF area = new RectangleF((PointF)marginTopLeft, (SizeF)e.ClipRectangle.Size - marginTopLeft - marginBottomRight);
-
-            // Draw background.
-            G.FillRectangle(Brushes.White, area);
-            G.DrawRectangle(Pens.Gray, area.Left, area.Top, area.Width, area.Height);
-
+            RectangleF area = e.ClipRectangle;
+            area.Inflate(-10.0f, -10.0f);
+            
             // Draw title.
             if (title != null)
             {
                 SizeF sz = G.MeasureString(title, font);
-                G.DrawString(title, titleFont, Brushes.Black, new PointF(area.Left + (area.Width - sz.Width) / 2, e.ClipRectangle.Top + 5.0f));
+                G.DrawString(title, titleFont, Brushes.Black, new PointF(area.Left + (area.Width - sz.Width) / 2, area.Top));
+                area.Y += sz.Height + 10.0f;
+                area.Height -= sz.Height + 10.0f;
             }
 
             // Draw axis labels.
-            if (ylabel != null)
-            {
-                SizeF sz = G.MeasureString(ylabel, font);
-                G.TranslateTransform(e.ClipRectangle.Left + 5.0f, area.Top + (area.Height + sz.Width) / 2.0f);
-                G.RotateTransform(-90.0f);
-                G.DrawString(ylabel, labelFont, Brushes.Black, new PointF(0.0f, 0.0f));
-                G.ResetTransform();
-            }
             if (xlabel != null)
             {
                 SizeF sz = G.MeasureString(xlabel, font);
-                G.DrawString(xlabel, labelFont, Brushes.Black, new PointF(area.Left + (area.Width - sz.Width) / 2, e.ClipRectangle.Bottom - sz.Height - 5.0f));
+                G.DrawString(xlabel, labelFont, Brushes.Black, new PointF(area.Left + (area.Width - sz.Width) / 2, area.Bottom - sz.Height - 5.0f));
+                area.Height -= sz.Height + 10.0f;
             }
+            if (ylabel != null)
+            {
+                SizeF sz = G.MeasureString(ylabel, font);
+                G.TranslateTransform(area.Left + 5.0f, area.Top + (area.Height + sz.Width) / 2.0f);
+                G.RotateTransform(-90.0f);
+                G.DrawString(ylabel, labelFont, Brushes.Black, new PointF(0.0f, 0.0f));
+                G.ResetTransform();
+
+                area.X += sz.Height + 10.0f;
+                area.Width -= sz.Height + 10.0f;
+            }
+
+            area.X += 30.0f;
+            area.Width -= 30.0f;
+            area.Height -= 20.0f;
+            
+            // Draw background.
+            G.FillRectangle(Brushes.White, area);
+            G.DrawRectangle(Pens.Gray, area.Left, area.Top, area.Width, area.Height);
 
             // Compute plot bounds.
             PointF x0, x1;
             if (double.IsNaN(_y0) || double.IsNaN(_y1))
             {
-                double min = double.PositiveInfinity;
-                double max = double.NegativeInfinity;
-                series.ForEach(i =>
+                int N = 0;
+
+                // Compute the mean.
+                double mean = 0.0;
+                series.ForEach(i => 
                 {
-                    min = Math.Min(min, i.MinY(_x0, _x1) - 1e-6f);
-                    max = Math.Max(max, i.MaxY(_x0, _x1) + 1e-6f);
+                    List<PointF[]> x = i.Evaluate(_x0, _x1);
+                    mean += x.Sum(j => j.Sum(k => k.Y));
+                    N += x.Sum(j => j.Count());
                 });
-                double y = (min + max) / 2.0;
+                mean /= N;
 
-                if (max <= min)
-                    return;
+                // Compute standard deviation.
+                double stddev = 0.0;
+                series.ForEach(i => stddev += i.Evaluate(_x0, _x1).Sum(j => j.Sum(k => (mean - k.Y) * (mean - k.Y))));
+                stddev /= N;
 
-                x0 = new PointF((float)_x0, (float)((min - y) * 1.25 + y));
-                x1 = new PointF((float)_x1, (float)((max - y) * 1.25 + y));
+                if (stddev < 1e-6)
+                    stddev = mean;
+                
+                x0 = new PointF((float)_x0, (float)(mean - stddev * 3));
+                x1 = new PointF((float)_x1, (float)(mean + stddev * 3));
             }
             else
             {
@@ -184,7 +194,9 @@ namespace ComputerAlgebra.Plotting
             G.DrawLine(axis, Tx(T, new PointF(x0.X, 0.0f)), Tx(T, new PointF(x1.X, 0.0f)));
             G.DrawLine(axis, Tx(T, new PointF(0.0f, x0.Y)), Tx(T, new PointF(0.0f, x1.Y)));
             G.DrawRectangle(Pens.Gray, area.Left, area.Top, area.Width, area.Height);
-            
+
+            G.SetClip(area);
+
             // Draw series.
             series.ForEach(i =>
             {
