@@ -48,28 +48,28 @@ namespace ComputerAlgebra
     /// </summary>
     public class NewtonIteration : SolutionSet
     {
-        private IEnumerable<Arrow> solved;
+        private IEnumerable<Arrow> knowns;
         /// <summary>
         /// Enumerate the solved Newton deltas.
         /// </summary>
-        public IEnumerable<Arrow> Solved { get { return solved; } }
+        public IEnumerable<Arrow> KnownDeltas { get { return knowns; } }
+
+        private IEnumerable<Expression> unknowns;
+        /// <summary>
+        /// Enumerate the unkonwn Newton deltas described by Equations.
+        /// </summary>
+        public IEnumerable<Expression> UnknownDeltas { get { return unknowns; } }
+
+        /// <summary>
+        /// Enumerate both the solved and unsolved the Newton update deltas in this solution set.
+        /// </summary>
+        public IEnumerable<Expression> Deltas { get { return knowns != null ? knowns.Select(i => i.Left).Concat(unknowns) : unknowns; } }
 
         private IEnumerable<LinearCombination> equations;
         /// <summary>
         /// Enumerate the equations describing the unsolved part of this system.
         /// </summary>
         public IEnumerable<LinearCombination> Equations { get { return equations; } }
-
-        private IEnumerable<Expression> updates;
-        /// <summary>
-        /// Enumerate the Newton deltas of the Equations system.
-        /// </summary>
-        public IEnumerable<Expression> Updates { get { return updates; } }
-
-        /// <summary>
-        /// Enumerate the Newton update deltas in this solution set.
-        /// </summary>
-        public IEnumerable<Expression> Deltas { get { return solved != null ? solved.Select(i => i.Left).Concat(updates) : updates; } }
 
         private IEnumerable<Arrow> guesses;
         /// <summary>
@@ -79,17 +79,25 @@ namespace ComputerAlgebra
 
         public override IEnumerable<Expression> Unknowns { get { return Deltas.Select(i => DeltaOf(i)); } }
 
-        public NewtonIteration(IEnumerable<Arrow> Solved, IEnumerable<LinearCombination> Equations, IEnumerable<Expression> Updates, IEnumerable<Arrow> Guesses)
+        public NewtonIteration(IEnumerable<LinearCombination> Equations, IEnumerable<Expression> Deltas, IEnumerable<Arrow> Guesses)
         {
-            solved = Solved.Buffer();
+            knowns = null;
             equations = Equations.Buffer();
-            updates = Updates.Buffer();
+            unknowns = Deltas.Buffer();
+            guesses = Guesses.Buffer();
+        }
+
+        public NewtonIteration(IEnumerable<Arrow> KnownDeltas, IEnumerable<LinearCombination> Equations, IEnumerable<Expression> UnknownDeltas, IEnumerable<Arrow> Guesses)
+        {
+            knowns = KnownDeltas.Buffer();
+            equations = Equations.Buffer();
+            unknowns = UnknownDeltas.Buffer();
             guesses = Guesses.Buffer();
         }
 
         public override bool DependsOn(Expression x) 
         {
-            if (solved != null && solved.Any(i => i.Right.DependsOn(x)))
+            if (knowns != null && knowns.Any(i => i.Right.DependsOn(x)))
                 return true;
             if (guesses != null && guesses.Any(i => i.Right.DependsOn(x)))
                 return true;
