@@ -30,7 +30,7 @@ namespace ComputerAlgebra.Plotting
         public string Name { get { return name; } set { name = value; } }
 
         private Pen pen = null;
-        public Pen Pen { get { return pen; } set { pen = value; } }
+        public Pen Pen { get { return pen != null ? pen : Pens.Transparent; } set { pen = value; } }
 
         protected PointStyle pointStyle = PointStyle.Square;
         public PointStyle PointStyle { get { return pointStyle; } set { pointStyle = value; } }
@@ -39,11 +39,12 @@ namespace ComputerAlgebra.Plotting
 
         public void Paint(Matrix2D T, double x0, double x1, Graphics G)
         {
+            Pen pen = Pen;
             List<PointF[]> points = Evaluate(x0, x1);
             foreach (PointF[] i in points)
             {
                 T.TransformPoints(i);
-                G.DrawLines(Pen, i);
+                G.DrawLines(pen, i);
             }
         }
     }

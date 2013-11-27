@@ -55,6 +55,12 @@ namespace ComputerAlgebra.Plotting
         /// </summary>
         public string Title { get { return title; } set { form.Text = title = value; Invalidate(); } }
 
+        private bool showLegend = true;
+        /// <summary>
+        /// Show or hide the legend.
+        /// </summary>
+        public bool ShowLegend { get { return showLegend; } set { showLegend = value; Invalidate(); } }
+
         protected Thread thread;
         protected Form form = new Form();
 
@@ -77,10 +83,99 @@ namespace ComputerAlgebra.Plotting
             thread.Start();
         }
 
+        private RectangleF PaintTitle(Graphics G, RectangleF Area)
+        {
+            if (title == null)
+                return Area;
+
+            Font font = new Font(form.Font.FontFamily, form.Font.Size * 1.5f, FontStyle.Bold);
+
+            // Draw title.
+            SizeF sz = G.MeasureString(title, font);
+            G.DrawString(title, font, Brushes.Black, new PointF(Area.Left + (Area.Width - sz.Width) / 2, Area.Top));
+            Area.Y += sz.Height + 10.0f;
+            Area.Height -= sz.Height + 10.0f;
+
+            return Area;
+        }
+
+        private RectangleF PaintAxisLabels(Graphics G, RectangleF Area)
+        {
+            Font font = new Font(form.Font.FontFamily, form.Font.Size * 1.25f);
+
+            // Draw axis labels.
+            if (xlabel != null)
+            {
+                SizeF sz = G.MeasureString(xlabel, font);
+                G.DrawString(xlabel, font, Brushes.Black, new PointF(Area.Left + (Area.Width - sz.Width) / 2, Area.Bottom - sz.Height - 5.0f));
+                Area.Height -= sz.Height + 10.0f;
+            }
+            if (ylabel != null)
+            {
+                SizeF sz = G.MeasureString(ylabel, font);
+                G.TranslateTransform(Area.Left + 5.0f, Area.Top + (Area.Height + sz.Width) / 2.0f);
+                G.RotateTransform(-90.0f);
+                G.DrawString(ylabel, font, Brushes.Black, new PointF(0.0f, 0.0f));
+                G.ResetTransform();
+
+                Area.X += sz.Height + 10.0f;
+                Area.Width -= sz.Height + 10.0f;
+            }
+
+            Area.X += 30.0f;
+            Area.Width -= 30.0f;
+            Area.Height -= 20.0f;
+
+            return Area;
+        }
+
+        private RectangleF PaintLegend(Graphics G, RectangleF Area)
+        {
+            if (!showLegend)
+                return Area;
+
+            Font font = form.Font;
+
+            // Draw legend.
+            float legendWidth = 0.0f;
+            series.ForEach(i =>
+            {
+                SizeF sz = G.MeasureString(i.Name, font);
+                legendWidth = Math.Max(legendWidth, sz.Width);
+            });
+
+            float legendY = Area.Top;
+            series.ForEach(i =>
+            {
+                PointF lx = new PointF(Area.Right - legendWidth, legendY);
+                SizeF sz = G.MeasureString(i.Name, font);
+                G.DrawString(i.Name, font, Brushes.Black, lx);
+
+                PointF[] points = new PointF[]
+                {
+                    new PointF(lx.X - 25.0f, legendY + sz.Height / 2.0f),
+                    new PointF(lx.X - 5.0f, legendY + sz.Height / 2.0f),
+                };
+                G.DrawLines(i.Pen, points);
+                legendY += sz.Height;
+            });
+
+            Area.Width -= legendWidth + 30.0f;
+
+            return Area;
+        }
+
         private void Plot_Paint(object sender, PaintEventArgs e)
         {
             if (series.Count == 0)
                 return;
+
+            // Assign default pens if not already assigned.
+            series.ForEach(i =>
+            {
+                if (i.Pen == Pens.Transparent)
+                    i.Pen = new Pen(colors.ArgMin(j => series.Count(k => k.Pen != null && k.Pen.Color == j)), 0.5f);
+            });
 
             Graphics G = e.Graphics;
             G.SmoothingMode = SmoothingMode.AntiAlias;
@@ -88,46 +183,16 @@ namespace ComputerAlgebra.Plotting
 
             Pen axis = Pens.Black;
             Pen grid = Pens.LightGray;
-            Font font = SystemFonts.DefaultFont;
-            Font labelFont = new Font(font.FontFamily, font.Size * 1.25f);
-            Font titleFont = new Font(font.FontFamily, font.Size * 1.5f, FontStyle.Bold);
+            Font font = form.Font;
 
             // Compute plot area.
             RectangleF area = e.ClipRectangle;
             area.Inflate(-10.0f, -10.0f);
-            
-            // Draw title.
-            if (title != null)
-            {
-                SizeF sz = G.MeasureString(title, font);
-                G.DrawString(title, titleFont, Brushes.Black, new PointF(area.Left + (area.Width - sz.Width) / 2, area.Top));
-                area.Y += sz.Height + 10.0f;
-                area.Height -= sz.Height + 10.0f;
-            }
 
-            // Draw axis labels.
-            if (xlabel != null)
-            {
-                SizeF sz = G.MeasureString(xlabel, font);
-                G.DrawString(xlabel, labelFont, Brushes.Black, new PointF(area.Left + (area.Width - sz.Width) / 2, area.Bottom - sz.Height - 5.0f));
-                area.Height -= sz.Height + 10.0f;
-            }
-            if (ylabel != null)
-            {
-                SizeF sz = G.MeasureString(ylabel, font);
-                G.TranslateTransform(area.Left + 5.0f, area.Top + (area.Height + sz.Width) / 2.0f);
-                G.RotateTransform(-90.0f);
-                G.DrawString(ylabel, labelFont, Brushes.Black, new PointF(0.0f, 0.0f));
-                G.ResetTransform();
+            area = PaintTitle(G, area);
+            area = PaintAxisLabels(G, area);
+            area = PaintLegend(G, area);
 
-                area.X += sz.Height + 10.0f;
-                area.Width -= sz.Height + 10.0f;
-            }
-
-            area.X += 30.0f;
-            area.Width -= 30.0f;
-            area.Height -= 20.0f;
-            
             // Draw background.
             G.FillRectangle(Brushes.White, area);
             G.DrawRectangle(Pens.Gray, area.Left, area.Top, area.Width, area.Height);
@@ -140,7 +205,7 @@ namespace ComputerAlgebra.Plotting
 
                 // Compute the mean.
                 double mean = 0.0;
-                series.ForEach(i => 
+                series.ForEach(i =>
                 {
                     List<PointF[]> x = i.Evaluate(_x0, _x1);
                     mean += x.Sum(j => j.Sum(k => k.Y));
@@ -150,26 +215,31 @@ namespace ComputerAlgebra.Plotting
 
                 // Compute standard deviation.
                 double stddev = 0.0;
-                series.ForEach(i => stddev += i.Evaluate(_x0, _x1).Sum(j => j.Sum(k => (mean - k.Y) * (mean - k.Y))));
-                stddev /= N;
+                double max = 0.0;
+                //series.ForEach(i => stddev = Math.Max(stddev, i.Evaluate(_x0, _x1).Max(j => j.Max(k => Math.Abs(mean - k.Y))) * 1.25 + 1e-6));
+                series.ForEach(i =>
+                {
+                    List<PointF[]> x = i.Evaluate(_x0, _x1);
+                    stddev += x.Sum(j => j.Sum(k => (mean - k.Y) * (mean - k.Y)));
+                    max = x.Max(j => j.Max(k => Math.Abs(mean - k.Y)), max);
+                });
+                stddev = Math.Sqrt(stddev / N) * 4;
+                double y = Math.Min(stddev, max) * 1.25 + 1e-6;
 
-                if (stddev < 1e-6)
-                    stddev = mean;
-                
-                x0 = new PointF((float)_x0, (float)(mean - stddev * 3));
-                x1 = new PointF((float)_x1, (float)(mean + stddev * 3));
+                x0 = new PointF((float)_x0, (float)(mean - y));
+                x1 = new PointF((float)_x1, (float)(mean + y));
             }
             else
             {
                 x0 = new PointF((float)_x0, (float)_y0);
                 x1 = new PointF((float)_x1, (float)_y1);
             }
-            
+
             Matrix2D T = new Matrix2D(
-                area, 
+                area,
                 new PointF[] { new PointF(x0.X, x1.Y), new PointF(x1.X, x1.Y), new PointF(x0.X, x0.Y) });
             T.Invert();
-            
+
             // Draw axes.
             double dx = Partition((x1.X - x0.X) / (Width / 80));
             for (double x = x0.X - x0.X % dx; x <= x1.X; x += dx)
@@ -194,16 +264,10 @@ namespace ComputerAlgebra.Plotting
             G.DrawLine(axis, Tx(T, new PointF(x0.X, 0.0f)), Tx(T, new PointF(x1.X, 0.0f)));
             G.DrawLine(axis, Tx(T, new PointF(0.0f, x0.Y)), Tx(T, new PointF(0.0f, x1.Y)));
             G.DrawRectangle(Pens.Gray, area.Left, area.Top, area.Width, area.Height);
-
             G.SetClip(area);
 
             // Draw series.
-            series.ForEach(i =>
-            {
-                if (i.Pen == null)
-                    i.Pen = new Pen(colors.ArgMin(j => series.Count(k => k.Pen != null && k.Pen.Color == j)), 0.5f);
-                i.Paint(T, x0.X, x1.X, G);
-            });
+            series.ForEach(i => i.Paint(T, x0.X, x1.X, G));
         }
 
         private static PointF Tx(Matrix2D T, PointF x)
