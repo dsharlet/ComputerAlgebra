@@ -44,7 +44,6 @@ namespace ComputerAlgebra
             new SubstituteTransform("D[Abs[u], x]", "Sign[u]*D[u, x]"),
             new SubstituteTransform("D[Sign[u], x]", "0"),
             new SubstituteTransform("D[Exp[u], x]", "Exp[u]*D[u, x]"),
-            new SubstituteTransform("D[LinExp[u], x]", Product.New(Call.Exp(Call.Min("u", GlobalNamespace.LinExpKnee)), Call.D("u", "x"))),
             new SubstituteTransform("D[Ln[u], x]", "D[u, x]/u"),
             new SubstituteTransform("D[I[u, x], x]", "u"),
             new SubstituteTransform("D[If[c, t, f], x]", "If[c, D[t, x], D[f, x]]"),

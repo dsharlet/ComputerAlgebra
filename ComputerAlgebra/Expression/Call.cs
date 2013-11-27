@@ -123,7 +123,6 @@ namespace ComputerAlgebra
 
         public static Expression Sqrt(Expression x) { return Call.New("Sqrt", x); }
         public static Expression Exp(Expression x) { return Call.New("Exp", x); }
-        public static Expression LinExp(Expression x) { return Call.New("LinExp", x); }
         public static Expression Ln(Expression x) { return Call.New("Ln", x); }
         public static Expression Log(Expression x, Expression b) { return Call.New("Log", x, b); }
 
