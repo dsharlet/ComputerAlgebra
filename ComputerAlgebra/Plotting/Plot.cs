@@ -170,13 +170,6 @@ namespace ComputerAlgebra.Plotting
             if (series.Count == 0)
                 return;
 
-            // Assign default pens if not already assigned.
-            series.ForEach(i =>
-            {
-                if (i.Pen == Pens.Transparent)
-                    i.Pen = new Pen(colors.ArgMin(j => series.Count(k => k.Pen != null && k.Pen.Color == j)), 0.5f);
-            });
-
             Graphics G = e.Graphics;
             G.SmoothingMode = SmoothingMode.AntiAlias;
             G.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
@@ -199,41 +192,11 @@ namespace ComputerAlgebra.Plotting
 
             // Compute plot bounds.
             PointF x0, x1;
-            if (double.IsNaN(_y0) || double.IsNaN(_y1))
-            {
-                int N = 0;
-
-                // Compute the mean.
-                double mean = 0.0;
-                series.ForEach(i =>
-                {
-                    List<PointF[]> x = i.Evaluate(_x0, _x1);
-                    mean += x.Sum(j => j.Sum(k => k.Y));
-                    N += x.Sum(j => j.Count());
-                });
-                mean /= N;
-
-                // Compute standard deviation.
-                double stddev = 0.0;
-                double max = 0.0;
-                //series.ForEach(i => stddev = Math.Max(stddev, i.Evaluate(_x0, _x1).Max(j => j.Max(k => Math.Abs(mean - k.Y))) * 1.25 + 1e-6));
-                series.ForEach(i =>
-                {
-                    List<PointF[]> x = i.Evaluate(_x0, _x1);
-                    stddev += x.Sum(j => j.Sum(k => (mean - k.Y) * (mean - k.Y)));
-                    max = x.Max(j => j.Max(k => Math.Abs(mean - k.Y)), max);
-                });
-                stddev = Math.Sqrt(stddev / N) * 4;
-                double y = Math.Min(stddev, max) * 1.25 + 1e-6;
-
-                x0 = new PointF((float)_x0, (float)(mean - y));
-                x1 = new PointF((float)_x1, (float)(mean + y));
-            }
-            else
-            {
-                x0 = new PointF((float)_x0, (float)_y0);
-                x1 = new PointF((float)_x1, (float)_y1);
-            }
+            double y0 = _y0, y1 = _y1;
+            if (double.IsNaN(y0) || double.IsNaN(y1))
+                series.AutoBounds(_x0, _x1, out y0, out y1);
+            x0 = new PointF((float)_x0, (float)y0);
+            x1 = new PointF((float)_x1, (float)y1);
 
             Matrix2D T = new Matrix2D(
                 area,
@@ -291,15 +254,5 @@ namespace ComputerAlgebra.Plotting
                     return p / i;
             return p;
         }
-
-        private static Color[] colors = new Color[]
-        { 
-            Color.Red, 
-            Color.Blue, 
-            Color.Green, 
-            Color.DarkRed, 
-            Color.DarkGreen, 
-            Color.DarkBlue,
-        };
     }
 }
