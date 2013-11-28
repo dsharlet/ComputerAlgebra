@@ -47,6 +47,16 @@ namespace ComputerAlgebra.Plotting
                 G.DrawLines(pen, i);
             }
         }
+
+        protected static float ToFloat(double x)
+        {
+            if (x > 1e6) 
+                return 1e6f;
+            else if (x < -1e6) 
+                return -1e6f;
+            else
+                return (float)x;
+        }
     }
 
     /// <summary>
@@ -68,9 +78,9 @@ namespace ComputerAlgebra.Plotting
             for (int i = 0; i <= N; ++i)
             {
                 double x = ((x1 - x0) * i) / N + x0;
-                double fx = f(x);
+                float fx = ToFloat(f(x));
 
-                if (double.IsNaN(fx) || double.IsInfinity(fx))
+                if (double.IsNaN(fx) || float.IsInfinity(fx))
                 {
                     if (run.Count > 1)
                         points.Add(run.ToArray());
@@ -78,7 +88,7 @@ namespace ComputerAlgebra.Plotting
                 }
                 else
                 {
-                    run.Add(new PointF((float)x, (float)fx));
+                    run.Add(new PointF((float)x, fx));
                 }
             }
             if (run.Count > 1)
@@ -93,12 +103,15 @@ namespace ComputerAlgebra.Plotting
     /// </summary>
     public class Scatter : Series
     {
-        protected KeyValuePair<double, double>[] points;
-        public Scatter(KeyValuePair<double, double>[] Points) { points = Points; }
+        protected PointF[] points;
+        public Scatter(KeyValuePair<double, double>[] Points) 
+        {
+            points = Points.Select(i => new PointF((float)i.Key, ToFloat(i.Value))).ToArray(); 
+        }
 
         public override List<PointF[]> Evaluate(double x0, double x1)
         {
-            return new List<PointF[]>() { points.Select(i => new PointF((float)i.Key, (float)i.Value)).ToArray() };
+            return new List<PointF[]>() { points.ToArray() };
         }
     }
 }
