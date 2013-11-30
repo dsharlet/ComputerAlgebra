@@ -38,22 +38,22 @@ namespace ComputerAlgebra.LinqCompiler
 
         protected override LinqExpr VisitSum(Sum A)
         {
-            LinqExpr _int = Visit(A.Terms.First());
+            LinqExpr _int = ForArithmetic(Visit(A.Terms.First()));
             foreach (Expression i in A.Terms.Skip(1))
             {
                 if (IsNegative(i))
-                    _int = LinqExpr.Subtract(_int, Visit(-i));
+                    _int = LinqExpr.Subtract(_int, ForArithmetic(Visit(-i)));
                 else
-                    _int = LinqExpr.Add(_int, Visit(i));
+                    _int = LinqExpr.Add(_int, ForArithmetic(Visit(i)));
             }
             return Int(A, _int);
         }
 
         protected override LinqExpr VisitProduct(Product M)
         {
-            LinqExpr _int = Visit(M.Terms.First());
+            LinqExpr _int = ForArithmetic(Visit(M.Terms.First()));
             foreach (Expression i in M.Terms.Skip(1))
-                _int = LinqExpr.Multiply(_int, Visit(i));
+                _int = LinqExpr.Multiply(_int, ForArithmetic(Visit(i)));
             return Int(M, _int);
         }
 
@@ -62,9 +62,9 @@ namespace ComputerAlgebra.LinqCompiler
             LinqExpr o = Visit(U.Operand);
             switch (U.Operator)
             {
-                case Operator.Negate: return Int(U, LinqExpr.Negate(o));
-                case Operator.Inverse: return Int(U, LinqExpr.Divide(LinqExpr.Constant(1.0), o));
-                case Operator.Not: return Int(U, LinqExpr.Not(o));
+                case Operator.Negate: return Int(U, LinqExpr.Negate(ForArithmetic(o)));
+                case Operator.Inverse: return Int(U, LinqExpr.Divide(LinqExpr.Constant(1.0), ForArithmetic(o)));
+                case Operator.Not: return Int(U, LinqExpr.Not(ForLogic(o)));
 
                 default: throw new NotSupportedException("Unsupported unary operator '" + U.Operator.ToString() + "'.");
             }
@@ -76,14 +76,13 @@ namespace ComputerAlgebra.LinqCompiler
             LinqExpr r = Visit(B.Right);
             switch (B.Operator)
             {
-                case Operator.Add: return Int(B, LinqExpr.Add(l, r));
-                case Operator.Subtract: return Int(B, LinqExpr.Subtract(l, r));
-                case Operator.Multiply: return Int(B, LinqExpr.Multiply(l, r));
-                case Operator.Divide: return Int(B, LinqExpr.Divide(l, r));
-                case Operator.Power: return Int(B, LinqExpr.Power(l, r));
+                case Operator.Add: return Int(B, LinqExpr.Add(ForArithmetic(l), ForArithmetic(r)));
+                case Operator.Subtract: return Int(B, LinqExpr.Subtract(ForArithmetic(l), ForArithmetic(r)));
+                case Operator.Multiply: return Int(B, LinqExpr.Multiply(ForArithmetic(l), ForArithmetic(r)));
+                case Operator.Divide: return Int(B, LinqExpr.Divide(ForArithmetic(l), ForArithmetic(r)));
 
-                case Operator.And: return Int(B, LinqExpr.And(l, r));
-                case Operator.Or: return Int(B, LinqExpr.Or(l, r));
+                case Operator.And: return Int(B, LinqExpr.And(ForLogic(l), ForLogic(r)));
+                case Operator.Or: return Int(B, LinqExpr.Or(ForLogic(l), ForLogic(r)));
 
                 case Operator.Equal: return Int(B, LinqExpr.Equal(l, r));
                 case Operator.NotEqual: return Int(B, LinqExpr.NotEqual(l, r));
@@ -98,7 +97,7 @@ namespace ComputerAlgebra.LinqCompiler
 
         protected override LinqExpr VisitPower(Power P)
         {
-            LinqExpr l = Visit(P.Left);
+            LinqExpr l = ForArithmetic(Visit(P.Left));
             // Handle some special cases.
             if (P.Right.Equals(2))
                 return Int(P, LinqExpr.Multiply(l, l));
@@ -107,7 +106,7 @@ namespace ComputerAlgebra.LinqCompiler
             else if (P.Right.Equals(-2))
                 return Int(P, LinqExpr.Divide(LinqExpr.Constant(1.0), LinqExpr.Multiply(l, l)));
 
-            LinqExpr r = Visit(P.Right);
+            LinqExpr r = ForArithmetic(Visit(P.Right));
             return Int(P, LinqExpr.Power(l, r));
         }
 
@@ -123,6 +122,19 @@ namespace ComputerAlgebra.LinqCompiler
 
         protected override LinqExpr VisitVariable(Variable V) { throw new UndefinedVariable("Undefined variable '" + V.Name + "'."); }
         protected override LinqExpr VisitUnknown(Expression E) { throw new NotSupportedException("Unsupported expression type '" + E.GetType().FullName + "'."); }
+
+        private LinqExpr ForArithmetic(LinqExpr x)
+        {
+            if (x.Type == typeof(double) || x.Type == typeof(float))
+                return x;
+
+            return LinqExpr.Convert(x, typeof(double));
+        }
+
+        private LinqExpr ForLogic(LinqExpr x)
+        {
+            return x;
+        }
 
         // Generate an intermediate expression.
         private LinqExpr Int(Expression For, LinqExpr x)
