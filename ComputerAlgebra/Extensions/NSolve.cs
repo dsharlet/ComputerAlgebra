@@ -10,6 +10,15 @@ using ParamExpr = System.Linq.Expressions.ParameterExpression;
 namespace ComputerAlgebra
 {
     /// <summary>
+    /// Exception for iterative algorithm convergence issues.
+    /// </summary>
+    public class FailedToConvergeException : ArithmeticException
+    {
+        public FailedToConvergeException(string Message) : base(Message) { }
+        public FailedToConvergeException(string Message, Exception Inner) : base(Message, Inner) { }
+    }
+
+    /// <summary>
     /// Extensions for solving equations.
     /// </summary>
     public static class NSolveExtension
@@ -90,63 +99,72 @@ namespace ComputerAlgebra
             }
 
             double epsilon = Epsilon * Epsilon * N;
-
-            for (int n = 0; n < MaxIterations; ++n)
+            try
             {
-                // Evaluate JxF and F.
-                if (EvalJ(JxF, x) < epsilon)
-                    return Enumerable.Range(0, N).Select(i => Arrow.New(x0[i].Left, x[i])).ToList();
-
-                // Solve for dx.
-                // For each variable in the system...
-                for (int j = 0; j < N; ++j)
+                for (int n = 0; n < MaxIterations; ++n)
                 {
-                    int pi = j;
-                    double max = Math.Abs(JxF[j, j]);
+                    // Evaluate JxF and F.
+                    if (EvalJ(JxF, x) < epsilon)
+                        return Enumerable.Range(0, N).Select(i => Arrow.New(x0[i].Left, x[i])).ToList();
 
-                    // Find a pivot row for this variable.
-                    for (int i = j + 1; i < M; ++i)
+                    // Solve for dx.
+                    // For each variable in the system...
+                    for (int j = 0; j < N; ++j)
                     {
-                        // if(|JxF[i][j]| > max) { pi = i, max = |JxF[i][j]| }
-                        double maxj = Math.Abs(JxF[i, j]);
-                        if (maxj > max)
+                        int pi = j;
+                        double max = Math.Abs(JxF[j, j]);
+
+                        // Find a pivot row for this variable.
+                        for (int i = j + 1; i < M; ++i)
                         {
-                            pi = i;
-                            max = maxj;
+                            // if(|JxF[i][j]| > max) { pi = i, max = |JxF[i][j]| }
+                            double maxj = Math.Abs(JxF[i, j]);
+                            if (maxj > max)
+                            {
+                                pi = i;
+                                max = maxj;
+                            }
+                        }
+
+                        // Swap pivot row with the current row.
+                        if (pi != j)
+                            for (int ij = j; ij <= N; ++ij)
+                                Swap(ref JxF[j, ij], ref JxF[pi, ij]);
+
+                        // Eliminate the rows after the pivot.
+                        double p = JxF[j, j];
+                        for (int i = j + 1; i < M; ++i)
+                        {
+                            double s = JxF[i, j] / p;
+                            if (s != 0.0)
+                                for (int ij = j + 1; ij <= N; ++ij)
+                                    JxF[i, ij] -= JxF[j, ij] * s;
                         }
                     }
 
-                    // Swap pivot row with the current row.
-                    if (pi != j)
-                        for (int ij = j; ij <= N; ++ij)
-                            Swap(ref JxF[j, ij], ref JxF[pi, ij]);
-
-                    // Eliminate the rows after the pivot.
-                    double p = JxF[j, j];
-                    for (int i = j + 1; i < M; ++i)
+                    // JxF is now upper triangular, solve it.
+                    for (int j = N - 1; j >= 0; --j)
                     {
-                        double s = JxF[i, j] / p;
-                        if (s != 0.0)
-                            for (int ij = j + 1; ij <= N; ++ij)
-                                JxF[i, ij] -= JxF[j, ij] * s;
+                        double r = JxF[j, N];
+                        for (int ij = j + 1; ij < N; ++ij)
+                            r += JxF[j, ij] * dx[ij];
+
+                        if (JxF[j, j] == 0.0)
+                            throw new ArithmeticException("Singular system of equations.");
+
+                        double dxj = -r / JxF[j, j];
+                        dx[j] = dxj;
+                        x[j] += dxj;
                     }
                 }
-
-                // JxF is now upper triangular, solve it.
-                for (int j = N - 1; j >= 0; --j)
-                {
-                    double r = JxF[j, N];
-                    for (int ij = j + 1; ij < N; ++ij)
-                        r += JxF[j, ij] * dx[ij];
-
-                    double dxj = -r / JxF[j, j];
-                    dx[j] = dxj;
-                    x[j] += dxj;
-                }
+            }
+            catch (ArithmeticException Ex)
+            {
+                throw new FailedToConvergeException("Newton's method failed to converge.", Ex);
             }
 
             // Failed to converge.
-            throw new NotFiniteNumberException("NSolve failed to converge.");
+            throw new FailedToConvergeException("NSolve failed to converge.");
         }
 
         private static void Swap(ref double a, ref double b) { double t = a; a = b; b = t; }
@@ -173,7 +191,7 @@ namespace ComputerAlgebra
                     // Go near the goal.
                     s0 = Lerp(s0, 0.0, 0.9);
                 }
-                catch (NotFiniteNumberException)
+                catch (FailedToConvergeException)
                 {
                     // Go near the last success.
                     s0 = Lerp(s0, s1, 0.9);
