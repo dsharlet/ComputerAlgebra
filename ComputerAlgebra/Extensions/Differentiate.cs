@@ -75,17 +75,25 @@ namespace ComputerAlgebra
             if (R.Empty())
                 return Visit(L);
 
-            if (L.DependsOn(x))
+            bool Lx = L.DependsOn(x);
+            bool Rx = R.DependsOn(x);
+
+            if (Lx && Rx)
             {
                 // Product rule.
                 return Sum.New(
                     Product.New(new Expression[] { Visit(L) }.Concat(R)),
                     Product.New(L, ProductRule(R.First(), R.Skip(1)))).Evaluate();
             }
-            else
+            else if (!Lx)
             {
                 // L is constant w.r.t. x.
                 return Product.New(L, ProductRule(R.First(), R.Skip(1))).Evaluate();
+            }
+            else
+            {
+                // R is constant w.r.t. x.
+                return Product.New(R.Append(Visit(L))).Evaluate();
             }
         }
 
@@ -116,13 +124,25 @@ namespace ComputerAlgebra
             }
         }
 
-        protected override Expression VisitUnknown(Expression E) 
+        protected override Expression VisitBinary(Binary B)
         {
-            Expression DE = Call.D(E, x);
-            Expression TDE = rules.Transform(DE);
-            if (!ReferenceEquals(TDE, DE))
-                return TDE;
-            return TDE;
+            // Logic operators are mostly constant.
+            if (B.IsLogicOp)
+                return 0;
+            return base.VisitBinary(B);
+        }
+
+        protected override Expression VisitUnary(Unary U)
+        {
+            // Logic operators are mostly constant.
+            if (U.IsLogicOp)
+                return 0;
+            return base.VisitUnary(U);
+        }
+
+        protected override Expression VisitUnknown(Expression E) 
+        { 
+            return rules.Transform(Call.D(E, x)); 
         }
     }
 

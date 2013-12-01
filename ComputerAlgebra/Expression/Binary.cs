@@ -5,8 +5,16 @@ using System.Text;
 
 namespace ComputerAlgebra
 {
+    /// <summary>
+    /// Binary operator expression type.
+    /// </summary>
     public class Binary : Expression
     {
+        /// <summary>
+        /// Check if the operator is commuative.
+        /// </summary>
+        /// <param name="Op"></param>
+        /// <returns></returns>
         public static bool IsCommutative(Operator Op)
         {
             switch (Op)
@@ -23,12 +31,53 @@ namespace ComputerAlgebra
             }
         }
 
-        protected Operator op;
-        protected Expression l, r;
-        public Operator Operator { get { return op; } }
-        public Expression Left { get { return l; } }
-        public Expression Right { get { return r; } }
+        /// <summary>
+        /// Check if the operator is a logical operator.
+        /// </summary>
+        /// <param name="Op"></param>
+        /// <returns></returns>
+        public static bool IsLogic(Operator Op)
+        {
+            switch (Op)
+            {
+                case Operator.Equal:
+                case Operator.NotEqual:
+                case Operator.Greater:
+                case Operator.Less:
+                case Operator.GreaterEqual:
+                case Operator.LessEqual:
+                case Operator.ApproxEqual:
+                    return true;
+                default:
+                    return false;
+            }
+        }
 
+        protected Operator op;
+        /// <summary>
+        /// Get the operator for this binary expression.
+        /// </summary>
+        public Operator Operator { get { return op; } }
+
+        protected Expression l, r;
+        /// <summary>
+        /// Get the left operand of this binary expression.
+        /// </summary>
+        public Expression Left { get { return l; } }
+        /// <summary>
+        /// Get the right operand of this binary expression.
+        /// </summary>
+        public Expression Right { get { return r; } }
+        
+        /// <summary>
+        /// Determine if this operator expression is commutative.
+        /// </summary>
+        public bool IsCommutativeOp { get { return IsCommutative(op); } }
+        /// <summary>
+        /// Determine if this operator expression is a logic operation.
+        /// </summary>
+        public bool IsLogicOp { get { return IsLogic(op); } }
+        
         protected Binary(Operator Op, Expression L, Expression R) { op = Op; l = L; r = R; }
 
         static public Expression Add(Expression L, Expression R) { return ComputerAlgebra.Sum.New(L, R); }
@@ -50,6 +99,13 @@ namespace ComputerAlgebra
         static public Binary GreaterEqual(Expression L, Expression R) { return new Binary(Operator.GreaterEqual, L, R); }
         static public Binary LessEqual(Expression L, Expression R) { return new Binary(Operator.LessEqual, L, R); }
         static public Binary ApproxEqual(Expression L, Expression R) { return new Binary(Operator.ApproxEqual, L, R); }
+        /// <summary>
+        /// Create a new binary expression.
+        /// </summary>
+        /// <param name="Op"></param>
+        /// <param name="L"></param>
+        /// <param name="R"></param>
+        /// <returns></returns>
         static public Expression New(Operator Op, Expression L, Expression R)
         {
             switch (Op)
@@ -73,9 +129,7 @@ namespace ComputerAlgebra
                 default: return new Binary(Op, L, R);
             }
         }
-        
-        public bool Commutative { get { return IsCommutative(op); } }
-        
+
         public static string ToString(Operator o)
         {
             switch (o)
@@ -89,15 +143,15 @@ namespace ComputerAlgebra
                 case Operator.And: return "&";
                 case Operator.Or: return "|";
 
-                case Operator.Equal: return " == ";
-                case Operator.NotEqual: return " != ";
-                case Operator.Greater: return " > ";
-                case Operator.Less: return " < ";
-                case Operator.GreaterEqual: return " >= ";
-                case Operator.LessEqual: return " <= ";
-                case Operator.ApproxEqual: return " ~= ";
+                case Operator.Equal: return "==";
+                case Operator.NotEqual: return "!=";
+                case Operator.Greater: return ">";
+                case Operator.Less: return "<";
+                case Operator.GreaterEqual: return ">=";
+                case Operator.LessEqual: return "<=";
+                case Operator.ApproxEqual: return "~=";
 
-                case Operator.Arrow: return " -> ";
+                case Operator.Arrow: return "->";
                 case Operator.Substitute: return ":";
                 default: return "<unknown>";
             }
@@ -120,6 +174,7 @@ namespace ComputerAlgebra
         }
         public override int GetHashCode() { return Operator.GetHashCode() ^ Left.GetHashCode() ^ Right.GetHashCode(); }
 
+        // Expression interface.
         public override IEnumerable<Atom> Atoms { get { return Left.Atoms.Concat(Right.Atoms); } }
         public override bool Equals(Expression E)
         {
