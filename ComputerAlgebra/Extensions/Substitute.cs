@@ -63,6 +63,38 @@ namespace ComputerAlgebra
         /// <param name="x0">Value to evaluate for.</param>
         /// <returns>The evaluated expression.</returns>
         public static Expression Substitute(this Expression f, Expression x, Expression x0) { return f.Substitute(new Dictionary<Expression, Expression> { { x, x0 } }); }
-        public static Expression Substitute(this Expression f, IEnumerable<Expression> x, IEnumerable<Expression> x0) { return f.Substitute(x.Zip(x0, (i, j) => Arrow.New(i, j))); }
+
+        /// <summary>
+        /// Substitute variables x0 into f.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="x0"></param>
+        /// <returns></returns>
+        public static IEnumerable<Expression> Substitute(this IEnumerable<Expression> f, IDictionary<Expression, Expression> x0, bool IsTransform = false)
+        {
+            if (x0.Empty())
+                return f;
+            SubstituteVisitor V = new SubstituteVisitor(x0, IsTransform);
+
+            return f.Select(i => V.Visit(i));
+        }
+
+        /// <summary>
+        /// Evaluate an expression at x = x0.
+        /// </summary>
+        /// <param name="f">Expression to evaluate.</param>
+        /// <param name="x">Arrow expressions representing substitutions to evaluate.</param>
+        /// <returns>The evaluated expression.</returns>
+        public static IEnumerable<Expression> Substitute(this IEnumerable<Expression> f, IEnumerable<Arrow> x) { return f.Substitute(x.ToDictionary(i => i.Left, i => i.Right)); }
+        public static IEnumerable<Expression> Substitute(this IEnumerable<Expression> f, params Arrow[] x) { return f.Substitute(x.AsEnumerable()); }
+
+        /// <summary>
+        /// Evaluate an expression at x = x0.
+        /// </summary>
+        /// <param name="f">Expression to evaluate.</param>
+        /// <param name="x">Variable to evaluate at.</param>
+        /// <param name="x0">Value to evaluate for.</param>
+        /// <returns>The evaluated expression.</returns>
+        public static IEnumerable<Expression> Substitute(this IEnumerable<Expression> f, Expression x, Expression x0) { return f.Substitute(new Dictionary<Expression, Expression> { { x, x0 } }); }
     }
 }
