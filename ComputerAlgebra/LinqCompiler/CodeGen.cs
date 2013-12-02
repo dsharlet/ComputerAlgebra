@@ -108,16 +108,17 @@ namespace ComputerAlgebra.LinqCompiler
         /// <summary>
         /// Intermediate expressions are reset at synchronization points. For example,
         /// 
-        ///    LinqExpr x = code.Compile("Exp[t]*Exp[t]");
+        ///    LinqExpr x = code.Compile("Exp[t]");
+        ///    LinqExpr y = code.Compile("Exp[t]");
         ///    
-        /// will generate one call to Exp[t], stored in an intermediate scope variable _int,
-        /// x will be stored in a second intermediate _int2 = _int * _int.
+        /// will generate one call to Exp[t], stored in an intermediate scope variable,
+        /// the second call will reference the first intermediate value.
         /// 
         /// However, in this example,
         /// 
-        ///    LinqExpr x = code.Compile("Exp[t]*Exp[t]");
+        ///    LinqExpr x = code.Compile("Exp[t]");
         ///    code.SyncPoint();
-        ///    LinqExpr y = code.Compile("Exp[t]*Exp[t]");
+        ///    LinqExpr y = code.Compile("Exp[t]");
         ///    
         /// the intermediate for Exp[t] from compiling x will not be re-used when compiling y.
         /// </summary>
