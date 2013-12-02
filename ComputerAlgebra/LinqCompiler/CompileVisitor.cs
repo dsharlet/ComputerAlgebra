@@ -115,7 +115,9 @@ namespace ComputerAlgebra.LinqCompiler
                 return Int(P, Reciprocal(LinqExpr.Multiply(l, l)));
 
             LinqExpr r = ForArithmetic(Visit(P.Right));
-            return Int(P, LinqExpr.Power(l, r));
+            return Int(P, LinqExpr.Call(
+                target.Module.GetFunction("Pow", l.Type, r.Type),
+                l, r));
         }
 
         protected override LinqExpr VisitCall(Call C)

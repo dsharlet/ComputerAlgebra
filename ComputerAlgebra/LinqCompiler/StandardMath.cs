@@ -39,17 +39,23 @@ namespace ComputerAlgebra.LinqCompiler
         public static double Csch(double x) { return 1 / Sinh(x); }
         public static double Coth(double x) { return 1 / Tanh(x); }
 
-        public static double ArcSinh(double x) { return Math.Log(x + Math.Sqrt(x * x + 1)); }
-        public static double ArcCosh(double x) { return Math.Log(x + Math.Sqrt(x * x - 1)); }
-        public static double ArcTanh(double x) { return (Math.Log(1 + x) - Math.Log(1 - x)) / 2; }
+        public static double ArcSinh(double x) { return Ln(x + Sqrt(x * x + 1)); }
+        public static double ArcCosh(double x) { return Ln(x + Sqrt(x * x - 1)); }
+        public static double ArcTanh(double x) { return (Ln(1 + x) - Ln(1 - x)) / 2; }
         public static double ArcSech(double x) { return ArcCosh(1 / x); }
         public static double ArcCsch(double x) { return ArcSinh(1 / x); }
         public static double ArcCoth(double x) { return ArcTanh(1 / x); }
 
         public static double Sqrt(double x) { return Math.Sqrt(x); }
         public static double Exp(double x) { return Math.Exp(x); }
+        //public static double Exp(double x)
+        //{
+        //    var tmp = (long)(1512775 * x + 1072632447);
+        //    return BitConverter.Int64BitsToDouble(tmp << 32);
+        //}
         public static double Ln(double x) { return Math.Log(x); }
         public static double Log(double x, double b) { return Math.Log(x, b); }
+        public static double Pow(double x, double y) { return Math.Pow(x, y); }
 
         public static double Floor(double x) { return Math.Floor(x); }
         public static double Ceiling(double x) { return Math.Ceiling(x); }
@@ -85,9 +91,9 @@ namespace ComputerAlgebra.LinqCompiler
         public static float Csch(float x) { return 1.0f / Sinh(x); }
         public static float Coth(float x) { return 1.0f / Tanh(x); }
 
-        public static float ArcSinh(float x) { return (float)Math.Log(x + Math.Sqrt(x * x + 1)); }
-        public static float ArcCosh(float x) { return (float)Math.Log(x + Math.Sqrt(x * x - 1)); }
-        public static float ArcTanh(float x) { return (float)(Math.Log(1 + x) - Math.Log(1 - x)) / 2; }
+        public static float ArcSinh(float x) { return Ln(x + Sqrt(x * x + 1)); }
+        public static float ArcCosh(float x) { return Ln(x + Sqrt(x * x - 1)); }
+        public static float ArcTanh(float x) { return (Ln(1 + x) - Ln(1 - x)) / 2; }
         public static float ArcSech(float x) { return ArcCosh(1.0f / x); }
         public static float ArcCsch(float x) { return ArcSinh(1.0f / x); }
         public static float ArcCoth(float x) { return ArcTanh(1.0f / x); }
@@ -96,6 +102,7 @@ namespace ComputerAlgebra.LinqCompiler
         public static float Exp(float x) { return (float)Math.Exp(x); }
         public static float Ln(float x) { return (float)Math.Log(x); }
         public static float Log(float x, float b) { return (float)Math.Log(x, b); }
+        public static float Pow(float x, float y) { return (float)Math.Pow(x, y); }
 
         public static float Floor(float x) { return (float)Math.Floor(x); }
         public static float Ceiling(float x) { return (float)Math.Ceiling(x); }
