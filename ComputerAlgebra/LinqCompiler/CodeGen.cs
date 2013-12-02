@@ -336,6 +336,15 @@ namespace ComputerAlgebra.LinqCompiler
         
         public void For(Action Init, LinqExpr Condition, Action Step, Action<LinqExpr> Body) { For(Init, Condition, Step, (end, y) => Body(end)); }
         public void For(Action Init, LinqExpr Condition, Action Step, Action Body) { For(Init, Condition, Step, (x, y) => Body()); }
+        public void For(int Begin, int End, Action<LinqExpr> Body)
+        {
+            LinqExpr i = DeclInit<int>(AnonymousName(), Begin);
+            LinqExpr end = LinqExpr.Constant(End);
+            For(() => { },
+                LinqExpr.LessThan(i, end), 
+                () => Add(LinqExpr.PreIncrementAssign(i)), 
+                () => Body(i));
+        }
 
         /// <summary>
         /// Generate a while loop with the given code generator functions.
