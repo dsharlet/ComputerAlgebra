@@ -109,7 +109,7 @@ namespace ComputerAlgebra
 
                     // Solve for dx.
                     // For each variable in the system...
-                    for (int j = 0; j < N; ++j)
+                    for (int j = 0; j + 1 < N; ++j)
                     {
                         int pi = j;
                         double max = Math.Abs(JxF[j, j]);
