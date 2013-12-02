@@ -56,7 +56,7 @@ namespace ComputerAlgebra.LinqCompiler
             return decl; 
         }
 
-        public MethodInfo Compile(Function f, Type[] ArgTypes)
+        private MethodInfo LookupFunction(string Name, params Type[] ArgTypes)
         {
             MethodInfo method = null;
 
@@ -66,17 +66,47 @@ namespace ComputerAlgebra.LinqCompiler
                 // If the method is not found, check the base type.
                 for (Type t = i; t != null; t = t.BaseType)
                 {
-                    MethodInfo m = t.GetMethod(f.Name, BindingFlags.Static | BindingFlags.Public, null, ArgTypes, null);
+                    MethodInfo m = t.GetMethod(Name, BindingFlags.Static | BindingFlags.Public, null, ArgTypes, null);
                     if (m != null)
                     {
                         // If we already found a method, throw ambiguous.
                         if (method != null)
-                            throw new AmbiguousMatchException(f.Name);
+                            throw new AmbiguousMatchException(Name);
                         method = m;
                         break;
                     }
                 }
             }
+
+            return method;
+        }
+
+        /// <summary>
+        /// Get a function from the type libraries provided to the module.
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="ArgTypes"></param>
+        /// <returns></returns>
+        public MethodInfo GetFunction(string Name, params Type[] ArgTypes)
+        {
+            MethodInfo method = LookupFunction(Name, ArgTypes);
+            if (method != null)
+                return method;
+            throw new NotImplementedException("Function '" + Name + "' not found.");
+        }
+
+        /// <summary>
+        /// Compile the function into this module.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="ArgTypes"></param>
+        /// <returns></returns>
+        public MethodInfo Compile(Function f, params Type[] ArgTypes)
+        {
+            MethodInfo method = null;
+
+            // Search the libraries for a matching function.
+            method = LookupFunction(f.Name, ArgTypes);
             if (method != null)
                 return method;
 
