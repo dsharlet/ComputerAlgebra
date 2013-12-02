@@ -51,10 +51,12 @@ namespace ComputerAlgebra.LinqCompiler
 
         protected override LinqExpr VisitProduct(Product M)
         {
-            LinqExpr _int = ForArithmetic(Visit(M.Terms.First()));
-            foreach (Expression i in M.Terms.Skip(1))
+            List<Expression> terms = M.Terms.Where(i => !i.Equals(-1)).ToList();
+
+            LinqExpr _int = ForArithmetic(Visit(terms.First()));
+            foreach (Expression i in terms.Skip(1))
                 _int = LinqExpr.Multiply(_int, ForArithmetic(Visit(i)));
-            return Int(M, _int);
+            return Int(M, (M.Terms.Count() - terms.Count) % 2 != 0 ? LinqExpr.Negate(_int) : _int);
         }
 
         protected override LinqExpr VisitUnary(Unary U)
@@ -97,14 +99,20 @@ namespace ComputerAlgebra.LinqCompiler
 
         protected override LinqExpr VisitPower(Power P)
         {
-            LinqExpr l = ForArithmetic(Visit(P.Left));
             // Handle some special cases.
+            if (P.Right.Equals(0.5))
+                return Visit(Call.Sqrt(P.Left));
+            else if (P.Right.Equals(-0.5))
+                return Int(P, Reciprocal(Visit(Call.Sqrt(P.Left))));
+
+            LinqExpr l = ForArithmetic(Visit(P.Left));
+            // More special cases.
             if (P.Right.Equals(2))
                 return Int(P, LinqExpr.Multiply(l, l));
             else if (P.Right.Equals(-1))
-                return Int(P, LinqExpr.Divide(LinqExpr.Constant(1.0), l));
+                return Int(P, Reciprocal(l));
             else if (P.Right.Equals(-2))
-                return Int(P, LinqExpr.Divide(LinqExpr.Constant(1.0), LinqExpr.Multiply(l, l)));
+                return Int(P, Reciprocal(LinqExpr.Multiply(l, l)));
 
             LinqExpr r = ForArithmetic(Visit(P.Right));
             return Int(P, LinqExpr.Power(l, r));
@@ -151,6 +159,11 @@ namespace ComputerAlgebra.LinqCompiler
             if (C != null)
                 return C.Value < 0;
             return false;
+        }
+
+        private static LinqExpr Reciprocal(LinqExpr x)
+        {
+            return LinqExpr.Divide(LinqExpr.Constant(1.0), x);
         }
     }
 
