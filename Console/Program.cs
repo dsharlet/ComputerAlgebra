@@ -26,11 +26,15 @@ namespace Console
         {
             List<KeyValuePair<Expression, Expression>> InOut = new List<KeyValuePair<Expression, Expression>>();
 
-            Namespace.Global.Add(NativeFunction.New<Action<Expression, Variable, Constant, Constant>>("Plot", (f, x, x0, x1) => Plot(f, x, x0, x1)));
-            Namespace.Global.Add(NativeFunction.New<Action<Expression, Variable>>("Plot", (f, x) => Plot(f, x, -10, 10)));
-            Namespace.Global.Add(NativeFunction.New<Action>("Clear", () => System.Console.Clear()));
-            Namespace.Global.Add(NativeFunction.New<Func<Expression, Expression>>("In", x => InOut[(int)x].Key));
-            Namespace.Global.Add(NativeFunction.New<Func<Expression, Expression>>("Out", x => InOut[(int)x].Value));
+            DynamicNamespace console = new DynamicNamespace();
+
+            console.Add(NativeFunction.New<Action<Expression, Variable, Constant, Constant>>("Plot", (f, x, x0, x1) => Plot(f, x, x0, x1)));
+            console.Add(NativeFunction.New<Action<Expression, Variable>>("Plot", (f, x) => Plot(f, x, -10, 10)));
+            console.Add(NativeFunction.New<Action>("Clear", () => System.Console.Clear()));
+            console.Add(NativeFunction.New<Func<Expression, Expression>>("In", x => InOut[(int)x].Key));
+            console.Add(NativeFunction.New<Func<Expression, Expression>>("Out", x => InOut[(int)x].Value));
+
+            Parser parser = new Parser(new NamespaceSet(Namespace.Global, console));
 
             while (true)
             {
@@ -43,7 +47,7 @@ namespace Console
                     if (s == "Exit")
                         break;
 
-                    Expression input = Expression.Parse(s);
+                    Expression input = parser.Parse(s);
                     Expression output = input.Evaluate();
 
                     int n = InOut.Count;

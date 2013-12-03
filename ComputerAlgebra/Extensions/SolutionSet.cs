@@ -104,7 +104,7 @@ namespace ComputerAlgebra
             return equations.Any(i => i.DependsOn(x)); 
         }
 
-        private static Function d = ExprFunction.New("d", Variable.New("x"));
+        private static Function d = UnknownFunction.New("d", Variable.New("x"));
         public static Expression Delta(Expression x) { return Call.New(d, x); }
         public static Expression DeltaOf(Expression x)
         {

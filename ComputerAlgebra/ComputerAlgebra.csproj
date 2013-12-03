@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Expression\Arrow.cs" />
     <Compile Include="Expression\Atom.cs" />
+    <Compile Include="Expression\Functions\UnresolvedFunction.cs" />
     <Compile Include="Expression\Sum\Add.cs" />
     <Compile Include="Expression\Functions\IfFunction.cs" />
     <Compile Include="Expression\Functions\LutFunction.cs" />
@@ -57,7 +58,12 @@
     <Compile Include="Expression\Equal.cs" />
     <Compile Include="Expression\Product\Multiply.cs" />
     <Compile Include="Extensions\AlgebraicEquivalents.cs" />
+    <Compile Include="Extensions\Resolve.cs" />
     <Compile Include="LinqCompiler\GlobalExpr.cs" />
+    <Compile Include="Namespace\TypeNamespace.cs" />
+    <Compile Include="Namespace\NamespaceSet.cs" />
+    <Compile Include="Namespace\DynamicNamespace.cs" />
+    <Compile Include="Namespace\ObjectNamespace.cs" />
     <Compile Include="Plotting\Series.cs" />
     <Compile Include="Plotting\SeriesCollection.cs" />
     <Compile Include="Plotting\Plot.cs" />

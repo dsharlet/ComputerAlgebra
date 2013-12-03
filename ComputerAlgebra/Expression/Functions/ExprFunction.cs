@@ -22,11 +22,9 @@ namespace ComputerAlgebra
 
         public static ExprFunction New(Expression Body, IEnumerable<Variable> Params) { return new ExprFunction("<Anonymous>", Body, Params.Buffer()); }
         public static ExprFunction New(string Name, Expression Body, IEnumerable<Variable> Params) { return new ExprFunction(Name, Body, Params.Buffer()); }
-        public static ExprFunction New(string Name, IEnumerable<Variable> Params) { return new ExprFunction(Name, null, Params.Buffer()); }
 
         public static ExprFunction New(Expression Body, params Variable[] Params) { return New(Body, Params.AsEnumerable()); }
         public static ExprFunction New(string Name, Expression Body, params Variable[] Params) { return New(Name, Body, Params.AsEnumerable()); }
-        public static ExprFunction New(string Name, params Variable[] Params) { return New(Name, Params.AsEnumerable()); }
 
         public override Expression Call(IEnumerable<Expression> Args)
         {

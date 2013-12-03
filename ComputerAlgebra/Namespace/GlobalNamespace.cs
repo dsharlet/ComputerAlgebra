@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace ComputerAlgebra
 {
-    class GlobalNamespace : Namespace
+    class GlobalNamespace : TypeNamespace
     {
         private static IfFunction If = IfFunction.New();
 

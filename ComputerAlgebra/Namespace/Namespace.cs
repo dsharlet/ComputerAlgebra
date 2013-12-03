@@ -18,17 +18,23 @@ namespace ComputerAlgebra
     /// <summary>
     /// Contains functions and values.
     /// </summary>
-    public class Namespace
+    public abstract class Namespace
     {
-        private Dictionary<string, List<Expression>> members = new Dictionary<string, List<Expression>>();
+        /// <summary>
+        /// Look up expressions with the given name.
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        public abstract IEnumerable<Expression> LookupName(string Name);
 
-        public virtual IEnumerable<Expression> LookupName(string Name)
-        {
-            List<Expression> lookup;
-            if (members.TryGetValue(Name, out lookup))
-                return lookup;
-            return new Expression[] { };
-        }
+        /// <summary>
+        /// Lookup functions with the given name and matching parameters.
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Params"></param>
+        /// <returns></returns>
+        public IEnumerable<Function> LookupFunction(string Name, IEnumerable<Expression> Params) { return LookupName(Name).OfType<Function>().Where(i => i.CanCall(Params)); }
+        public IEnumerable<Function> LookupFunction(string Name, params Expression[] Params) { return LookupFunction(Name, Params.AsEnumerable()); }
 
         /// <summary>
         /// Resolve a name to an expression.
@@ -37,11 +43,10 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public Expression Resolve(string Name) 
         {
-            IEnumerable<Expression> lookup = LookupName(Name);
-            if (lookup.Count() == 1)
-                return lookup.First();
-            else
-                throw new UnresolvedName(Name);
+            Expression resolved = LookupName(Name).SingleOrDefault();
+            if (!ReferenceEquals(resolved, null))
+                return resolved;
+            throw new UnresolvedName(Name);
         }
         /// <summary>
         /// Resolve a name with arguments to a function.
@@ -51,39 +56,13 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public Function Resolve(string Name, IEnumerable<Expression> Params)
         {
-            IEnumerable<Function> candidates = LookupName(Name).OfType<Function>().Where(i => i.CanCall(Params));
-            if (candidates.Count() == 1)
-                return candidates.First();
-            else
-                throw new UnresolvedName(Name);
+            Function resolved = LookupFunction(Name, Params).SingleOrDefault();
+            if (!ReferenceEquals(resolved, null))
+                return resolved;
+            throw new UnresolvedName(Name);
         }
-
-        /// <summary>
-        /// Add a member to the namespace.
-        /// </summary>
-        /// <param name="f"></param>
-        public void Add(string Name, Expression x) 
-        {
-            List<Expression> values;
-            if (!members.TryGetValue(Name, out values))
-            {
-                values = new List<Expression>();
-                members[Name] = values;
-            }
-            values.Add(x); 
-        }
-        public void Add(Function f) { Add(f.Name, f); }
-
-        public Namespace() { }
-
-        protected Namespace(Type T)
-        {
-            foreach (MethodInfo i in T.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance))
-                Add(i.Name, NativeFunction.New(i));
-            foreach (FieldInfo i in T.GetFields(BindingFlags.Public | BindingFlags.Static).Where(i => i.FieldType.IsAssignableFrom(typeof(Expression))))
-                Add(i.Name, (Expression)i.GetValue(null));
-        }
-
+        public Function Resolve(string Name, params Expression[] Params) { return Resolve(Name, Params.AsEnumerable()); }
+        
         private static GlobalNamespace global = new GlobalNamespace();
         /// <summary>
         /// Get the global namespace.

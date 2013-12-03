@@ -88,6 +88,10 @@ namespace ComputerAlgebra
         public static Expression operator ^(Expression L, Expression R) { return Binary.Power(L, R).Evaluate(); }
         public static Expression operator -(Expression O) { return -1 * O; }
 
+        public static Expression operator &(Expression L, Expression R) { return Binary.And(L, R).Evaluate(); }
+        public static Expression operator |(Expression L, Expression R) { return Binary.Or(L, R).Evaluate(); }
+        public static Expression operator !(Expression O) { return Unary.Not(O).Evaluate(); }
+
         public static Expression operator ==(Expression L, Expression R) 
         {
             if (ReferenceEquals(L, null) || ReferenceEquals(R, null))

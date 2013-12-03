@@ -38,6 +38,7 @@ namespace ComputerAlgebra
         }
 
         public static NativeFunction New(MethodInfo Method) { return new NativeFunction(Method.Name, null, Method); }
+        public static NativeFunction New(object This, MethodInfo Method) { return new NativeFunction(Method.Name, This, Method); }
         public static NativeFunction New(string Name, object This, MethodInfo Method) { return new NativeFunction(Name, This, Method); }
         public static NativeFunction New(string Name, Delegate Method) { return new NativeFunction(Name, Method, Method.GetMethodInfo()); }
         public static NativeFunction New<T>(string Name, T Method) { return new NativeFunction(Name, Method, typeof(T).GetMethod("Invoke")); }
