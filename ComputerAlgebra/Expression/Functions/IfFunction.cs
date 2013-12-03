@@ -17,7 +17,9 @@ namespace ComputerAlgebra
 
         private IfFunction() : base("If") { }
 
-        public static IfFunction New() { return new IfFunction(); }
+        private static IfFunction instance = new IfFunction();
+
+        public static IfFunction New() { return instance; }
 
         public override Expression Call(IEnumerable<Expression> Args)
         {
