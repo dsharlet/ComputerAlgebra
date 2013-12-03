@@ -29,7 +29,7 @@ namespace ComputerAlgebra
         public static Call New(string Target, IEnumerable<Expression> Args) 
         {
             Args = Args.Buffer();
-            return new Call(Namespace.Global.Resolve(Target, Args), Args); 
+            return new Call(UnknownFunction.New(Target, Args.Count()), Args); 
         }
 
         public static Call New(Function Target, params Expression[] Args) { return New(Target, Args.AsEnumerable()); }
@@ -82,58 +82,63 @@ namespace ComputerAlgebra
             return base.CompareTo(R);
         }
 
-        public static Expression If(Expression c, Expression t, Expression f) { return Call.New("If", c, t, f); }
+        private static Call CallGlobal(string Name, params Expression[] Args)
+        {
+            return Call.New(Namespace.Global.Resolve(Name, Args), Args);
+        }
 
-        public static Expression DependsOn(Expression f, Expression x) { return Call.New("DependsOn", f, x); }
-        public static Expression IsConstant(Expression x) { return Call.New("IsConstant", x); }
-        public static Expression IsInteger(Expression x) { return Call.New("IsInteger", x); }
-        public static Expression IsNatural(Expression x) { return Call.New("IsNatural", x); }
+        public static Expression If(Expression c, Expression t, Expression f) { return CallGlobal("If", c, t, f); }
 
-        public static Expression Abs(Expression x) { return Call.New("Abs", x); }
-        public static Expression Sign(Expression x) { return Call.New("Sign", x); }
+        public static Expression DependsOn(Expression f, Expression x) { return CallGlobal("DependsOn", f, x); }
+        public static Expression IsConstant(Expression x) { return CallGlobal("IsConstant", x); }
+        public static Expression IsInteger(Expression x) { return CallGlobal("IsInteger", x); }
+        public static Expression IsNatural(Expression x) { return CallGlobal("IsNatural", x); }
 
-        public static Expression Min(Expression a, Expression b) { return Call.New("Min", a, b); }
-        public static Expression Max(Expression a, Expression b) { return Call.New("Max", a, b); }
+        public static Expression Abs(Expression x) { return CallGlobal("Abs", x); }
+        public static Expression Sign(Expression x) { return CallGlobal("Sign", x); }
 
-        public static Expression Sin(Expression x) { return Call.New("Sin", x); }
-        public static Expression Cos(Expression x) { return Call.New("Cos", x); }
-        public static Expression Tan(Expression x) { return Call.New("Tan", x); }
-        public static Expression Sec(Expression x) { return Call.New("Sec", x); }
-        public static Expression Csc(Expression x) { return Call.New("Csc", x); }
-        public static Expression Cot(Expression x) { return Call.New("Cot", x); }
-        public static Expression ArcSin(Expression x) { return Call.New("ArcSin", x); }
-        public static Expression ArcCos(Expression x) { return Call.New("ArcCos", x); }
-        public static Expression ArcTan(Expression x) { return Call.New("ArcTan", x); }
-        public static Expression ArcSec(Expression x) { return Call.New("ArcSec", x); }
-        public static Expression ArcCsc(Expression x) { return Call.New("ArcCsc", x); }
-        public static Expression ArcCot(Expression x) { return Call.New("ArcCot", x); }
+        public static Expression Min(Expression a, Expression b) { return CallGlobal("Min", a, b); }
+        public static Expression Max(Expression a, Expression b) { return CallGlobal("Max", a, b); }
 
-        public static Expression Sinh(Expression x) { return Call.New("Sinh", x); }
-        public static Expression Cosh(Expression x) { return Call.New("Cosh", x); }
-        public static Expression Tanh(Expression x) { return Call.New("Tanh", x); }
-        public static Expression Sech(Expression x) { return Call.New("Sech", x); }
-        public static Expression Csch(Expression x) { return Call.New("Csch", x); }
-        public static Expression Coth(Expression x) { return Call.New("Coth", x); }
-        public static Expression ArcSinh(Expression x) { return Call.New("ArcSinh", x); }
-        public static Expression ArcCosh(Expression x) { return Call.New("ArcCosh", x); }
-        public static Expression ArcTanh(Expression x) { return Call.New("ArcTanh", x); }
-        public static Expression ArcSech(Expression x) { return Call.New("ArcSech", x); }
-        public static Expression ArcCsch(Expression x) { return Call.New("ArcCsch", x); }
-        public static Expression ArcCoth(Expression x) { return Call.New("ArcCoth", x); }
+        public static Expression Sin(Expression x) { return CallGlobal("Sin", x); }
+        public static Expression Cos(Expression x) { return CallGlobal("Cos", x); }
+        public static Expression Tan(Expression x) { return CallGlobal("Tan", x); }
+        public static Expression Sec(Expression x) { return CallGlobal("Sec", x); }
+        public static Expression Csc(Expression x) { return CallGlobal("Csc", x); }
+        public static Expression Cot(Expression x) { return CallGlobal("Cot", x); }
+        public static Expression ArcSin(Expression x) { return CallGlobal("ArcSin", x); }
+        public static Expression ArcCos(Expression x) { return CallGlobal("ArcCos", x); }
+        public static Expression ArcTan(Expression x) { return CallGlobal("ArcTan", x); }
+        public static Expression ArcSec(Expression x) { return CallGlobal("ArcSec", x); }
+        public static Expression ArcCsc(Expression x) { return CallGlobal("ArcCsc", x); }
+        public static Expression ArcCot(Expression x) { return CallGlobal("ArcCot", x); }
 
-        public static Expression Sqrt(Expression x) { return Call.New("Sqrt", x); }
-        public static Expression Exp(Expression x) { return Call.New("Exp", x); }
-        public static Expression Ln(Expression x) { return Call.New("Ln", x); }
-        public static Expression Log(Expression x, Expression b) { return Call.New("Log", x, b); }
+        public static Expression Sinh(Expression x) { return CallGlobal("Sinh", x); }
+        public static Expression Cosh(Expression x) { return CallGlobal("Cosh", x); }
+        public static Expression Tanh(Expression x) { return CallGlobal("Tanh", x); }
+        public static Expression Sech(Expression x) { return CallGlobal("Sech", x); }
+        public static Expression Csch(Expression x) { return CallGlobal("Csch", x); }
+        public static Expression Coth(Expression x) { return CallGlobal("Coth", x); }
+        public static Expression ArcSinh(Expression x) { return CallGlobal("ArcSinh", x); }
+        public static Expression ArcCosh(Expression x) { return CallGlobal("ArcCosh", x); }
+        public static Expression ArcTanh(Expression x) { return CallGlobal("ArcTanh", x); }
+        public static Expression ArcSech(Expression x) { return CallGlobal("ArcSech", x); }
+        public static Expression ArcCsch(Expression x) { return CallGlobal("ArcCsch", x); }
+        public static Expression ArcCoth(Expression x) { return CallGlobal("ArcCoth", x); }
 
-        public static Expression Factorial(Expression x) { return Call.New("Factorial", x); }
+        public static Expression Sqrt(Expression x) { return CallGlobal("Sqrt", x); }
+        public static Expression Exp(Expression x) { return CallGlobal("Exp", x); }
+        public static Expression Ln(Expression x) { return CallGlobal("Ln", x); }
+        public static Expression Log(Expression x, Expression b) { return CallGlobal("Log", x, b); }
 
-        public static Expression Factor(Expression x) { return Call.New("Factor", x); }
-        public static Expression Expand(Expression x) { return Call.New("Expand", x); }
+        public static Expression Factorial(Expression x) { return CallGlobal("Factorial", x); }
 
-        public static Expression D(Expression f, Expression x) { return Call.New("D", f, x); }
-        public static Expression I(Expression f, Expression x) { return Call.New("I", f, x); }
-        public static Expression L(Expression f, Expression t, Expression s) { return Call.New("L", f, t, s); }
-        public static Expression IL(Expression f, Expression s, Expression t) { return Call.New("IL", f, s, t); }
+        public static Expression Factor(Expression x) { return CallGlobal("Factor", x); }
+        public static Expression Expand(Expression x) { return CallGlobal("Expand", x); }
+
+        public static Expression D(Expression f, Expression x) { return CallGlobal("D", f, x); }
+        public static Expression I(Expression f, Expression x) { return CallGlobal("I", f, x); }
+        public static Expression L(Expression f, Expression t, Expression s) { return CallGlobal("L", f, t, s); }
+        public static Expression IL(Expression f, Expression s, Expression t) { return CallGlobal("IL", f, s, t); }
     }
 }
