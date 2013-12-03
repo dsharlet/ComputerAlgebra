@@ -18,8 +18,9 @@ namespace ComputerAlgebra
 
         public static UnknownFunction New(string Name, IEnumerable<Variable> Params) { return new UnknownFunction(Name, Params.Buffer()); }
         public static UnknownFunction New(string Name, params Variable[] Params) { return New(Name, Params.AsEnumerable()); }
+        public static UnknownFunction New(string Name, int ParamCount) { return New(Name, Enumerable.Range(0, ParamCount).Select(i => Variable.New("_" + i.ToString()))); }
 
-        public override Expression Call(IEnumerable<Expression> Args) { throw new UnresolvedName("Cannot call undefined function '" + Name + "'."); }
+        public override Expression Call(IEnumerable<Expression> Args) { throw new UnresolvedName("Call to unknown function '" + Name + "'."); }
         
         public override bool CanCall() { return false; }
     }

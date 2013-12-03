@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="Expression\Arrow.cs" />
     <Compile Include="Expression\Atom.cs" />
-    <Compile Include="Expression\Functions\UnresolvedFunction.cs" />
+    <Compile Include="Expression\Functions\UnknownFunction.cs" />
     <Compile Include="Expression\Sum\Add.cs" />
     <Compile Include="Expression\Functions\IfFunction.cs" />
     <Compile Include="Expression\Functions\LutFunction.cs" />
