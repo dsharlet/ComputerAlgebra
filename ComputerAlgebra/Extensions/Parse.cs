@@ -220,7 +220,7 @@ namespace ComputerAlgebra
             catch (UnresolvedName)
             {
                 // If the token is unresolved, make a new undefined function.
-                return UnknownFunction.New(Token, Args.Select(i => Variable.New("")));
+                return UnknownFunction.New(Token, Args.Count());
             }
         }
 
