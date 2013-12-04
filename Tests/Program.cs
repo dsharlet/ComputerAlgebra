@@ -166,6 +166,7 @@ namespace Tests
                 //KV("Factor[A*x^2 + B*x + C]", "(x - ((-B + Sqrt[B^2 - 4*A*C])/(2*A)))*(x - ((-B - Sqrt[B^2 - 4*A*C])/(2*A)))"),
                 Test("Factor[x^2 - x, x]", "x*(x - 1)"),
                 Test("Factor[x^4 - x^2, x]", "x^2*(x^2 - 1)"),
+                Test("Factor[2*x^2 + 2*x*y, x]", "2*x*(x + y)"),
                 Test("Factor[A*Exp[x] + B*Exp[x] + C*Sin[x] + D*Sin[x]]", "(A + B)*Exp[x] + (C + D)*Sin[x]"),
                 Test("Factor[A*Exp[x] + B*Exp[x] + A*Sin[x] + B*Sin[x]]", "(A + B)*(Exp[x] + Sin[x])"),
 
