@@ -228,7 +228,7 @@ namespace ComputerAlgebra
 
         protected override PrettyString VisitUnary(Unary U)
         {
-            return PrettyString.ConcatColumns(Unary.ToString(U.Operator), Visit(U.Operand));
+            return PrettyString.ConcatColumns(Unary.ToStringPrefix(U.Operator), Visit(U.Operand), Unary.ToStringPostfix(U.Operator));
         }
 
         protected override PrettyString VisitCall(Call F)

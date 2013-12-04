@@ -95,20 +95,33 @@ namespace ComputerAlgebra
                 default: return new Unary(Op, Operand);
             }
         }
-        
-        public static string ToString(Operator o)
+
+        public static string ToStringPrefix(Operator o)
         {
             switch (o)
             {
-                case Operator.Prime: return "'";
+                case Operator.Prime: return "";
                 case Operator.Negate: return "-";
+                case Operator.Inverse: return "";
                 case Operator.Not: return "!";
                 default: return "<unary op>";
             }
         }
 
+        public static string ToStringPostfix(Operator o)
+        {
+            switch (o)
+            {
+                case Operator.Prime: return "'";
+                case Operator.Negate: return "";
+                case Operator.Inverse: return "^-1";
+                case Operator.Not: return "";
+                default: return "<unary op>";
+            }
+        }
+
         // object interface.
-        public override string ToString() { return ToString(Operator) + Operand.ToString(Parser.Precedence(Operator)); }
+        public override string ToString() { return ToStringPrefix(Operator) + Operand.ToString(Parser.Precedence(Operator)) + ToStringPostfix(Operator); }
         public override int GetHashCode() { return Operator.GetHashCode() ^ Operand.GetHashCode(); }
         public override bool Equals(Expression E)
         {
