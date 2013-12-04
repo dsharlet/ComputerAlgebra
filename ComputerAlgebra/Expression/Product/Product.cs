@@ -118,7 +118,28 @@ namespace ComputerAlgebra
         public static Expression Denominator(Expression x) { return Product.New(Product.TermsOf(x).Where(i => IsInDenominator(i)).Select(i => i ^ -1)); }
 
         private static int Precedence = Parser.Precedence(Operator.Multiply);
-        public override string ToString() { return Terms.Select(i => i.ToString(Precedence)).UnSplit("*"); }
+        public override string ToString() 
+        {
+            int sign = 1;
+            StringBuilder s = new StringBuilder();
+            foreach (Expression i in Terms)
+            {
+                if (i.Equals(-1))
+                {
+                    sign *= -1;
+                }
+                else
+                {
+                    if (s.Length > 0)
+                        s.Append('*');
+                    s.Append(i.ToString(Precedence));
+                }
+            }
+            if (sign == -1)
+                return "-" + s.ToString();
+            else
+                return s.ToString();
+        }
         public override int GetHashCode() { return Terms.OrderedHashCode(); }
         public override bool Equals(Expression E) 
         {
