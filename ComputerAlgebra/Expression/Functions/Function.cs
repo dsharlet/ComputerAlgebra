@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Reflection;
-using LinqExpression = System.Linq.Expressions.Expression;
-using LinqExpressions = System.Linq.Expressions;
 
 namespace ComputerAlgebra
 {
