@@ -7,6 +7,28 @@ namespace ComputerAlgebra
 {
     public static class FactorExtension
     {
+        // Enumerates x, splitting negative constants into a positive constant and -1.
+        private static IEnumerable<Expression> FactorsOf(Expression x)
+        {
+            foreach (Expression i in Product.TermsOf(x))
+            {
+                if (i is Constant && (Real)i < 0)
+                {
+                    yield return -1;
+                    yield return Real.Abs((Real)i);
+                }
+                else if (i is Power)
+                {
+                    yield return i;
+                    yield return ((Power)i).Left;
+                }
+                else
+                {
+                    yield return i;
+                }
+            }
+        }
+
         /// <summary>
         /// Distribute products across sums.
         /// </summary>
@@ -42,15 +64,15 @@ namespace ComputerAlgebra
                 IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
                 
                 // All of the distinct factors.
-                IEnumerable<Expression> factors = terms.SelectMany(i => Product.TermsOf(i)).Distinct();
+                IEnumerable<Expression> factors = terms.SelectMany(i => FactorsOf(i)).Distinct();
                 // Choose the most common factor to use.
-                Expression factor = factors.ArgMax(i => terms.Count(j => Product.TermsOf(j).Contains(i)));
+                Expression factor = factors.ArgMax(i => terms.Count(j => FactorsOf(j).Contains(i)));
                 // Find the terms that contain the factor.
-                IEnumerable<Expression> contains = terms.Where(i => Product.TermsOf(i).Contains(factor)).Buffer();
+                IEnumerable<Expression> contains = terms.Where(i => FactorsOf(i).Contains(factor)).Buffer();
                 // If more than one term contains the factor, pull it out and factor the resulting expression (again).
                 if (contains.Count() > 1)
                     return Sum.New(
-                        Product.New(factor, Sum.New(contains.Select(i => Product.New(Product.TermsOf(i).Except(factor)))).Evaluate()),
+                        Product.New(factor, Sum.New(contains.Select(i => Binary.Divide(i, factor))).Evaluate()),
                         Sum.New(terms.Except(contains, Expression.RefComparer))).Factor(null);
             }
 
