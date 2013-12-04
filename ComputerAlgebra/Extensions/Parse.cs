@@ -43,6 +43,10 @@ namespace ComputerAlgebra
 
         List<string> tokens = new List<string>();
 
+        /// <summary>
+        /// Tokenize the string s.
+        /// </summary>
+        /// <param name="s"></param>
         public TokenStream(string s) 
         {
             MatchCollection matches = token.Matches(s);
@@ -50,10 +54,52 @@ namespace ComputerAlgebra
                 tokens.Add(m.ToString());
         }
 
-        public string Tok { get { if (tokens.Count > 0) return tokens.First(); else return "";  } }
-        public string Consume() { string tok = Tok;  tokens.RemoveAt(0); return tok; }
-        public void Expect(string s) { if (Tok == s) Consume(); else throw new ParseException("Expected " + s); }
-        public void ExpectEnd() { if (tokens.Count != 0) throw new ParseException("Expected end"); }
+        /// <summary>
+        /// Get the current token in the stream.
+        /// </summary>
+        public string Tok 
+        { 
+            get 
+            { 
+                if (tokens.Count > 0) 
+                    return tokens.First(); 
+                else 
+                    return "";  
+            }
+        }
+
+        /// <summary>
+        /// Remove the current token from the stream and return it.
+        /// </summary>
+        /// <returns></returns>
+        public string Consume() 
+        { 
+            string tok = Tok;  
+            tokens.RemoveAt(0); 
+            return tok;
+        }
+
+        /// <summary>
+        /// Assert the current token is in Set, and return the token.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public string Expect(params string[] Set) 
+        { 
+            if (Set.Contains(Tok)) 
+                return Consume(); 
+            else 
+                throw new ParseException("Expected " + Set.Select(i => "'" + i + "'").UnSplit(", ")); 
+        }
+
+        /// <summary>
+        /// Assert there are no more tokens.
+        /// </summary>
+        public void ExpectEnd() 
+        { 
+            if (tokens.Any()) 
+                throw new ParseException("Expected end"); 
+        }
     }
     
     /// <summary>
@@ -123,14 +169,12 @@ namespace ComputerAlgebra
         private List<Expression> L(string Delim, string Term)
         {
             List<Expression> exprs = new List<Expression>();
-            while (true)
+            if (tokens.Tok == Term)
+                return exprs;
+            do
             {
-                if (tokens.Tok == Term) break;
                 exprs.Add(Exp(0));
-                if (tokens.Tok == Term) break;
-                tokens.Expect(Delim);
-            }
-            tokens.Expect(Term);
+            } while (tokens.Expect(Delim, Term) != Term);
             return exprs;
         }
 
