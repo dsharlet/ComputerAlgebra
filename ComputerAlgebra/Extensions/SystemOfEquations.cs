@@ -55,6 +55,14 @@ namespace ComputerAlgebra
             }
 
             public Expression Expression { get { return Sum.New(this.Select(i => Product.New(i.Key, i.Value))); } }
+            
+            public bool DependsOn(IEnumerable<Expression> x)
+            {
+                return this.Any(i => i.Key.DependsOn(x) || i.Value.DependsOn(x));
+            }
+            public bool DependsOn(params Expression[] x) { return DependsOn(x.AsEnumerable()); }
+
+            public IEnumerable<Expression> Unknowns { get { return this.Keys.Where(i => !(i is Constant)); } }
 
             public override string ToString()
             {
@@ -73,7 +81,13 @@ namespace ComputerAlgebra
         /// Enumerate the equations in the system in the form F(x) == 0.
         /// </summary>
         public IEnumerable<LinearCombination> Equations { get { return equations.Select(i => LinearCombination.New(i)); } }
-        
+
+        private SystemOfEquations(List<Equation> Equations, List<Expression> Unknowns)
+        {
+            equations = Equations;
+            unknowns = Unknowns;
+        }
+
         /// <summary>
         /// Create a new system of equations with the given equations and unknowns.
         /// </summary>
@@ -323,7 +337,26 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public IEnumerable<SystemOfEquations> Partition()
         {
-            yield return this;
+            List<Expression> x = new List<Expression>();
+            List<Equation> eqs = new List<Equation>();
+            while (unknowns.Any())
+            {
+                x.Add(unknowns.Last());
+                unknowns.RemoveAt(unknowns.Count - 1);
+
+                do
+                {
+                    eqs.AddRange(equations.Where(i => i.DependsOn(x)));
+                    equations.RemoveAll(i => eqs.Contains(i));
+
+                    x.AddRange(unknowns.Where(i => eqs.Any(j => j.DependsOn(i))));
+                    unknowns.RemoveAll(i => x.Contains(i));
+                } while(equations.Any(i => i.DependsOn(x)));
+
+                yield return new SystemOfEquations(eqs, x);
+                x.Clear();
+                eqs.Clear();
+            }
         }
         
         // IEnumerable<LinearCombination>
