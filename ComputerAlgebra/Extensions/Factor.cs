@@ -64,7 +64,7 @@ namespace ComputerAlgebra
                 IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
                 
                 // All of the distinct factors.
-                IEnumerable<Expression> factors = terms.SelectMany(i => FactorsOf(i)).Distinct();
+                IEnumerable<Expression> factors = terms.SelectMany(i => FactorsOf(i).Except(1)).Distinct();
                 // Choose the most common factor to use.
                 Expression factor = factors.ArgMax(i => terms.Count(j => FactorsOf(j).Contains(i)));
                 // Find the terms that contain the factor.
