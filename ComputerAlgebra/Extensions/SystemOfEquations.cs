@@ -149,7 +149,7 @@ namespace ComputerAlgebra
         private KeyValuePair<int, int> FullPivot(int i1, int i2, int j1, IList<Expression> Columns)
         {
             int row = -1;
-            Real max = -1;
+            Real max = -2;
             int col = -1;
             for (int j = j1; j < Columns.Count; ++j)
             {
