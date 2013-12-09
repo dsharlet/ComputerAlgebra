@@ -10,14 +10,14 @@ namespace ComputerAlgebra.LinqCompiler
     public static class CompileExtension
     {
         /// <summary>
-        /// Compile function to a lambda.
+        /// Compile function to a delegate.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static Delegate Compile(this Function This, LinqCompiler.Module Module)
+        public static Delegate Compile(this Function This, Module Module)
         {
             // Compile the function.
-            CodeGen code = new LinqCompiler.CodeGen(Module);
+            CodeGen code = new CodeGen(Module);
             foreach (Variable i in This.Parameters)
                 code.Decl(Scope.Parameter, i);
             code.Return<double>(code.Compile(This.Call(This.Parameters)));
@@ -31,7 +31,7 @@ namespace ComputerAlgebra.LinqCompiler
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T Compile<T>(this Function This, LinqCompiler.Module Module)
+        public static T Compile<T>(this Function This, Module Module)
         {
             // Validate the function types match.
             MethodInfo invoke = typeof(T).GetMethod("Invoke");
@@ -39,7 +39,7 @@ namespace ComputerAlgebra.LinqCompiler
                 throw new InvalidOperationException("Different parameters for Function '" + This.Name + "' and '" + typeof(T).ToString() + "'");
 
             // Compile the function.
-            CodeGen code = new LinqCompiler.CodeGen(Module);
+            CodeGen code = new CodeGen(Module);
             foreach (Variable i in This.Parameters)
                 code.Decl(Scope.Parameter, i);
             code.Return<double>(code.Compile(This.Call(This.Parameters)));
@@ -47,5 +47,40 @@ namespace ComputerAlgebra.LinqCompiler
         }
 
         public static T Compile<T>(this Function This) { return Compile<T>(This, null); }
+
+        /// <summary>
+        /// Compile an expression to a delegate.
+        /// </summary>
+        /// <param name="This"></param>
+        /// <param name="Module"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        public static Delegate Compile(this Expression This, Module Module, IEnumerable<Expression> Parameters)
+        {
+            return ExprFunction.New(
+                This.Evaluate(Parameters.Select((i, j) => Arrow.New(i, "_" + j.ToString()))),
+                Parameters.Select((i, j) => Variable.New("_" + j.ToString()))).Compile(Module);
+        }
+        public static Delegate Compile(this Expression This, Module Module, params Expression[] Parameters) { return Compile(This, Module, Parameters.AsEnumerable()); }
+        public static Delegate Compile(this Expression This, IEnumerable<Expression> Parameters) { return Compile(This, null, Parameters); }
+        public static Delegate Compile(this Expression This, params Expression[] Parameters) { return Compile(This, Parameters.AsEnumerable()); }
+
+        /// <summary>
+        /// Compile an expression to a delegate.
+        /// </summary>
+        /// <param name="This"></param>
+        /// <param name="Module"></param>
+        /// <param name="Parameters"></param>
+        /// <returns></returns>
+        public static T Compile<T>(this Expression This, Module Module, IEnumerable<Expression> Parameters)
+        {
+            return ExprFunction.New(
+                This.Evaluate(Parameters.Select((i, j) => Arrow.New(i, "_" + j.ToString()))),
+                Parameters.Select((i, j) => Variable.New("_" + j.ToString()))).Compile<T>(Module);
+        }
+        public static T Compile<T>(this Expression This, Module Module, params Expression[] Parameters) { return Compile<T>(This, Module, Parameters.AsEnumerable()); }
+        public static T Compile<T>(this Expression This, IEnumerable<Expression> Parameters) { return Compile<T>(This, null, Parameters); }
+        public static T Compile<T>(this Expression This, params Expression[] Parameters) { return Compile<T>(This, Parameters.AsEnumerable()); }
+
     }
 }
