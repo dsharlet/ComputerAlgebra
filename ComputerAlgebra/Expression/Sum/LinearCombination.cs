@@ -63,16 +63,16 @@ namespace ComputerAlgebra
         /// <summary>
         /// Create a new linear combination expression equal to x.
         /// </summary>
-        /// <param name="A"></param>
+        /// <param name="B">Basis terms for the linear combination.</param>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static LinearCombination New(IEnumerable<Expression> A, Expression x)
+        public static LinearCombination New(IEnumerable<Expression> B, Expression x)
         {
-            A = A.AsList();
+            B = B.AsBuffer();
 
             LinearCombination ret = new LinearCombination();
             foreach (Expression t in Sum.TermsOf(x.Expand()))
-                ret.AddTerm(A, t);
+                ret.AddTerm(B, t);
             return ret;
         }
 

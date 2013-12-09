@@ -82,6 +82,7 @@ namespace ComputerAlgebra
             return base.CompareTo(R);
         }
 
+        // Resolve a call to a function Name in the global namespace.
         private static Call CallGlobal(string Name, params Expression[] Args)
         {
             return Call.New(Namespace.Global.Resolve(Name, Args), Args);
