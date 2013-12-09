@@ -96,29 +96,9 @@ namespace System.Collections.Generic
             }
         }
         [DebuggerStepThrough]
-        public static IEnumerable<T> ExceptUnique<T>(this IEnumerable<T> This, IEnumerable<T> Excepted)
-        {
-            return ExceptUnique(This, Excepted, EqualityComparer<T>.Default);
-        }
-
-        /// <summary>
-        /// Except a single element from an IEnumerable.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="This"></param>
-        /// <param name="Excepted"></param>
-        /// <param name="Comparer"></param>
-        /// <returns></returns>
+        public static IEnumerable<T> ExceptUnique<T>(this IEnumerable<T> This, IEnumerable<T> Excepted) { return ExceptUnique(This, Excepted, EqualityComparer<T>.Default); }
         [DebuggerStepThrough]
-        public static IEnumerable<T> Except<T>(this IEnumerable<T> This, T Excepted, IEqualityComparer<T> Comparer)
-        {
-            return This.Where(i => !Comparer.Equals(Excepted, i));
-        }
-        [DebuggerStepThrough]
-        public static IEnumerable<T> Except<T>(this IEnumerable<T> This, T Excepted)
-        {
-            return Except(This, Excepted, EqualityComparer<T>.Default);
-        }
+        public static IEnumerable<T> ExceptUnique<T>(this IEnumerable<T> This, params T[] Excepted) { return ExceptUnique(This, Excepted.AsEnumerable()); }
         [DebuggerStepThrough]
         public static IEnumerable<T> ExceptUnique<T>(this IEnumerable<T> This, T Excepted, IEqualityComparer<T> Comparer)
         {
@@ -131,11 +111,17 @@ namespace System.Collections.Generic
                     yield return i;
             }
         }
+
+        /// <summary>
+        /// Except a single element from an IEnumerable.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="This"></param>
+        /// <param name="Excepted"></param>
+        /// <param name="Comparer"></param>
+        /// <returns></returns>
         [DebuggerStepThrough]
-        public static IEnumerable<T> ExceptUnique<T>(this IEnumerable<T> This, T Excepted)
-        {
-            return ExceptUnique(This, Excepted, EqualityComparer<T>.Default);
-        }
+        public static IEnumerable<T> Except<T>(this IEnumerable<T> This, params T[] Excepted) { return This.Except(Excepted.AsEnumerable()); }
 
         /// <summary>
         /// 3 way Zip.
