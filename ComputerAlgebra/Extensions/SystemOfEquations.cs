@@ -119,7 +119,7 @@ namespace ComputerAlgebra
         public void AddRange(IEnumerable<Equal> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i, unknowns))); }
         public void AddRange(IEnumerable<IEnumerable<KeyValuePair<Expression, Expression>>> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i))); }
 
-        // Find the best pivot in the column j.
+        // Find the best pivot in column j.
         private KeyValuePair<int, Real> PartialPivot(int i1, int i2, Expression j)
         {
             int row = -1;
@@ -151,15 +151,25 @@ namespace ComputerAlgebra
             int row = -1;
             Real max = -2;
             int col = -1;
+            int elims = i2 - i1 + 1;
             for (int j = j1; j < Columns.Count; ++j)
             {
                 KeyValuePair<int, Real> partial = PartialPivot(i1, i2, Columns[j]);
-
-                if ((partial.Key != -1 && partial.Value > max))
+                if (partial.Key == -1)
+                    continue;
+                
+                if (partial.Value > max)
                 {
-                    row = partial.Key;
-                    max = partial.Value;
-                    col = j;
+                    bool constant = partial.Value > 0;
+                    // If the best pivot is a non-constant term, choose the non-constant term with the fewest eliminations.
+                    int es = !constant ? Enumerable.Range(i1, i2 - i1).Count(i => !equations[i][Columns[j]].EqualsZero()) : 0;
+                    if (constant || es < elims)
+                    {
+                        row = partial.Key;
+                        max = partial.Value;
+                        col = j;
+                        elims = es;
+                    }
                 }
             }
 
