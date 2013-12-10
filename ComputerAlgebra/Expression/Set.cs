@@ -52,7 +52,7 @@ namespace ComputerAlgebra
 
             return Members.SequenceEqual(S.Members);
         }
-        public override string ToString() { return "{" + members.UnSplit(", ") + "}"; }
+        public override string ToString() { return "{" + String.Join(", ", members) + "}"; }
         public override int GetHashCode() { return Members.UnorderedHashCode(); }
         
         public static IEnumerable<Expression> MembersOf(Expression E)

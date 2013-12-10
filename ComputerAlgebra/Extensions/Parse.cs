@@ -89,7 +89,7 @@ namespace ComputerAlgebra
             if (Set.Contains(Tok)) 
                 return Consume(); 
             else 
-                throw new ParseException("Expected " + Set.Select(i => "'" + i + "'").UnSplit(", ")); 
+                throw new ParseException("Expected " + String.Join(", ", Set.Select(i => "'" + i + "'"))); 
         }
 
         /// <summary>

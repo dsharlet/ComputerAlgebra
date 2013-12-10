@@ -50,7 +50,7 @@ namespace ComputerAlgebra
         }
 
         // object interface.
-        public override string ToString() { return target.ToString() + "[" + arguments.UnSplit(", ") + "]"; }
+        public override string ToString() { return target.ToString() + "[" + String.Join(", ", arguments) + "]"; }
         public override bool Equals(Expression E)
         {
             Call C = E as Call;

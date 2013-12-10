@@ -291,30 +291,6 @@ namespace System.Collections.Generic
         }
         
         /// <summary>
-        /// Reverse of a String.Split operation.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="List"></param>
-        /// <param name="Delim"></param>
-        /// <returns></returns>
-        [DebuggerStepThrough]
-        public static string UnSplit<T>(this IEnumerable<T> This, string Delim)
-        {
-            StringBuilder S = new StringBuilder();
-            if (This.Any())
-            {
-                S.Append(This.First().ToString());
-                foreach (T i in This.Skip(1))
-                    S.Append(Delim + i.ToString());
-            }
-            return S.ToString();
-        }
-        [DebuggerStepThrough]
-        public static string UnSplit<T>(this IEnumerable<T> This, char Delim) { return UnSplit(This, new string(Delim, 1)); }
-        [DebuggerStepThrough]
-        public static string UnSplit<T>(this IEnumerable<T> This) { return UnSplit(This, ""); }
-
-        /// <summary>
         /// Compute the hash of an ordered IEnumerable.
         /// </summary>
         /// <typeparam name="T"></typeparam>

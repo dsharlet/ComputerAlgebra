@@ -32,8 +32,8 @@ namespace ComputerAlgebra
                 N = -N;
             }
 
-            string n = Product.TermsOf(N).Select(i => Visit(i, pr)).UnSplit(' ');
-            string d = Product.TermsOf(Product.Denominator(M)).Select(i => Visit(i, pr)).UnSplit(' ');
+            string n = String.Join(" ", Product.TermsOf(N).Select(i => Visit(i, pr)));
+            string d = String.Join(" ", Product.TermsOf(Product.Denominator(M)).Select(i => Visit(i, pr)));
 
             if (d != "1")
                 return minus + Frac(n, d);
@@ -66,7 +66,7 @@ namespace ComputerAlgebra
 
         protected override string VisitSet(Set S)
         {
-            return @"\{" + S.Members.Select(i => Visit(i)).UnSplit(", ") + @"\}";
+            return @"\{" + String.Join(", ", S.Members.Select(i => Visit(i))) + @"\}";
         }
 
         protected override string VisitUnary(Unary U)
@@ -80,7 +80,7 @@ namespace ComputerAlgebra
             if (F.Target.Name == "D" && F.Arguments.Count() == 2)
                 return @"\frac{d}{d" + Visit(F.Arguments.ElementAt(1)) + "}[" + Visit(F.Arguments.ElementAt(0)) + "]";
 
-            return Visit(F.Target) + @"(" + F.Arguments.Select(i => Visit(i)).UnSplit(", ") + @")";
+            return Visit(F.Target) + @"(" + String.Join(", ", F.Arguments.Select(i => Visit(i))) + @")";
         }
 
         protected override string VisitPower(Power P)

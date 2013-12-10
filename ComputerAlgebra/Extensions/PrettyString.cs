@@ -46,7 +46,7 @@ namespace ComputerAlgebra
 
         public static implicit operator PrettyString(string l) { return new PrettyString(0, l); }
 
-        public override string ToString() { return lines.UnSplit("\r\n"); }
+        public override string ToString() { return String.Join("\r\n", lines); }
     }
 
     class PrettyStringVisitor : ExpressionVisitor<PrettyString>

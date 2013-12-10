@@ -134,7 +134,7 @@ namespace ComputerAlgebra
             return Equals(P);
         }
         public override int GetHashCode() { return coefficients.OrderedHashCode() ^ variable.GetHashCode(); }
-        public override string ToString() { return "(" + coefficients.Select(i => i.Value * (Variable ^ i.Key)).UnSplit(" + ") + ")"; }
+        public override string ToString() { return "(" + String.Join(" +", coefficients.Select(i => i.Value * (Variable ^ i.Key))) + ")"; }
 
         /// <summary>
         /// Implicitly convert variables to degree 1 polynomials.
