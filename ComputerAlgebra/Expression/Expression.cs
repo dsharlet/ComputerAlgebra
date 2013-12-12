@@ -96,13 +96,13 @@ namespace ComputerAlgebra
         {
             if (ReferenceEquals(L, null) || ReferenceEquals(R, null))
                 return Constant.New(ReferenceEquals(L, R));
-            return Constant.New(L.Equals(R));
+            return Binary.Equal(L, R).Evaluate();
         }
         public static Expression operator !=(Expression L, Expression R)
         {
             if (ReferenceEquals(L, null) || ReferenceEquals(R, null))
                 return Constant.New(!ReferenceEquals(L, R));
-            return Constant.New(!L.Equals(R));
+            return Binary.NotEqual(L, R).Evaluate();
         }
         public static Expression operator <(Expression L, Expression R) { return Binary.Less(L, R).Evaluate(); }
         public static Expression operator <=(Expression L, Expression R) { return Binary.LessEqual(L, R).Evaluate(); }

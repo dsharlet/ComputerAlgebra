@@ -40,7 +40,7 @@ namespace ComputerAlgebra
             Call EF = E as Call;
             if (!ReferenceEquals(EF, null))
             {
-                if (target != EF.Target || arguments.Count() != EF.Arguments.Count())
+                if (!Equals(target, EF.Target) || arguments.Count() != EF.Arguments.Count())
                     return false;
 
                 return Matched.TryMatch(() => arguments.Reverse().Zip(EF.Arguments.Reverse(), (p, e) => p.Matches(e, Matched)).All());
