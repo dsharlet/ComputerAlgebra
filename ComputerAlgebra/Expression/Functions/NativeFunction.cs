@@ -22,9 +22,15 @@ namespace ComputerAlgebra
     public class NativeFunction : Function
     {
         private object _this = null;
+        /// <summary>
+        /// Object instance of which the method is a member of.
+        /// </summary>
         public object This { get { return _this; } }
 
         private MethodInfo method;
+        /// <summary>
+        /// Method to call to implement a call to this function.
+        /// </summary>
         public MethodInfo Method { get { return method; } }
 
         public override IEnumerable<Variable> Parameters { get { return Method.GetParameters().Select(i => Variable.New(i.Name)); } }
@@ -36,9 +42,27 @@ namespace ComputerAlgebra
             method = Method; 
         }
 
+        /// <summary>
+        /// Create a new Function object implemented by a static method.
+        /// </summary>
+        /// <param name="Method"></param>
+        /// <returns></returns>
         public static NativeFunction New(MethodInfo Method) { return new NativeFunction(Method.Name, null, Method); }
+        /// <summary>
+        /// Create a new Function object implemented by a non-static method.
+        /// </summary>
+        /// <param name="This"></param>
+        /// <param name="Method"></param>
+        /// <returns></returns>
         public static NativeFunction New(object This, MethodInfo Method) { return new NativeFunction(Method.Name, This, Method); }
         public static NativeFunction New(string Name, object This, MethodInfo Method) { return new NativeFunction(Name, This, Method); }
+        /// <summary>
+        /// Create a new Function object implemented by a Delegate.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="Name"></param>
+        /// <param name="Method"></param>
+        /// <returns></returns>
         public static NativeFunction New(string Name, Delegate Method) { return new NativeFunction(Name, Method, Method.GetMethodInfo()); }
         public static NativeFunction New<T>(string Name, T Method) { return new NativeFunction(Name, Method, typeof(T).GetMethod("Invoke")); }
 
@@ -100,7 +124,7 @@ namespace ComputerAlgebra
             NativeFunction F = E as NativeFunction;
             if (ReferenceEquals(F, null)) return false;
 
-            return method.Equals(F.method);
+            return Equals(method, F.method) && Equals(_this, F._this);
         }
         public override int GetHashCode() { return method.GetHashCode(); }
     }
