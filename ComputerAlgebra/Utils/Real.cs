@@ -72,7 +72,10 @@ namespace ComputerAlgebra
 
         public bool EqualsZero() { return r.IsZero(); }
         public bool EqualsOne() { return r.IsOne(); }
-        
+
+        public static readonly Real Pi = Math.PI;
+        public static readonly Real e = Math.E;
+
         // Math functions
         public static Real Abs(Real x) { return new Real(BigRational.Abs(x.r)); }
         public static int Sign(Real x) { return BigRational.Sign(x.r); }
