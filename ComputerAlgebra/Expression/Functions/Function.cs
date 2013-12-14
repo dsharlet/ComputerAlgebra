@@ -26,15 +26,52 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public abstract Expression Call(IEnumerable<Expression> Args);
         public Expression Call(params Expression[] Args) { return Call(Args.AsEnumerable()); }
-
+        
         /// <summary>
         /// Check if this function could be called with the given parameters.
         /// </summary>
         /// <param name="Args"></param>
         /// <returns></returns>
-        public virtual bool CanCall(IEnumerable<Expression> Args) { return CanCall(); }
+        public virtual bool CanCall(IEnumerable<Expression> Args) { return Parameters.Count() == Args.Count(); }
         public virtual bool CanCall() { return true; }
-        
+
+        /// <summary>
+        /// Check if a call to this function with the given arguments matches an expression.
+        /// </summary>
+        /// <param name="Arguments"></param>
+        /// <param name="E"></param>
+        /// <param name="Matched"></param>
+        /// <returns></returns>
+        public virtual bool CallMatches(IEnumerable<Expression> Arguments, Expression E, MatchContext Matched)
+        {
+            Call EF = E as Call;
+            if (!ReferenceEquals(EF, null))
+            {
+                if (Arguments.Count() != EF.Arguments.Count())
+                    return false;
+
+                return Matched.TryMatch(() => 
+                    Matches(EF.Target, Matched) &&
+                    Arguments.Reverse().Zip(EF.Arguments.Reverse(), (p, e) => p.Matches(e, Matched)).All());
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Check if a call to this function with the given arguments is equal to an expression.
+        /// </summary>
+        /// <param name="Arguments"></param>
+        /// <param name="E"></param>
+        /// <returns></returns>
+        public virtual bool CallEquals(IEnumerable<Expression> Arguments, Expression E)
+        {
+            Call C = E as Call;
+            if (ReferenceEquals(C, null)) return false;
+
+            return Equals(C.Target) && Arguments.SequenceEqual(C.Arguments);
+        }
+
         /// <summary>
         /// Substitute the variables into the expressions.
         /// </summary>

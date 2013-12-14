@@ -31,10 +31,5 @@ namespace ComputerAlgebra
 
             throw new NotImplementedException();
         }
-
-        public override bool CanCall(IEnumerable<Expression> Args)
-        {
-            return Parameters.Count() == Args.Count();
-        }
     }
 }

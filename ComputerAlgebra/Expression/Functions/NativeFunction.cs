@@ -122,7 +122,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             NativeFunction F = E as NativeFunction;
-            if (ReferenceEquals(F, null)) return false;
+            if (ReferenceEquals(F, null)) return base.Equals(E);
 
             return Equals(method, F.method) && Equals(_this, F._this);
         }

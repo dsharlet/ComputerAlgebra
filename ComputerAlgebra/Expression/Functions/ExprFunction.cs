@@ -49,8 +49,5 @@ namespace ComputerAlgebra
         public static ExprFunction New(string Name, Expression Body, params Variable[] Params) { return New(Name, Body, Params.AsEnumerable()); }
 
         public override Expression Call(IEnumerable<Expression> Args) { return body.Evaluate(parameters.Zip(Args, (a, b) => Arrow.New(a, b))); }
-
-        public override bool CanCall(IEnumerable<Expression> Args) { return parameters.Count() == Args.Count(); }
-        public override bool CanCall() { return true; }
     }
 }
