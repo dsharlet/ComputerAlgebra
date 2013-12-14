@@ -128,8 +128,11 @@ namespace Tests
 
                 // Functional equivalents.
                 Test("Ln[x]", "Log[x, e]"),
+                Test("Ln[x/2]", "Log[x/2, e]"),
                 Test("Sqrt[x]", "x^(1/2)"),
+                Test("Sqrt[x*A]", "(A*x)^(1/2)"),
                 Test("Exp[x]", "e^x"),
+                Test("Exp[2*x]", "e^(2*x)"),
                 
                 // Basic arithmetic.
                 Test("x + x", "2*x"),
@@ -234,6 +237,7 @@ namespace Tests
                 // Solve.
                 Test("Solve[y == A*x + B, x]", "x -> (y - B)/A"),
                 Test("Solve[{2*x + 4*y == 8, x == 2*y + 3}, {x, y}]", "{x -> 7/2, y -> 1/4}"),
+                Test("Solve[{2*x + 4*y == A, x == 2*y + B}, {x, y}]", "{x->A/4 + B/2, y->A/8 - B/4}"),
                 
                 // NSolve.
                 Test("NSolve[x == Cos[x], x->0.5]", "x->0.739085"),
