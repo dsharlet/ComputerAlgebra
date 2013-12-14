@@ -67,17 +67,16 @@ namespace ComputerAlgebra
 
         public override int CompareTo(Expression R)
         {
-            Expression RL = R;
-            Expression RR = 1;
+            if (Left.Equals(R))
+                return Right.CompareTo(1);
+
             Power RP = R as Power;
             if (!ReferenceEquals(RP, null))
-            {
-                RL = RP.Left;
-                RR = RP.Right;
-            }
-            return LexicalCompareTo(
-                () => Left.CompareTo(RL),
-                () => Right.CompareTo(RR));
+                return LexicalCompareTo(
+                    () => Left.CompareTo(RP.Left),
+                    () => Right.CompareTo(RP.Right));
+
+            return base.CompareTo(R);
         }
     }
 }

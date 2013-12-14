@@ -36,14 +36,15 @@ namespace ComputerAlgebra
         public override bool IsTrue() { return !x.EqualsZero(); }
 
         public static implicit operator Real(Constant x) { return x.x; }
-
-        protected override int TypeRank { get { return 0; } }
-
+        
         public static implicit operator Constant(Real x) { return Constant.New(x); }
         public static implicit operator Constant(BigRational x) { return Constant.New(x); }
         public static implicit operator Constant(decimal x) { return Constant.New(x); }
         public static implicit operator Constant(double x) { return Constant.New(x); }
         public static implicit operator Constant(int x) { return Constant.New(x); }
+
+        // Atom.
+        protected override int TypeRank { get { return 3; } }
 
         // object interface.
         public override int GetHashCode() { return x.GetHashCode(); }
@@ -62,7 +63,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Constant C = E as Constant;
-            if (ReferenceEquals(C, null)) return false;
+            if (ReferenceEquals(C, null)) return base.Equals(E);
 
             return Value.Equals(C.Value);
         }

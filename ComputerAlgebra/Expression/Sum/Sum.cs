@@ -118,7 +118,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Sum S = E as Sum;
-            if (ReferenceEquals(S, null)) return false;
+            if (ReferenceEquals(S, null)) return base.Equals(E);
 
             return Terms.SequenceEqual(S.Terms);
         }

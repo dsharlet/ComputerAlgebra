@@ -126,7 +126,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Unary U = E as Unary;
-            if (ReferenceEquals(U, null)) return false;
+            if (ReferenceEquals(U, null)) return base.Equals(E);
             
             return Operator.Equals(U.Operator) && Operand.Equals(U.Operand);
         }

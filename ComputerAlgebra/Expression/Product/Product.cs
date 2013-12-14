@@ -144,7 +144,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E) 
         {
             Product P = E as Product;
-            if (ReferenceEquals(P, null)) return false;
+            if (ReferenceEquals(P, null)) return base.Equals(E);
             
             return Terms.SequenceEqual(P.Terms);
         }
@@ -158,6 +158,6 @@ namespace ComputerAlgebra
                         yield return j;
             }
         }
-        public override int CompareTo(Expression R) { return Terms.LexicalCompareTo(TermsOf(R)); }
+        public override int CompareTo(Expression R) { return Terms.Reverse().LexicalCompareTo(TermsOf(R).Reverse()); }
     }
 }

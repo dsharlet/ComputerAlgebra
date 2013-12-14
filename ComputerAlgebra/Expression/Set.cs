@@ -48,7 +48,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Set S = E as Set;
-            if (ReferenceEquals(S, null)) return false;
+            if (ReferenceEquals(S, null)) return base.Equals(E);
 
             return Members.SequenceEqual(S.Members);
         }

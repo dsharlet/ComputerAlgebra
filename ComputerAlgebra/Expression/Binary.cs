@@ -179,10 +179,9 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Binary B = E as Binary;
-            if (ReferenceEquals(B, null)) return false;
+            if (ReferenceEquals(B, null)) return base.Equals(E);
 
-            return 
-                Operator.Equals(B.Operator) &&
+            return Operator.Equals(B.Operator) &&
                 Left.Equals(B.Left) &&
                 Right.Equals(B.Right);
         }

@@ -37,27 +37,12 @@ namespace ComputerAlgebra
 
         public override bool Matches(Expression E, MatchContext Matched)
         {
-            Call EF = E as Call;
-            if (!ReferenceEquals(EF, null))
-            {
-                if (!Equals(target, EF.Target) || arguments.Count() != EF.Arguments.Count())
-                    return false;
-
-                return Matched.TryMatch(() => arguments.Reverse().Zip(EF.Arguments.Reverse(), (p, e) => p.Matches(e, Matched)).All());
-            }
-
-            return false;
+            return target.CallMatches(arguments, E, Matched);
         }
 
         // object interface.
         public override string ToString() { return target.ToString() + "[" + String.Join(", ", arguments) + "]"; }
-        public override bool Equals(Expression E)
-        {
-            Call C = E as Call;
-            if (ReferenceEquals(C, null)) return false;
-            
-            return target.Equals(C.Target) && arguments.SequenceEqual(C.Arguments);
-        }
+        public override bool Equals(Expression E) { return target.CallEquals(arguments, E) || base.Equals(E); }
         public override int GetHashCode() { return target.GetHashCode() ^ arguments.OrderedHashCode(); }
 
         protected override int TypeRank { get { return 2; } }

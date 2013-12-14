@@ -70,7 +70,7 @@ namespace ComputerAlgebra
         public virtual bool EqualsZero() { return false; }
         public virtual bool EqualsOne() { return false; }
         public virtual bool IsFalse() { return EqualsZero(); }
-        public virtual bool IsTrue() { return EqualsOne(); }
+        public virtual bool IsTrue() { return this is Constant && !IsFalse(); }
 
         /// <summary>
         /// Parse an expression from a string.
@@ -116,13 +116,7 @@ namespace ComputerAlgebra
         public static implicit operator Expression(int x) { return Constant.New(x); }
         public static implicit operator Expression(string x) { return Parse(x); }
         public static implicit operator bool(Expression x) { return x.IsTrue(); }
-        public static explicit operator Real(Expression x)
-        {
-            if (x is Constant)
-                return ((Constant)x).Value;
-            else
-                throw new InvalidCastException();
-        }
+        public static explicit operator Real(Expression x) { return (Constant)x; }
         public static explicit operator double(Expression x) { return (double)(Real)x; }
 
         public string ToString(int Precedence)
@@ -134,7 +128,12 @@ namespace ComputerAlgebra
         }
 
         // object interface.
-        public virtual bool Equals(Expression E) { return Equals((object)E); }
+        public virtual bool Equals(Expression E) 
+        {
+            if (!(this is Call) && E is Call)
+                return E.Equals(this);
+            return false;
+        }
         public sealed override bool Equals(object obj)
         {
             Expression E = obj as Expression;
