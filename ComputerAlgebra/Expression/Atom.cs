@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace ComputerAlgebra
 {
@@ -45,20 +47,21 @@ namespace ComputerAlgebra
 
         protected NamedAtom(string Name) 
         { 
-            name = Name; 
+            name = Name;
 
+            // Put the first few characters in an integer for fast comparisons.
             cmp = 0;
-            int max = Math.Min(name.Length, 4);
-            for (int i = 0; i < max; ++i)
-                cmp |= ((ulong)(byte)name[i]) << ((7 - i) << 4);
+            int length = Marshal.SizeOf(cmp) / 2;
+            for (int i = 0; i < Math.Min(name.Length, length); ++i)
+                cmp |= (ulong)name[i] << ((length - i - 1) * 16);
         }
 
         public override string ToString() { return Name; }
         public override int GetHashCode() { return name.GetHashCode(); }
         public override bool Equals(Expression E)
         {
-            if (ReferenceEquals(E, null) || GetType() != E.GetType()) return false;
-            return name.Equals(((NamedAtom)E).name);
+            if (ReferenceEquals(E, null) || GetType() != E.GetType()) return base.Equals(E);
+            return Equals(name, ((NamedAtom)E).name);
         }
         public override int CompareTo(Expression R)
         {
@@ -70,10 +73,11 @@ namespace ComputerAlgebra
 
                 // Try comparing the first 4 chars of the name.
                 c = cmp.CompareTo(RA.cmp);
-                if (c != 0) return c;
+                if (c != 0)
+                    return c;
 
                 // First 4 chars match, need to use the full compare.
-                return name.CompareTo(RA.name);
+                return String.Compare(name, RA.name, StringComparison.Ordinal);
             }
 
             return base.CompareTo(R);
