@@ -17,7 +17,10 @@ namespace ComputerAlgebra
         private IfFunction() : base("If") { }
 
         private static IfFunction instance = new IfFunction();
-
+        /// <summary>
+        /// Get an instance of the If function.
+        /// </summary>
+        /// <returns></returns>
         public static IfFunction New() { return instance; }
 
         public override Expression Call(IEnumerable<Expression> Args)
@@ -37,8 +40,5 @@ namespace ComputerAlgebra
             // Couldn't evaluate with these arguments.
             throw new ArgumentException();
         }
-
-        public override bool CanCall(IEnumerable<Expression> Args) { return parameters.Count() == Args.Count(); }
-        public override bool CanCall() { return true; }
     }
 }

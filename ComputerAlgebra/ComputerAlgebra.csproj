@@ -48,9 +48,12 @@
   <ItemGroup>
     <Compile Include="Expression\Arrow.cs" />
     <Compile Include="Expression\Atom.cs" />
+    <Compile Include="Namespace\Global\ExpFunction.cs" />
+    <Compile Include="Namespace\Global\LnFunction.cs" />
+    <Compile Include="Namespace\Global\SqrtFunction.cs" />
     <Compile Include="Expression\Functions\UnknownFunction.cs" />
     <Compile Include="Expression\Sum\Add.cs" />
-    <Compile Include="Expression\Functions\IfFunction.cs" />
+    <Compile Include="Namespace\Global\IfFunction.cs" />
     <Compile Include="Expression\Functions\LutFunction.cs" />
     <Compile Include="Expression\Functions\ExprFunction.cs" />
     <Compile Include="Expression\Functions\NativeFunction.cs" />
@@ -77,7 +80,7 @@
     <Compile Include="Extensions\Simplify.cs" />
     <Compile Include="LinqCompiler\DeclContext.cs" />
     <Compile Include="LinqCompiler\Module.cs" />
-    <Compile Include="Namespace\GlobalNamespace.cs" />
+    <Compile Include="Namespace\Global\GlobalNamespace.cs" />
     <Compile Include="Namespace\Namespace.cs" />
     <Compile Include="Expression\Functions\Function.cs" />
     <Compile Include="Extensions\DSolve.cs" />

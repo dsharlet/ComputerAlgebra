@@ -7,22 +7,33 @@ using System.Numerics;
 
 namespace ComputerAlgebra
 {
+    /// <summary>
+    /// Define the standard global namespace.
+    /// </summary>
     class GlobalNamespace : TypeNamespace
     {
-        private static IfFunction If = IfFunction.New();
+        // Globals with customized handling.
+        private static Dictionary<string, IEnumerable<Expression>> lookups = new Dictionary<string, IEnumerable<Expression>>()
+        {
+            { "If", new[] { IfFunction.New() } },
+            { "Sqrt", new[] { SqrtFunction.New() } },
+            { "Exp", new[] { ExpFunction.New() } },
+            { "Ln", new[] { LnFunction.New() } },
+        };
 
         public GlobalNamespace() : base(typeof(GlobalNamespace)) { }
 
         public override IEnumerable<Expression> LookupName(string Name)
         {
-            if (Name == "If")
-                return new Expression[] { If };
+            IEnumerable<Expression> lookup = null;
+            if (lookups.TryGetValue(Name, out lookup))
+                return lookup;
             return base.LookupName(Name);
         }
 
         // Some useful constants.
-        public static readonly Expression Pi = Math.PI;
-        public static readonly Expression e = Math.E;
+        public static readonly Expression Pi = Real.Pi;
+        public static readonly Expression e = Real.e;
 
         public static readonly Expression False = Constant.New(false);
         public static readonly Expression True = Constant.New(true);
@@ -61,9 +72,6 @@ namespace ComputerAlgebra
         public static Expression ArcCsch(Constant x) { return Real.ArcCsch(x); }
         public static Expression ArcCoth(Constant x) { return Real.ArcCoth(x); }
 
-        public static Expression Sqrt(Constant x) { return Real.Sqrt(x); }
-        public static Expression Exp(Constant x) { return Real.Exp(x); }
-        public static Expression Ln(Constant x) { return Real.Ln(x); }
         public static Expression Log(Constant x, Constant b) { return Real.Log(x, b); }
 
         public static Expression Floor(Constant x) { return Real.Floor(x); }
