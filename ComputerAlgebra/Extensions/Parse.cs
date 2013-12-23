@@ -257,31 +257,22 @@ namespace ComputerAlgebra
 
         private Function Resolve(string Token, IEnumerable<Expression> Args)
         {
-            try
-            {
-                return context.Resolve(Token, Args);
-            }
-            catch (UnresolvedName)
-            {
-                // If the token is unresolved, make a new undefined function.
+            Function resolve = context.LookupFunction(Token, Args).SingleOrDefault();
+            if (!ReferenceEquals(resolve, null))
+                return resolve;
+            else
                 return UnknownFunction.New(Token, Args.Count());
-            }
         }
 
         private Expression Resolve(string Token)
         {
-            try
-            {
-                return context.Resolve(Token);
-            }
-            catch (UnresolvedName)
-            {
-                // If the token is unresolved, make a new variable.
+            Expression resolve = context.LookupName(Token).SingleOrDefault();
+            if (!ReferenceEquals(resolve, null))
+                return resolve;
+            else
                 return Variable.New(Token);
-            }
         }
-
-
+        
         static bool IsBinaryOperator(string tok, ref Operator op)
         {
             switch (tok)

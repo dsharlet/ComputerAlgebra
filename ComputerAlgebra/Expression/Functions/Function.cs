@@ -32,7 +32,7 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="Args"></param>
         /// <returns></returns>
-        public virtual bool CanCall(IEnumerable<Expression> Args) { return Parameters.Count() == Args.Count(); }
+        public virtual bool CanCall(IEnumerable<Expression> Args) { return CanCall() && Parameters.Count() == Args.Count(); }
         public virtual bool CanCall() { return true; }
 
         /// <summary>
