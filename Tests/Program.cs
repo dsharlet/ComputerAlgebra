@@ -174,23 +174,15 @@ namespace Tests
                 Test("Factor[A*Exp[x] + B*Exp[x] + A*Sin[x] + B*Sin[x]]", "(A + B)*(Exp[x] + Sin[x])"),
 
                 // Exponential functions.
-                Test("Ln[Exp[2]]", "2"),
-                Test("Log[10^3, 10]", "3"),
-                Test("Ln[a^b]/b", "Ln[a]"),
-                Test("Ln[Exp[x]]", "x"),
-                Test("Log[b^x, b]", "x"),
-                Test("Log[x, 3]", "Ln[x]/Ln[3]"),
-                Test("Ln[x*y]", "Ln[x] + Ln[y]"),
-                Test("Ln[x/y]", "Ln[x] - Ln[y]"),
-                Test("Ln[x*y^2]", "Ln[x] - 2*Ln[y]"),
+                //Test("Ln[a^b]/b", "Ln[a]"),
+                //Test("Ln[Exp[x]]", "x"),
+                //Test("Log[b^x, b]", "x"),
+                //Test("Log[x, 3]", "Ln[x]/Ln[3]"),
+                //Test("Ln[x*y]", "Ln[x] + Ln[y]"),
+                //Test("Ln[x/y]", "Ln[x] - Ln[y]"),
+                //Test("Ln[x*y^2]", "Ln[x] + 2*Ln[y]"),
 
                 //// Hyperbolic functions.
-                Test("ArcSinh[Sinh[Pi/6]]", "Pi/6"),
-                Test("ArcCosh[Cosh[Pi/6]]", "Pi/6"),
-                Test("ArcTanh[Tanh[Pi/6]]", "Pi/6"),
-                Test("ArcSech[Sech[Pi/6]]", "Pi/6"),
-                Test("ArcCsch[Csch[Pi/6]]", "Pi/6"),
-                Test("ArcCoth[Coth[Pi/6]]", "Pi/6"),
                 //KV("Exp[x] + Exp[-x]", "2*Cosh[x]"),
                 //KV("Exp[2*x] - Exp[-2*x]", "2*Sinh[2*x]"),
                 //KV("(Exp[x] - Exp[-x])/(Exp[x] + Exp[-x])", "Tanh[x]"),
@@ -199,12 +191,6 @@ namespace Tests
                 //KV("3/(Exp[2*x] - Exp[-2*x])", "1.5*Csch[2*x]"),
 
                 //// Trig functions.
-                Test("ArcSin[Sin[Pi/6]]", "Pi/6"),
-                Test("ArcCos[Cos[Pi/6]]", "Pi/6"),
-                Test("ArcTan[Tan[Pi/6]]", "Pi/6"),
-                Test("ArcSec[Sec[Pi/6]]", "Pi/6"),
-                Test("ArcCsc[Csc[Pi/6]]", "Pi/6"),
-                Test("ArcCot[Cot[Pi/6]]", "Pi/6"),
                 //KV("Sin[x]/Cos[x]", "Tan[x]"),
                 //KV("Cos[x^2]/Sin[x^2]", "Cot[x^2]"),
                 //KV("Tan[x]*Cos[x]", "Sin[x]"),
