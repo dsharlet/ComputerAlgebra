@@ -37,9 +37,11 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static Expression Factor(this Expression f, Expression x) 
         {
+            // If f is a product, just factor its terms.
             if (f is Product)
                 return Product.New(((Product)f).Terms.Select(i => i.Factor(x)));
 
+            // If if is l^r, factor l and distribute r.
             if (f is Power)
             {
                 Expression l = ((Power)f).Left.Factor(x);
@@ -47,6 +49,11 @@ namespace ComputerAlgebra
                 return Product.New(Product.TermsOf(l).Select(i => Power.New(i, r)));
             }
 
+            // If f is a polynomial of x, use polynomial factoring methods.
+            if (f is Polynomial && (((Polynomial)f).Variable.Equals(x) || ReferenceEquals(x, null)))
+                return ((Polynomial)f).Factor();
+
+            // Try interpreting f as a polynomial of x.
             if (!ReferenceEquals(x, null))
             {
                 // If f is a polynomial of x, factor it.
@@ -57,6 +64,7 @@ namespace ComputerAlgebra
                 catch (Exception) { }
             }
 
+            // Just factor out common sub-expressions.
             if (f is Sum)
             {
                 Sum s = (Sum)f;
@@ -64,7 +72,7 @@ namespace ComputerAlgebra
                 IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
                 
                 // All of the distinct factors.
-                IEnumerable<Expression> factors = terms.SelectMany(i => FactorsOf(i).Except(1)).Distinct();
+                IEnumerable<Expression> factors = terms.SelectMany(i => FactorsOf(i).Except(1, -1)).Distinct();
                 // Choose the most common factor to use.
                 Expression factor = factors.ArgMax(i => terms.Count(j => FactorsOf(j).Contains(i)));
                 // Find the terms that contain the factor.
