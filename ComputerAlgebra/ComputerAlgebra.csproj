@@ -8,8 +8,8 @@
     <ProjectGuid>{2877C441-FD0B-4441-A469-E677003EE35A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SyMath</RootNamespace>
-    <AssemblyName>SyMath</AssemblyName>
+    <RootNamespace>ComputerAlgebra</RootNamespace>
+    <AssemblyName>ComputerAlgebra</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -92,9 +92,11 @@
     <Compile Include="Transform\SubstituteTransform.cs" />
     <Compile Include="Transform\LinearTransform.cs" />
     <Compile Include="Transform\PatternTransform.cs" />
+    <Compile Include="Utils\BigIntegerExtensions.cs" />
     <Compile Include="Utils\BigRational.cs" />
     <Compile Include="Utils\Combinatorics.cs" />
     <Compile Include="LinqCompiler\StandardMath.cs" />
+    <Compile Include="Utils\BigFloat.cs" />
     <Compile Include="Utils\DefaultDictionary.cs" />
     <Compile Include="Utils\DictionaryExtensions.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
