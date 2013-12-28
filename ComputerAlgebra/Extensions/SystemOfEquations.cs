@@ -17,16 +17,12 @@ namespace ComputerAlgebra
         {
             private void AddTerm(IEnumerable<Expression> B, Expression t)
             {
-                if (t.DependsOn(B))
+                foreach (Expression b in B)
                 {
-                    foreach (Expression b in B)
+                    if (Product.TermsOf(t).Count(i => i.Equals(b)) == 1)
                     {
-                        Expression Tb = t / b;
-                        if (!Tb.DependsOn(B))
-                        {
-                            this[b] += Tb;
-                            return;
-                        }
+                        this[b] += Product.New(Product.TermsOf(t).Except(b));
+                        return;
                     }
                 }
                 this[1] += t;
@@ -202,7 +198,7 @@ namespace ComputerAlgebra
         }
 
         // Eliminate the pivot position from row t using row s.
-        private void Eliminate(int s, int t, Expression p)
+        private void Eliminate(int s, int t, Expression p, IEnumerable<Expression> Columns)
         {
             Equation T = equations[t];
             if (T[p].EqualsZero())
@@ -211,16 +207,14 @@ namespace ComputerAlgebra
             Equation S = equations[s];
 
             Expression scale = -T[p] / S[p];
-            foreach (Expression j in unknowns.Except(p).Append(1))
+            foreach (Expression j in Columns)
                 T[j] += Product.New(S[j], scale);
-
-            //Debug.Assert(T[p].EqualsZero());
-            // We aren't quite good enough yet to rely on the evaluation of this to be true.
             T[p] = 0;
         }
 
         private void RowReduce(int i1, IList<Expression> Columns, bool FullPivoting)
         {
+            List<Expression> elim = unknowns.Append(1).ToList();
             for (int i2 = equations.Count, _j = 0; _j < Columns.Count; ++_j)
             {
                 // Find the best pivot to use.
@@ -234,8 +228,9 @@ namespace ComputerAlgebra
                         Swap(Columns, _j, pivot.Value);
 
                     Expression j = Columns[_j];
+                    elim = elim.Except(j).ToList();
                     for (int i = i1 + 1; i < i2; ++i)
-                        Eliminate(i1, i, j);
+                        Eliminate(i1, i, j, elim);
 
                     ++i1;
                 }
@@ -259,9 +254,11 @@ namespace ComputerAlgebra
 
         private void BackSubstitute(IList<Expression> x)
         {
+            List<Expression> elim = unknowns.Append(1).ToList();
             for (int i = Math.Min(x.Count, equations.Count) - 1, _j = x.Count - 1; _j >= 0; --_j)
             {
                 Expression j = x[_j];
+                elim = elim.Except(j).ToList();
 
                 // While we still haven't reached a pivot row...
                 while (i >= 0 && x.Take(_j).All(j2 => equations[i][j2].EqualsZero()))
@@ -269,7 +266,7 @@ namespace ComputerAlgebra
                     if (!equations[i][j].EqualsZero())
                     {
                         for (int i2 = i - 1; i2 >= 0; --i2)
-                            Eliminate(i, i2, j);
+                            Eliminate(i, i2, j, elim);
                         break;
                     }
 

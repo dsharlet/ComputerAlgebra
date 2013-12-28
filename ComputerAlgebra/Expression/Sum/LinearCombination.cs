@@ -45,16 +45,12 @@ namespace ComputerAlgebra
         
         private void AddTerm(IEnumerable<Expression> B, Expression t)
         {
-            if (t.DependsOn(B))
+            foreach (Expression b in B)
             {
-                foreach (Expression b in B)
+                if (Product.TermsOf(t).Count(i => i.Equals(b)) == 1)
                 {
-                    Expression Tb = t / b;
-                    if (!Tb.DependsOn(B))
-                    {
-                        terms[b] += Tb;
-                        return;
-                    }
+                    terms[b] += Product.New(Product.TermsOf(t).Except(b));
+                    return;
                 }
             }
             terms[1] += t;
