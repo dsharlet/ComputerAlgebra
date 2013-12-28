@@ -22,8 +22,11 @@ namespace ComputerAlgebra
             else
             {
                 BigInteger gcd = BigInteger.GreatestCommonDivisor(n, d);
-                n /= gcd;
-                d /= gcd;
+                if (!gcd.IsOne)
+                {
+                    n /= gcd;
+                    d /= gcd;
+                }
 
                 if (d.Sign == -1)
                 {
