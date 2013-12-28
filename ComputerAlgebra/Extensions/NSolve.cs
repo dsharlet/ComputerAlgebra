@@ -49,54 +49,13 @@ namespace ComputerAlgebra
         }
         
         // Use neton's method to solve F(x) = 0, with initial guess x0.
-        private static List<Arrow> NewtonsMethod(List<Expression> F, List<Arrow> x0, double Epsilon, int MaxIterations)
+        private static void NewtonsMethod(int M, int N, Func<double[,], double[], double, double> J, double s, double[] x, double Epsilon, int MaxIterations)
         {
             // Numerically approximate the solution of F = 0 with Newton's method, 
             // i.e. solve JF(x0)*(x - x0) = -F(x0) for x.
-            List<Dictionary<Expression, Expression>> J = Jacobian(F, x0.Select(i => i.Left)).ToList();
 
-            int M = F.Count;
-            int N = x0.Count;
-
-            // Define a function to evaluate JxF(x0).
-            CodeGen code = new CodeGen();
-
-            ParamExpr _J = code.Decl<double[,]>(Scope.Parameter, "J");
-            ParamExpr _x0 = code.Decl<double[]>(Scope.Parameter, "x0");
-
-            // Load x_j from the input array and add them to the map.
-            for (int j = 0; j < N; ++j)
-                code.DeclInit(x0[j].Left, LinqExpr.ArrayAccess(_x0, LinqExpr.Constant(j)));
-
-            LinqExpr error = code.Decl<double>("error");
-
-            // Compile the expressions to assign J.
-            for (int i = 0; i < M; ++i)
-            {
-                LinqExpr _i = LinqExpr.Constant(i);
-                for (int j = 0; j < N; ++j)
-                    code.Add(LinqExpr.Assign(
-                        LinqExpr.ArrayAccess(_J, _i, LinqExpr.Constant(j)), 
-                        code.Compile(J[i][x0[j].Left])));
-                LinqExpr e = code.Compile(F[i]);
-                code.Add(LinqExpr.Assign(LinqExpr.ArrayAccess(_J, _i, LinqExpr.Constant(N)), e));
-                // error += e * e
-                code.Add(LinqExpr.AddAssign(error, LinqExpr.Multiply(e, e)));
-            }
-
-            // return error
-            code.Return<double>(error);
-
-            Func<double[,], double[], double> EvalJ = code.Build<Func<double[,], double[], double>>().Compile();
-            
             double[,] JxF = new double[M, N + 1];
-            double[] x = new double[N];
             double[] dx = new double[N];
-            for (int j = 0; j < N; ++j)
-            {
-                x[j] = (double)x0[j].Right;
-                dx[j] = 0.0;
-            }
 
             double epsilon = Epsilon * Epsilon * N;
             try
@@ -104,8 +63,8 @@ namespace ComputerAlgebra
                 for (int n = 0; n < MaxIterations; ++n)
                 {
                     // Evaluate JxF and F.
-                    if (EvalJ(JxF, x) < epsilon)
-                        return Enumerable.Range(0, N).Select(i => Arrow.New(x0[i].Left, x[i])).ToList();
+                    if (J(JxF, x, s) < epsilon)
+                        return;
 
                     // Solve for dx.
                     // For each variable in the system...
@@ -135,10 +94,10 @@ namespace ComputerAlgebra
                         double p = JxF[j, j];
                         for (int i = j + 1; i < M; ++i)
                         {
-                            double s = JxF[i, j] / p;
-                            if (s != 0.0)
+                            double e = JxF[i, j] / p;
+                            if (e != 0.0)
                                 for (int ij = j + 1; ij <= N; ++ij)
-                                    JxF[i, ij] -= JxF[j, ij] * s;
+                                    JxF[i, ij] -= JxF[j, ij] * e;
                         }
                     }
 
@@ -173,6 +132,45 @@ namespace ComputerAlgebra
         private static List<Arrow> NSolve(List<Expression> F, List<Arrow> x0, double Epsilon, int MaxIterations)
         {
             List<Expression> F0 = F.Select(i => i.Evaluate(x0)).ToList();
+            
+            List<Dictionary<Expression, Expression>> J = Jacobian(F, x0.Select(i => i.Left)).ToList();
+
+            int M = F.Count;
+            int N = x0.Count;
+            
+            // Define a function to evaluate JxF(x0).
+            CodeGen code = new CodeGen();
+
+            ParamExpr _J = code.Decl<double[,]>(Scope.Parameter, "J");
+            ParamExpr _x0 = code.Decl<double[]>(Scope.Parameter, "x0");
+            ParamExpr _s = code.Decl<double>(Scope.Parameter, "s");
+
+            // Load x_j from the input array and add them to the map.
+            for (int j = 0; j < N; ++j)
+                code.DeclInit(x0[j].Left, LinqExpr.ArrayAccess(_x0, LinqExpr.Constant(j)));
+
+            LinqExpr error = code.Decl<double>("error");
+
+            // Compile the expressions to assign J.
+            for (int i = 0; i < M; ++i)
+            {
+                LinqExpr _i = LinqExpr.Constant(i);
+                for (int j = 0; j < N; ++j)
+                    code.Add(LinqExpr.Assign(
+                        LinqExpr.ArrayAccess(_J, _i, LinqExpr.Constant(j)),
+                        code.Compile(J[i][x0[j].Left])));
+                LinqExpr e = LinqExpr.Subtract(code.Compile(F[i]), LinqExpr.Multiply(LinqExpr.Constant((double)F0[i]), _s));
+                code.Add(LinqExpr.Assign(LinqExpr.ArrayAccess(_J, _i, LinqExpr.Constant(N)), e));
+                // error += e * e
+                code.Add(LinqExpr.AddAssign(error, LinqExpr.Multiply(e, e)));
+            }
+
+            // return error
+            code.Return<double>(error);
+
+            Func<double[,], double[], double, double> EvalJ = code.Build<Func<double[,], double[], double, double>>().Compile();
+
+            double[] x = new double[N];
 
             // Remember where we last succeeded/failed.
             double s0 = 0.0;
@@ -181,13 +179,14 @@ namespace ComputerAlgebra
             {
                 try
                 {
-                    Real s = s0;
                     // H(F, s) = F + s*F0
-                    List<Expression> H = F.Zip(F0, (i, i0) => i - s * i0).ToList();
-                    x0 = NewtonsMethod(H, x0, Epsilon, MaxIterations);
+                    NewtonsMethod(M, N, EvalJ, s0, x, Epsilon, MaxIterations);
 
                     // Success at this s!
                     s1 = s0;
+                    for (int i = 0; i < N; ++i)
+                        x0[i] = Arrow.New(x0[i].Left, x[i]);
+
                     // Go near the goal.
                     s0 = Lerp(s0, 0.0, 0.9);
                 }
@@ -195,12 +194,19 @@ namespace ComputerAlgebra
                 {
                     // Go near the last success.
                     s0 = Lerp(s0, s1, 0.9);
+
+                    for (int i = 0; i < N; ++i)
+                        x[i] = (double)x0[i].Right;
                 }
             } while (s0 > 0.0 && s1 >= s0 + 1e-6);
 
             // Make sure the last solution is at F itself.
             if (s0 != 0.0)
-                x0 = NewtonsMethod(F, x0, Epsilon, MaxIterations);
+            {
+                NewtonsMethod(M, N, EvalJ, 0.0, x, Epsilon, MaxIterations);
+                for (int i = 0; i < N; ++i)
+                    x0[i] = Arrow.New(x0[i].Left, x[i]);
+            }
 
             return x0;
         }
