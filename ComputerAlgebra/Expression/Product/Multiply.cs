@@ -27,7 +27,7 @@ namespace ComputerAlgebra
             Debug.Assert(!Terms.Contains(null));
 
             // Canonicalize the terms.
-            IEnumerable<Expression> terms = FlattenTerms(Terms).OrderBy(i => i).Buffer().Reverse();
+            IEnumerable<Expression> terms = FlattenTerms(Terms).OrderBy(i => i).Buffer();
 
             switch (terms.Count())
             {

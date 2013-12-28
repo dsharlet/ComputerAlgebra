@@ -158,6 +158,6 @@ namespace ComputerAlgebra
                         yield return j;
             }
         }
-        public override int CompareTo(Expression R) { return Terms.Reverse().LexicalCompareTo(TermsOf(R).Reverse()); }
+        public override int CompareTo(Expression R) { return Terms.LexicalCompareTo(TermsOf(R)); }
     }
 }
