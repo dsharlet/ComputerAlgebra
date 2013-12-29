@@ -131,17 +131,16 @@ namespace ComputerAlgebra
         // Use homotopy method with newton's method to find a solution for F(x) = 0.
         private static List<Arrow> NSolve(List<Expression> F, List<Arrow> x0, double Epsilon, int MaxIterations)
         {
-            List<Expression> F0 = F.Select(i => i.Evaluate(x0)).ToList();
-            
-            List<Dictionary<Expression, Expression>> J = Jacobian(F, x0.Select(i => i.Left)).ToList();
-
             int M = F.Count;
             int N = x0.Count;
             
-            // Define a function to evaluate JxF(x0).
+            // Compute JxF, the Jacobian of F.
+            List<Dictionary<Expression, Expression>> JxF = Jacobian(F, x0.Select(i => i.Left)).ToList();
+
+            // Define a function to evaluate JxH(x), where H = F(x) - s*F(x0). 
             CodeGen code = new CodeGen();
 
-            ParamExpr _J = code.Decl<double[,]>(Scope.Parameter, "J");
+            ParamExpr _JxH = code.Decl<double[,]>(Scope.Parameter, "JxH");
             ParamExpr _x0 = code.Decl<double[]>(Scope.Parameter, "x0");
             ParamExpr _s = code.Decl<double>(Scope.Parameter, "s");
 
@@ -151,16 +150,17 @@ namespace ComputerAlgebra
 
             LinqExpr error = code.Decl<double>("error");
 
-            // Compile the expressions to assign J.
+            // Compile the expressions to assign JxH
             for (int i = 0; i < M; ++i)
             {
                 LinqExpr _i = LinqExpr.Constant(i);
                 for (int j = 0; j < N; ++j)
                     code.Add(LinqExpr.Assign(
-                        LinqExpr.ArrayAccess(_J, _i, LinqExpr.Constant(j)),
-                        code.Compile(J[i][x0[j].Left])));
-                LinqExpr e = LinqExpr.Subtract(code.Compile(F[i]), LinqExpr.Multiply(LinqExpr.Constant((double)F0[i]), _s));
-                code.Add(LinqExpr.Assign(LinqExpr.ArrayAccess(_J, _i, LinqExpr.Constant(N)), e));
+                        LinqExpr.ArrayAccess(_JxH, _i, LinqExpr.Constant(j)),
+                        code.Compile(JxF[i][x0[j].Left])));
+                // e = F(x) - s*F(x0)
+                LinqExpr e = code.DeclInit<double>("e", LinqExpr.Subtract(code.Compile(F[i]), LinqExpr.Multiply(LinqExpr.Constant((double)F[i].Evaluate(x0)), _s)));
+                code.Add(LinqExpr.Assign(LinqExpr.ArrayAccess(_JxH, _i, LinqExpr.Constant(N)), e));
                 // error += e * e
                 code.Add(LinqExpr.AddAssign(error, LinqExpr.Multiply(e, e)));
             }
@@ -168,7 +168,7 @@ namespace ComputerAlgebra
             // return error
             code.Return<double>(error);
 
-            Func<double[,], double[], double, double> EvalJ = code.Build<Func<double[,], double[], double, double>>().Compile();
+            Func<double[,], double[], double, double> JxH = code.Build<Func<double[,], double[], double, double>>().Compile();
 
             double[] x = new double[N];
 
@@ -179,8 +179,8 @@ namespace ComputerAlgebra
             {
                 try
                 {
-                    // H(F, s) = F + s*F0
-                    NewtonsMethod(M, N, EvalJ, s0, x, Epsilon, MaxIterations);
+                    // H(F, s) = F - s*F0
+                    NewtonsMethod(M, N, JxH, s0, x, Epsilon, MaxIterations);
 
                     // Success at this s!
                     s1 = s0;
@@ -203,7 +203,7 @@ namespace ComputerAlgebra
             // Make sure the last solution is at F itself.
             if (s0 != 0.0)
             {
-                NewtonsMethod(M, N, EvalJ, 0.0, x, Epsilon, MaxIterations);
+                NewtonsMethod(M, N, JxH, 0.0, x, Epsilon, MaxIterations);
                 for (int i = 0; i < N; ++i)
                     x0[i] = Arrow.New(x0[i].Left, x[i]);
             }
