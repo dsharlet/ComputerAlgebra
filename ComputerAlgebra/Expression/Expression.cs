@@ -71,6 +71,7 @@ namespace ComputerAlgebra
         public virtual bool EqualsOne() { return false; }
         public virtual bool IsFalse() { return EqualsZero(); }
         public virtual bool IsTrue() { return this is Constant && !IsFalse(); }
+        public virtual bool IsInteger() { return false; }
 
         /// <summary>
         /// Parse an expression from a string.

@@ -34,6 +34,7 @@ namespace ComputerAlgebra
         public override bool EqualsOne() { return x.EqualsOne(); }
         public override bool IsFalse() { return x.EqualsZero(); }
         public override bool IsTrue() { return !x.EqualsZero(); }
+        public override bool IsInteger() { return x.IsInteger(); }
 
         public static implicit operator Real(Constant x) { return x.x; }
         

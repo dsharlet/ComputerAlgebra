@@ -73,8 +73,9 @@ namespace ComputerAlgebra
                 return @"\frac{" + ns + "}{" + nd + "}";
         }
 
-        public bool IsZero() { return n.IsZero; }
-        public bool IsOne() { return n == d; }
+        public bool EqualsZero() { return n.IsZero; }
+        public bool EqualsOne() { return n == d; }
+        public bool IsInteger() { return d == 1; }
 
         // IEquatable interface.
         public bool Equals(BigRational x) { return d == x.d && n == x.n; }

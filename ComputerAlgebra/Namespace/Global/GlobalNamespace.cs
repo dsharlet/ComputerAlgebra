@@ -80,15 +80,15 @@ namespace ComputerAlgebra
 
         public static Expression Factorial(Constant x)
         {
-            if ((Real)x % 1 == 0)
+            if (x.IsInteger())
                 return new Real(Factorial((BigInteger)(Real)x));
             else
                 throw new ArgumentException("Factorial cannot be called for non-integer value.");
         }
 
         public static Expression IsConstant(Constant x) { return Constant.New(true); }
-        public static Expression IsInteger(Constant x) { return Constant.New((Real)x % 1 == 0); }
-        public static Expression IsNatural(Constant x) { return Constant.New((Real)x % 1 == 0 && (Real)x > 0); }
+        public static Expression IsInteger(Constant x) { return Constant.New(x.IsInteger()); }
+        public static Expression IsNatural(Constant x) { return Constant.New(x.IsInteger() && (Real)x > 0); }
 
         public static Expression DependsOn(Expression f, Expression x) { return Constant.New(f.DependsOn(x)); }
         

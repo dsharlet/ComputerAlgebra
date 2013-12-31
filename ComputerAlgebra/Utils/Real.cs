@@ -41,6 +41,9 @@ namespace ComputerAlgebra
         public static readonly Real Infinity = new Real(PositiveInfinity);
 
         public bool IsNaN() { return r.Equals(0, 0); }
+        public bool IsInteger() { return r.IsInteger(); }
+        public bool EqualsZero() { return r.EqualsZero(); }
+        public bool EqualsOne() { return r.EqualsOne(); }
 
         public static explicit operator int(Real x) { return (int)x.r; }
         public static explicit operator double(Real x) { return (double)x.r; }
@@ -69,10 +72,7 @@ namespace ComputerAlgebra
         public static Real operator /(Real a, Real b) { return new Real(a.r / b.r); }
         public static Real operator ^(Real a, Real b) { return new Real(a.r ^ b.r); }
         public static Real operator -(Real x) { return new Real(-x.r); }
-
-        public bool EqualsZero() { return r.IsZero(); }
-        public bool EqualsOne() { return r.IsOne(); }
-
+        
         public static readonly Real Pi = Math.PI;
         public static readonly Real e = Math.E;
 
