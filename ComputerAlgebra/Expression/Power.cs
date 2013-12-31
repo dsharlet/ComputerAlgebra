@@ -30,7 +30,7 @@ namespace ComputerAlgebra
         public static int IntegralExponentOf(Expression x)
         {
             Expression n = ExponentOf(x);
-            if (n is Constant && ((Real)n) % 1 == 0)
+            if (n.IsInteger())
                 return (int)(Real)n;
             return 1;
         }
@@ -59,7 +59,7 @@ namespace ComputerAlgebra
             if (Matched.TryMatch(() => Right.Matches(1, Matched) && Left.Matches(E, Matched)))
                 return true;
 
-            if (Left.Matches(ComputerAlgebra.Power.New(E, Binary.Divide(1, Right)).Evaluate(), Matched))
+            if (Right.IsInteger() && Left.Matches(ComputerAlgebra.Power.New(E, Binary.Divide(1, Right)).Evaluate(), Matched))
                 return true;
 
             return false;

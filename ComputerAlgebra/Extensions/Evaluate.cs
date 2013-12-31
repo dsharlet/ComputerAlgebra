@@ -124,24 +124,22 @@ namespace ComputerAlgebra
         protected override Expression VisitPower(Power P)
         {
             Expression L = Visit(P.Left);
-            
-            // Transform (x*y)^z => x^z*y^z.
-            Product M = L as Product;
-            if (!ReferenceEquals(M, null))
-                return Visit(Product.New(M.Terms.Select(i => Power.New(i, P.Right))));
+            Expression R = Visit(P.Right);
 
-            Expression R;
+            if (R.IsInteger())
+            {
+                // Transform (x*y)^z => x^z*y^z if z is an integer.
+                Product M = L as Product;
+                if (!ReferenceEquals(M, null))
+                    return Visit(Product.New(M.Terms.Select(i => Power.New(i, R))));
+            }
 
-            // Transform (x^y)^z => x^(y*z)
+            // Transform (x^y)^z => x^(y*z) if z is an integer.
             Power LP = L as Power;
             if (!ReferenceEquals(LP, null))
             {
                 L = LP.Left;
                 R = Visit(Product.New(P.Right, LP.Right));
-            }
-            else
-            {
-                R = Visit(P.Right);
             }
 
             // Handle identities.
