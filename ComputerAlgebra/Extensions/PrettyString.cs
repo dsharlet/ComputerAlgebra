@@ -51,63 +51,63 @@ namespace ComputerAlgebra
 
     class PrettyStringVisitor : ExpressionVisitor<PrettyString>
     {
-        private static PrettyString MakeLParen(int Lines)
+        private static PrettyString MakeLParen(PrettyString For)
         {
-            if (Lines == 1)
-                return new PrettyString(0, "(");
-            if (Lines == 2)
-                return new PrettyString(1,
+            if (For.LineCount == 1)
+                return new PrettyString(For.ZeroRow, "(");
+            if (For.LineCount == 2)
+                return new PrettyString(For.ZeroRow,
                     "/",
                     "\\");
 
-            return new PrettyString(Lines / 2,
+            return new PrettyString(For.ZeroRow,
                 Enumerable.Repeat(@"/", 1).Concat(
-                Enumerable.Repeat(@"|", Lines - 2)).Concat(
+                Enumerable.Repeat(@"|", For.LineCount - 2)).Concat(
                 Enumerable.Repeat(@"\", 1)));
         }
 
-        private static PrettyString MakeLBrace(int Lines)
+        private static PrettyString MakeLBrace(PrettyString For)
         {
-            if (Lines == 1)
-                return new PrettyString(0, "{");
-            if (Lines <= 3) 
-                return new PrettyString(1,
+            if (For.LineCount == 1)
+                return new PrettyString(For.ZeroRow, "{");
+            if (For.LineCount <= 3)
+                return new PrettyString(For.ZeroRow,
                     @"(",
                     @"<",
                     @"(");
-            if (Lines <= 5)
-                return new PrettyString(Lines / 2,
+            if (For.LineCount <= 5)
+                return new PrettyString(For.ZeroRow,
                     @"/",
                     @"\",
                     @"<",
                     @"/",
                     @"\");
 
-            return new PrettyString(Lines / 2,
+            return new PrettyString(For.ZeroRow,
                 Enumerable.Repeat(@"/", 1).Concat(
                 Enumerable.Repeat(@"\", 1)).Concat(
-                Enumerable.Repeat(@"|", (Lines - 5) / 2)).Concat(
+                Enumerable.Repeat(@"|", (For.LineCount - 5) / 2)).Concat(
                 Enumerable.Repeat(@"<", 1)).Concat(
-                Enumerable.Repeat(@"|", (Lines - 4) / 2)).Concat(
+                Enumerable.Repeat(@"|", (For.LineCount - 4) / 2)).Concat(
                 Enumerable.Repeat(@"/", 1)).Concat(
                 Enumerable.Repeat(@"\", 1)));
         }
 
-        private static PrettyString MakeLBracket(int Lines)
+        private static PrettyString MakeLBracket(PrettyString For)
         {
-            return new PrettyString(Lines / 2, Enumerable.Repeat("[", Lines));
+            return new PrettyString(For.ZeroRow, Enumerable.Repeat("[", For.LineCount));
         }
 
         private static Dictionary<string, string> FlipMap = new Dictionary<string, string>() { { "(", ")" }, { "{", "}" }, { "[", "]" }, { "|", "|" }, { "<", ">" }, { "/", "\\" }, { "\\", "/" } };
         private static PrettyString FlipParen(PrettyString x) { return new PrettyString(x.ZeroRow, x.Lines.Select(i => FlipMap[i])); }
         
-        private static PrettyString MakeRParen(int Lines) { return FlipParen(MakeLParen(Lines)); }
-        private static PrettyString MakeRBrace(int Lines) { return FlipParen(MakeLBrace(Lines)); }
-        private static PrettyString MakeRBracket(int Lines) { return FlipParen(MakeLBracket(Lines)); }
+        private static PrettyString MakeRParen(PrettyString For) { return FlipParen(MakeLParen(For)); }
+        private static PrettyString MakeRBrace(PrettyString For) { return FlipParen(MakeLBrace(For)); }
+        private static PrettyString MakeRBracket(PrettyString For) { return FlipParen(MakeLBracket(For)); }
 
-        private static PrettyString ConcatParens(PrettyString x) { return PrettyString.ConcatColumns(MakeLParen(x.LineCount), x, MakeRParen(x.LineCount)); }
-        private static PrettyString ConcatBraces(PrettyString x) { return PrettyString.ConcatColumns(MakeLBrace(x.LineCount), x, MakeRBrace(x.LineCount)); }
-        private static PrettyString ConcatBrackets(PrettyString x) { return PrettyString.ConcatColumns(MakeLBracket(x.LineCount), x, MakeRBracket(x.LineCount)); }
+        private static PrettyString ConcatParens(PrettyString x) { return PrettyString.ConcatColumns(MakeLParen(x), x, MakeRParen(x)); }
+        private static PrettyString ConcatBraces(PrettyString x) { return PrettyString.ConcatColumns(MakeLBrace(x), x, MakeRBrace(x)); }
+        private static PrettyString ConcatBrackets(PrettyString x) { return PrettyString.ConcatColumns(MakeLBracket(x), x, MakeRBracket(x)); }
 
         private static int Precedence(Expression x)
         {
