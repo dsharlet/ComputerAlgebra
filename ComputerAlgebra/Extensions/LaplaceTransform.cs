@@ -44,7 +44,7 @@ namespace ComputerAlgebra
 
             // Try expanding E.
             Expression Ex = E.Expand(s);
-            if (!ReferenceEquals(E, Ex))
+            if (!Equals(E, Ex))
                 return Visit(Ex);
 
             // Give up.
@@ -85,7 +85,7 @@ namespace ComputerAlgebra
 
             // Try expanding E.
             Expression Ex = E.Expand(s);
-            if (!ReferenceEquals(E, Ex))
+            if (!Equals(E, Ex))
                 return Visit(Ex);
 
             // Give up.
