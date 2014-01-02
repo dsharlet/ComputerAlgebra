@@ -5,11 +5,9 @@ This project is a library for enabling computer algebra in .Net applications. It
 
 A key feature of the project is enabling compilation of expresions resulting from computer algebraic operations to "native" .Net code (via delegates). This allows complex systems to be defined at runtime, the solutions can be found and compiled once, and then the solutions used nearly as efficiently as hand-written .Net coded solutions. In other words, ComputerAlgebra compiled expressions allow programs to have the flexibility of behavior defined at runtime by the user, but retain the performance of hand-written hardcoded solutions to specific problems.
 
-Development of this project is mostly driven by a specific use case, LiveSPICE: http://www.livespice.org. LiveSPICE is a circuit simulation project loosely aimed at replicating the functionality of other SPICE simulations, with the unique feature of being able to run simulations in real time on live audio signals.
+Development of this project is mostly motivated by a specific use case, LiveSPICE: http://www.livespice.org. LiveSPICE is a circuit simulation project loosely aimed at replicating the functionality of other SPICE simulations, with the unique feature of being able to run simulations in real time on live audio signals.
 
-This application is a perfect example of where ComputerAlgebra is useful. Circuit behavior is defined by a system of differential algebraic equations. LiveSPICE works by solving this system of equations during simulation startup and compiling the solutions to a function. This function is then called during simulation. Because of the compilation step, many optimization techniques that normally could only be done by a human for a specific circuit, can now be applied automatically for general circuits defined by users. This stack of optimizations enables the simulation to run in real time at audio sample rates, enabling the differentiating feature of LiveSPICE: running circuit simulations on live audio signals in real time.
-
-This application stresses a few particular areas of the computer algebra system, mainly solving large systems of differential algebraic equations that arise from circuits symbolically. There are many areas of the project that I started working on, but abandoned because they turned out to be not useful for solving circuit simulations. A good example of this is the DSolve function, which attempts to solve systems of differential equations via the Laplace transform (which in turn relies on polynomial manipulations such as partial fractions and factoring). These features will work for some problems, but are not likely to be very reliable. I'd be very accepting of pull requests addressing these areas :)
+ComputerAlgebra is quite early in development. The only functionality that could be considered reliable is that which is stressed by LiveSPICE. There are many features of ComputerAlgebra that I started working on believing they would be useful for LiveSPICE, but I later abandoned because they proved not to be useful. A good example of this is the DSolve function, which uses the Laplace transform to solve systems of differential equations. While it will probably work for some small problems, it will generally not be reliable. I would certainly appreciate any contributions if you find something missing or broken! At the very least, a bug report would be appreciated :)
 
 Basic Usage
 -----------
@@ -82,24 +80,26 @@ for (int i = 0; i < 20; ++i)
 }
 ```
 
-Compiling Simulations
----------------------
+Justification of Performance Claims
+-----------------------------------
 
 To demonstrate the potential performance advantages of the concept of compiling simulations, the LotkaVolterra demo program uses the compilation features of ComputerAlgebra to compile a predator-prey population model. The model is a differential equation, solutions are produced using Euler integration.
 
 Three implementations of the simulation are provided:
 
-* SimulateNative: A normal C# implementation. This implementation is full general, it can support any PopulationSystem class given.
-* SimulateNativeHardCoded: A C# implementation that is hardcoded to the specific PopulationSystem given in Main.
-* SimulateAlgebra: This implementation is generated at runtime via ComputerAlgebra simplified expressions.
+* **SimulateNative**: A normal C# implementation. This implementation is full general, it can support any PopulationSystem class given.
+* **SimulateNativeHardCoded**: A C# implementation that is hardcoded to the specific PopulationSystem given in Main.
+* **SimulateAlgebra**: This implementation is generated at runtime via ComputerAlgebra simplified expressions. The meat of this implementation is in the 'DefineSimulate' function, which generates a function for the particular PopulationSystem.
+* **SimulateNativeHardCoded(C++)**: A C++ implementation of the hardcoded simulation.
 
 On my machine, I get the following timings:
 
-* SimulateNative: 3.9s (15.7x Algebra)
-* SimulateNativeHardCoded: 0.46s (1.85x Algebra)
-* SimulateAlgebra: 0.249s
+* **SimulateNative**: 3.9s (15.7x Algebra)
+* **SimulateNativeHardCoded**: 0.46s (1.85x Algebra)
+* **SimulateAlgebra**: 0.249s
+* **SimulateNativeHardCoded(C++)**: 0.34s
 
-All simulations should produce identical output, less some subtle differences in floating point due to the algebraic manipulations performed by the algebra simulation.
+All simulations should produce identical output, less some subtle differences due to the algebraic manipulations performed by the algebra simulation, which do not necessarily preserve floating point equivalence.
 
 Here are some conclusions we can draw from these results:
 
@@ -107,3 +107,4 @@ Here are some conclusions we can draw from these results:
 * The hardcoded simulation is much faster, because the overhead of dealing with the simulation logic and parameters is eliminated. However, this simulation is extremely inflexible. Changing any parameters of the simulation requires changing the program itself. This is not practical if you want the simulation behavior to be defined by users.
 * The algebraic simulation is faster still, but, it maintains the flexibilty of the general solution. This is because the algebraic expressions describing the simulation are simplified and evaluated as if the simulation were hardcoded. Enabling this performance while maintaining flexibility is the motivation behind the ComputerAlgebra project!
 * While we should expect the hardcoded simulation to be the same or slightly faster than the algebraic solution, actually achieving this is not easy. It requires significant error-prone algebraic manipulations to be performed by hand, and I am apparently too sloppy to get it done without making mistakes. Regardless, I believe the conclusions here are supported by the data.
+* The C++ simulation time is presented only to provide an indication that even using C++ is not enough by itself to avoid the penalty for supporting full flexible and general numerical simulations. While it's true that building a project like ComputerAlgebra for C++ would likely be even more powerful, it would also take a lot more time and effort :)
