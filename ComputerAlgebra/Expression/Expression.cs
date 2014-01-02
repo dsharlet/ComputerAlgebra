@@ -120,6 +120,9 @@ namespace ComputerAlgebra
         public static explicit operator Real(Expression x) { return (Constant)x; }
         public static explicit operator double(Expression x) { return (double)(Real)x; }
 
+        public static bool operator true(Expression x) { return x.IsTrue(); }
+        public static bool operator false(Expression x) { return x.IsFalse(); }
+
         public string ToString(int Precedence)
         {
             string r = ToString();
