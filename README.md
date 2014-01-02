@@ -81,3 +81,29 @@ for (int i = 0; i < 20; ++i)
     Console.WriteLine("C = {0}: (x, y) = ({1}, {2})", C, x_C(C), y_C(C));
 }
 ```
+
+Compiling Simulations
+---------------------
+
+To demonstrate the potential performance advantages of the concept of compiling simulations, the LotkaVolterra demo program uses the compilation features of ComputerAlgebra to compile a predator-prey population model. The model is a differential equation, solutions are produced using Euler integration.
+
+Three implementations of the simulation are provided:
+
+* SimulateNative: A normal C# implementation. This implementation is full general, it can support any PopulationSystem class given.
+* SimulateNativeHardCoded: A C# implementation that is hardcoded to the specific PopulationSystem given in Main.
+* SimulateAlgebra: This implementation is generated at runtime via ComputerAlgebra simplified expressions.
+
+On my machine, I get the following timings:
+
+* SimulateNative: 3.9s (15.7x Algebra)
+* SimulateNativeHardCoded: 0.46s (1.85x Algebra)
+* SimulateAlgebra: 0.249s
+
+All simulations should produce identical output, less some subtle differences in floating point due to the algebraic manipulations performed by the algebra simulation.
+
+Here are some conclusions we can draw from these results:
+
+* The native simulation is significantly slower than the hardcoded solution or the algebraic solution. I believe this is likely due to the overhead associated with accesing the simulation parameters. However, there is no obvious way to significantly reduce this overhead while retaining the full flexibility of the program.
+* The hardcoded simulation is much faster, because the overhead of dealing with the simulation logic and parameters is eliminated. However, this simulation is extremely inflexible. Changing any parameters of the simulation requires changing the program itself. This is not practical if you want the simulation behavior to be defined by users.
+* The algebraic simulation is faster still, but, it maintains the flexibilty of the general solution. This is because the algebraic expressions describing the simulation are simplified and evaluated as if the simulation were hardcoded. Enabling this performance while maintaining flexibility is the motivation behind the ComputerAlgebra project!
+* While we should expect the hardcoded simulation to be the same or slightly faster than the algebraic solution, actually achieving this is not easy. It requires significant error-prone algebraic manipulations to be performed by hand, and I am apparently too sloppy to get it done without making mistakes. Regardless, I believe the conclusions here are supported by the data.
