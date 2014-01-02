@@ -210,9 +210,14 @@ namespace Demo
             for (int i = 0; i < S.N; ++i)
                 data[0, i] = S.x[i];
 
+            // Run the simulation once first to ensure JIT has ocurred if necessary.
+            Simulate(N, dt, data);
+
             // Start time of the simulation.
             long start = Timer.Counter;
-            Simulate(N, dt, data);
+            // run the simulation 100 times to avoid noise.
+            for (int i = 0; i < 100; ++i)
+                Simulate(N, dt, data);
             double time = Timer.Delta(start);
             Console.WriteLine("{0} time: {1}", Title, time);
 
