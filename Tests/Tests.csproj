@@ -8,8 +8,8 @@
     <ProjectGuid>{9CC62442-D627-4F57-BA97-E54997A0502B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SyMathTests</RootNamespace>
-    <AssemblyName>SyMathTests</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -56,7 +56,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ComputerAlgebra\ComputerAlgebra.csproj">
       <Project>{2877c441-fd0b-4441-a469-e677003ee35a}</Project>
-      <Name>SyMath</Name>
+      <Name>ComputerAlgebra</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Utils\Util\Util.csproj">
       <Project>{0a3db5cb-3c02-4779-b73a-927d2e1ebe54}</Project>

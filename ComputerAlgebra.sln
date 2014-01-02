@@ -7,7 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{9CC62442-D627-4F57-BA97-E54997A0502B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{F72D0543-36B1-4D90-B0CC-EEB68D475E94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LotkaVolterra", "Demo\LotkaVolterra\LotkaVolterra.csproj", "{F72D0543-36B1-4D90-B0CC-EEB68D475E94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Intro", "Demo\Intro\Intro.csproj", "{AADE970F-B358-425C-B6C8-9DC213A4B8BE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{AE42343D-CA41-4407-BAC7-8E438A8ACA78}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,9 +63,23 @@ Global
 		{F72D0543-36B1-4D90-B0CC-EEB68D475E94}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F72D0543-36B1-4D90-B0CC-EEB68D475E94}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F72D0543-36B1-4D90-B0CC-EEB68D475E94}.Release|x86.ActiveCfg = Release|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AADE970F-B358-425C-B6C8-9DC213A4B8BE} = {AE42343D-CA41-4407-BAC7-8E438A8ACA78}
+		{F72D0543-36B1-4D90-B0CC-EEB68D475E94} = {AE42343D-CA41-4407-BAC7-8E438A8ACA78}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

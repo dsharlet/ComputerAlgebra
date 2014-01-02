@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F72D0543-36B1-4D90-B0CC-EEB68D475E94}</ProjectGuid>
+    <ProjectGuid>{AADE970F-B358-425C-B6C8-9DC213A4B8BE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Demo</RootNamespace>
-    <AssemblyName>Demo</AssemblyName>
+    <RootNamespace>Intro</RootNamespace>
+    <AssemblyName>Intro</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,7 +48,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ComputerAlgebra\ComputerAlgebra.csproj">
+    <ProjectReference Include="..\..\ComputerAlgebra\ComputerAlgebra.csproj">
       <Project>{2877c441-fd0b-4441-a469-e677003ee35a}</Project>
       <Name>ComputerAlgebra</Name>
     </ProjectReference>
