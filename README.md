@@ -97,7 +97,7 @@ On my machine, I get the following timings:
 * **SimulateNative**: 3.9s (15.7x Algebra)
 * **SimulateNativeHardCoded**: 0.46s (1.85x Algebra)
 * **SimulateAlgebra**: 0.249s
-* **SimulateNativeHardCoded(C++)**: 0.34s
+* **SimulateNativeHardCoded(C++)**: 0.10s
 
 All simulations should produce identical output, less some subtle differences due to the algebraic manipulations performed by the algebra simulation, which do not necessarily preserve floating point equivalence.
 
@@ -107,4 +107,4 @@ Here are some conclusions we can draw from these results:
 * The hardcoded simulation is much faster, because the overhead of dealing with the simulation logic and parameters is eliminated. However, this simulation is extremely inflexible. Changing any parameters of the simulation requires changing the program itself. This is not practical if you want the simulation behavior to be defined by users.
 * The algebraic simulation is faster still, but, it maintains the flexibilty of the general solution. This is because the algebraic expressions describing the simulation are simplified and evaluated as if the simulation were hardcoded. Enabling this performance while maintaining flexibility is the motivation behind the ComputerAlgebra project!
 * While we should expect the hardcoded simulation to be the same or slightly faster than the algebraic solution, actually achieving this is not easy. It requires significant error-prone algebraic manipulations to be performed by hand, and I am apparently too sloppy to get it done without making mistakes. Regardless, I believe the conclusions here are supported by the data.
-* The C++ simulation time is presented only to provide an indication that even using C++ is not enough by itself to avoid the penalty for supporting full flexible and general numerical simulations. While it's true that building a project like ComputerAlgebra for C++ would likely provide even more performance benefit, it would also take a **lot** more time and effort :)
+* The C++ simulation time is presented only to provide an indication that the algebra solution can roughly reach the same neighborhood of C++ while retaining full flexibility. I have considered developing a native (x86) code compiler for algebraic expressions which would likely deliver similar performance, but I have not yet felt squeezed by the performance of the existing LINQ compiler.
