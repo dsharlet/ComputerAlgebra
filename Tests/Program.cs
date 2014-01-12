@@ -23,7 +23,7 @@ namespace Tests
                 if (m != null)
                 {
                     IEnumerable<Equal> f = Set.MembersOf(m["x"]).Cast<Equal>();
-                    passed = f.All(i => Call.Abs((i.Left - i.Right).Evaluate(Set.MembersOf(Result).Cast<Arrow>())) < 1e-3);
+                    passed = f.All(i => Call.Abs(Binary.Subtract(i.Left, i.Right).Evaluate(Set.MembersOf(Result).Cast<Arrow>())) < 1e-3);
                 }
             }
 

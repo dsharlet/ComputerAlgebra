@@ -115,7 +115,7 @@ namespace ComputerAlgebra
             return false;
         }
         public static Expression Numerator(Expression x) { return Product.New(Product.TermsOf(x).Where(i => !IsInDenominator(i))); }
-        public static Expression Denominator(Expression x) { return Product.New(Product.TermsOf(x).Where(i => IsInDenominator(i)).Select(i => i ^ -1)); }
+        public static Expression Denominator(Expression x) { return Product.New(Product.TermsOf(x).Where(i => IsInDenominator(i)).Select(i => (Expression)(i ^ -1))); }
 
         private static int Precedence = Parser.Precedence(Operator.Multiply);
         public override string ToString() 

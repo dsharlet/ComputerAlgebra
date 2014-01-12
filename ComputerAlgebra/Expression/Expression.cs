@@ -43,7 +43,7 @@ namespace ComputerAlgebra
         Arrow,
         Substitute,
     }
-
+    
     [TypeConverter(typeof(ExpressionConverter))]
     public abstract class Expression : IComparable<Expression>, IEquatable<Expression>
     {
@@ -82,34 +82,34 @@ namespace ComputerAlgebra
         public static Expression Parse(string s) { return parser.Parse(s); }
 
         // Expression operators.
-        public static Expression operator +(Expression L, Expression R) { return Sum.New(L, R).Evaluate(); }
-        public static Expression operator -(Expression L, Expression R) { return L + Unary.Negate(R); }
-        public static Expression operator *(Expression L, Expression R) { return Product.New(L, R).Evaluate(); }
-        public static Expression operator /(Expression L, Expression R) { return L * Power.New(R, -1); }
-        public static Expression operator ^(Expression L, Expression R) { return Binary.Power(L, R).Evaluate(); }
-        public static Expression operator -(Expression O) { return -1 * O; }
+        public static LazyExpression operator +(Expression L, Expression R) { return new LazyExpression(Sum.New(L, R)); }
+        public static LazyExpression operator -(Expression L, Expression R) { return new LazyExpression(Sum.New(L, Unary.Negate(R))); }
+        public static LazyExpression operator *(Expression L, Expression R) { return new LazyExpression(Product.New(L, R)); }
+        public static LazyExpression operator /(Expression L, Expression R) { return new LazyExpression(Product.New(L, Power.New(R, -1))); }
+        public static LazyExpression operator ^(Expression L, Expression R) { return new LazyExpression(Binary.Power(L, R)); }
+        public static LazyExpression operator -(Expression O) { return new LazyExpression(Product.New(-1, O)); }
 
-        public static Expression operator &(Expression L, Expression R) { return Binary.And(L, R).Evaluate(); }
-        public static Expression operator |(Expression L, Expression R) { return Binary.Or(L, R).Evaluate(); }
-        public static Expression operator !(Expression O) { return Unary.Not(O).Evaluate(); }
+        public static LazyExpression operator &(Expression L, Expression R) { return new LazyExpression(Binary.And(L, R)); }
+        public static LazyExpression operator |(Expression L, Expression R) { return new LazyExpression(Binary.Or(L, R)); }
+        public static LazyExpression operator !(Expression O) { return new LazyExpression(Unary.Not(O)); }
 
-        public static Expression operator ==(Expression L, Expression R) 
+        public static LazyExpression operator ==(Expression L, Expression R)
         {
             if (ReferenceEquals(L, null) || ReferenceEquals(R, null))
-                return Constant.New(ReferenceEquals(L, R));
-            return Binary.Equal(L, R).Evaluate();
+                return new LazyExpression(Constant.New(ReferenceEquals(L, R)));
+            return new LazyExpression(Binary.Equal(L, R));
         }
-        public static Expression operator !=(Expression L, Expression R)
+        public static LazyExpression operator !=(Expression L, Expression R)
         {
             if (ReferenceEquals(L, null) || ReferenceEquals(R, null))
-                return Constant.New(!ReferenceEquals(L, R));
-            return Binary.NotEqual(L, R).Evaluate();
+                return new LazyExpression(Constant.New(!ReferenceEquals(L, R)));
+            return new LazyExpression(Binary.NotEqual(L, R));
         }
-        public static Expression operator <(Expression L, Expression R) { return Binary.Less(L, R).Evaluate(); }
-        public static Expression operator <=(Expression L, Expression R) { return Binary.LessEqual(L, R).Evaluate(); }
-        public static Expression operator >(Expression L, Expression R) { return Binary.Greater(L, R).Evaluate(); }
-        public static Expression operator >=(Expression L, Expression R) { return Binary.GreaterEqual(L, R).Evaluate(); }
-
+        public static LazyExpression operator <(Expression L, Expression R) { return new LazyExpression(Binary.Less(L, R)); }
+        public static LazyExpression operator <=(Expression L, Expression R) { return new LazyExpression(Binary.LessEqual(L, R)); }
+        public static LazyExpression operator >(Expression L, Expression R) { return new LazyExpression(Binary.Greater(L, R)); }
+        public static LazyExpression operator >=(Expression L, Expression R) { return new LazyExpression(Binary.GreaterEqual(L, R)); }
+        
         public static implicit operator Expression(Real x) { return Constant.New(x); }
         public static implicit operator Expression(BigRational x) { return Constant.New(x); }
         public static implicit operator Expression(decimal x) { return Constant.New(x); }

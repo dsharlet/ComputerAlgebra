@@ -51,7 +51,7 @@ namespace ComputerAlgebra
             }
 
             // Equate the original expression with the decomposed expressions.
-            D = Sum.New(terms.Select(j => D * j)).Expand();
+            D = Sum.New(terms.Select(j => (Expression)(D * j))).Expand();
             Polynomial l = Polynomial.New(N, x);
             Polynomial r = Polynomial.New(D, x);
 

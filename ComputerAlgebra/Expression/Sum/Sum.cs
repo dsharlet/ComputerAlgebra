@@ -106,7 +106,7 @@ namespace ComputerAlgebra
             foreach (Expression i in Terms.Skip(1))
             {
                 string si = i.ToString(Precedence);
-                string nsi = (-i).ToString(Precedence);
+                string nsi = ((Expression)(-i)).ToString(Precedence);
                 if (si.Length < nsi.Length)
                     s.Append(" + " + si);
                 else
