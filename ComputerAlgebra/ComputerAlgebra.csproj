@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Expression\Arrow.cs" />
     <Compile Include="Expression\Atom.cs" />
+    <Compile Include="Utils\LazyExpression.cs" />
     <Compile Include="Namespace\Global\ExpFunction.cs" />
     <Compile Include="Namespace\Global\LnFunction.cs" />
     <Compile Include="Namespace\Global\SqrtFunction.cs" />
