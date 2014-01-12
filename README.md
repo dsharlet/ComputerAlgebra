@@ -3,7 +3,7 @@ About
 
 This project is a library for enabling computer algebra in .Net applications. It is focused on providing tools to help perform numerical computations efficiently. 
 
-A key feature of the project is enabling compilation of expresions resulting from computer algebraic operations to "native" .Net code (via delegates). This allows complex systems to be defined at runtime, the solutions can be found and compiled once, and then the solutions used nearly as efficiently as hand-written .Net coded solutions. In other words, ComputerAlgebra compiled expressions allow programs to have the flexibility of behavior defined at runtime by the user, but retain the performance of hand-written hardcoded solutions to specific problems.
+A key feature of the project is enabling compilation of expresions resulting from computer algebraic operations to "native" .Net code (via LINQ Expressions compiled to delegates). This allows complex systems to be defined at runtime, the solutions can be found and compiled once, and then the solutions used nearly as efficiently as hand-written .Net coded solutions. In other words, ComputerAlgebra compiled expressions allow programs to have the flexibility of behavior defined at runtime by the user, but retain the performance of hand-written hardcoded solutions to specific problems.
 
 Development of this project is mostly motivated by a specific use case, LiveSPICE: http://www.livespice.org. LiveSPICE is a circuit simulation project loosely aimed at replicating the functionality of other SPICE simulations, with the unique feature of being able to run simulations in real time on live audio signals.
 
@@ -80,14 +80,14 @@ for (int i = 0; i < 20; ++i)
 }
 ```
 
-Justification of Performance Claims
------------------------------------
+Performance
+-----------
 
-To demonstrate the potential performance advantages of the concept of compiling simulations, the LotkaVolterra demo program uses the compilation features of ComputerAlgebra to compile a predator-prey population model. The model is a differential equation, solutions are produced using Euler integration.
+To demonstrate the potential performance advantages of the concept of compiling simulations, the LotkaVolterra demo program uses the compilation features of ComputerAlgebra to compile the Lotka-Volterra predator-prey population model. The model is a differential equation, solutions are produced using Euler integration. For more information about the model, see http://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations.
 
-Three implementations of the simulation are provided:
+Several implementations of the simulation are provided:
 
-* **SimulateNative**: A normal C# implementation. This implementation is full general, it can support any PopulationSystem class given.
+* **SimulateNative**: A normal C# implementation. This implementation is fully general, it can support any PopulationSystem instance given.
 * **SimulateNativeHardCoded**: A C# implementation that is hardcoded to the specific PopulationSystem given in Main.
 * **SimulateAlgebra**: This implementation is generated at runtime via ComputerAlgebra simplified expressions. The meat of this implementation is in the 'DefineSimulate' function, which generates a function for the particular PopulationSystem.
 * **SimulateNativeHardCoded(C++)**: A C++ implementation of the hardcoded simulation.
@@ -97,7 +97,7 @@ On my machine, I get the following timings:
 * **SimulateNative**: 3.9s (15.7x Algebra)
 * **SimulateNativeHardCoded**: 0.46s (1.85x Algebra)
 * **SimulateAlgebra**: 0.249s
-* **SimulateNativeHardCoded(C++)**: 0.34s
+* **SimulateNativeHardCoded(C++)**: 0.10s
 
 All simulations should produce identical output, less some subtle differences due to the algebraic manipulations performed by the algebra simulation, which do not necessarily preserve floating point equivalence.
 
@@ -107,4 +107,4 @@ Here are some conclusions we can draw from these results:
 * The hardcoded simulation is much faster, because the overhead of dealing with the simulation logic and parameters is eliminated. However, this simulation is extremely inflexible. Changing any parameters of the simulation requires changing the program itself. This is not practical if you want the simulation behavior to be defined by users.
 * The algebraic simulation is faster still, but, it maintains the flexibilty of the general solution. This is because the algebraic expressions describing the simulation are simplified and evaluated as if the simulation were hardcoded. Enabling this performance while maintaining flexibility is the motivation behind the ComputerAlgebra project!
 * While we should expect the hardcoded simulation to be the same or slightly faster than the algebraic solution, actually achieving this is not easy. It requires significant error-prone algebraic manipulations to be performed by hand, and I am apparently too sloppy to get it done without making mistakes. Regardless, I believe the conclusions here are supported by the data.
-* The C++ simulation time is presented only to provide an indication that even using C++ is not enough by itself to avoid the penalty for supporting full flexible and general numerical simulations. While it's true that building a project like ComputerAlgebra for C++ would likely be even more powerful, it would also take a lot more time and effort :)
+* The C++ simulation time is presented only to provide an indication that the algebra solution can roughly reach the same neighborhood of C++ while retaining full flexibility. I have considered developing a native (x86) code compiler for algebraic expressions which would likely deliver similar performance, but I have not yet felt squeezed by the performance of the existing LINQ compiler.
