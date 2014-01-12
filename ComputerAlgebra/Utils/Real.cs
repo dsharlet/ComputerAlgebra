@@ -36,7 +36,7 @@ namespace ComputerAlgebra
                 r = x;
         }
 
-        public static Real Parse(string s) { return new Real(double.Parse(s)); }
+        public static Real Parse(string s) { return double.Parse(s); }
 
         public static readonly Real Infinity = new Real(PositiveInfinity);
 
@@ -54,6 +54,7 @@ namespace ComputerAlgebra
         public static implicit operator Real(int x) { return new Real(x); }
         public static implicit operator Real(double x) { return new Real(x); }
         public static implicit operator Real(decimal x) { return new Real(x); }
+        public static implicit operator Real(BigInteger x) { return new Real(x); }
         public static implicit operator Real(BigRational x) { return new Real(x); }
                
         // Relational operators.
@@ -65,41 +66,41 @@ namespace ComputerAlgebra
         public static bool operator >=(Real a, Real b) { return a.CompareTo(b) >= 0; }
         
         // Arithmetic operators.
-        public static Real operator +(Real a, Real b) { return new Real(a.r + b.r); }
-        public static Real operator -(Real a, Real b) { return new Real(a.r - b.r); }
-        public static Real operator *(Real a, Real b) { return new Real(a.r * b.r); }
-        public static Real operator %(Real a, Real b) { return new Real(a.r % b.r); }
-        public static Real operator /(Real a, Real b) { return new Real(a.r / b.r); }
-        public static Real operator ^(Real a, Real b) { return new Real(a.r ^ b.r); }
-        public static Real operator -(Real x) { return new Real(-x.r); }
+        public static Real operator +(Real a, Real b) { return a.r + b.r; }
+        public static Real operator -(Real a, Real b) { return a.r - b.r; }
+        public static Real operator *(Real a, Real b) { return a.r * b.r; }
+        public static Real operator %(Real a, Real b) { return a.r % b.r; }
+        public static Real operator /(Real a, Real b) { return a.r / b.r; }
+        public static Real operator ^(Real a, Real b) { return a.r ^ b.r; }
+        public static Real operator -(Real x) { return -x.r; }
         
         public static readonly Real Pi = Math.PI;
         public static readonly Real e = Math.E;
 
         // Math functions
-        public static Real Abs(Real x) { return new Real(BigRational.Abs(x.r)); }
+        public static Real Abs(Real x) { return BigRational.Abs(x.r); }
         public static int Sign(Real x) { return BigRational.Sign(x.r); }
 
         public static Real Min(Real x, Real y) { return x < y ? x : y; }
         public static Real Max(Real x, Real y) { return x > y ? x : y; }
 
-        public static Real Sin(Real x) { return new Real(Math.Sin((double)x)); }
-        public static Real Cos(Real x) { return new Real(Math.Cos((double)x)); }
-        public static Real Tan(Real x) { return new Real(Math.Tan((double)x)); }
+        public static Real Sin(Real x) { return Math.Sin((double)x); }
+        public static Real Cos(Real x) { return Math.Cos((double)x); }
+        public static Real Tan(Real x) { return Math.Tan((double)x); }
         public static Real Sec(Real x) { return 1 / Cos(x); }
         public static Real Csc(Real x) { return 1 / Sin(x); }
         public static Real Cot(Real x) { return 1 / Tan(x); }
 
-        public static Real ArcSin(Real x) { return new Real(Math.Asin((double)x)); }
-        public static Real ArcCos(Real x) { return new Real(Math.Acos((double)x)); }
-        public static Real ArcTan(Real x) { return new Real(Math.Atan((double)x)); }
+        public static Real ArcSin(Real x) { return Math.Asin((double)x); }
+        public static Real ArcCos(Real x) { return Math.Acos((double)x); }
+        public static Real ArcTan(Real x) { return Math.Atan((double)x); }
         public static Real ArcSec(Real x) { return ArcCos(1 / x); }
         public static Real ArcCsc(Real x) { return ArcSin(1 / x); }
         public static Real ArcCot(Real x) { return ArcTan(1 / x); }
 
-        public static Real Sinh(Real x) { return new Real(Math.Sinh((double)x)); }
-        public static Real Cosh(Real x) { return new Real(Math.Cosh((double)x)); }
-        public static Real Tanh(Real x) { return new Real(Math.Tanh((double)x)); }
+        public static Real Sinh(Real x) { return Math.Sinh((double)x); }
+        public static Real Cosh(Real x) { return Math.Cosh((double)x); }
+        public static Real Tanh(Real x) { return Math.Tanh((double)x); }
         public static Real Sech(Real x) { return 1 / Cosh(x); }
         public static Real Csch(Real x) { return 1 / Sinh(x); }
         public static Real Coth(Real x) { return 1 / Tanh(x); }
@@ -111,15 +112,15 @@ namespace ComputerAlgebra
         public static Real ArcCsch(Real x) { return ArcSinh(1 / x); }
         public static Real ArcCoth(Real x) { return ArcTanh(1 / x); }
 
-        public static Real Sqrt(Real x) { return new Real(Math.Sqrt((double)x)); }
-        public static Real Exp(Real x) { return new Real(Math.Exp((double)x)); }
-        public static Real Ln(Real x) { return new Real(Math.Log((double)x)); }
-        public static Real Log(Real x, Real b) { return new Real(Math.Log((double)x, (double)b)); }
-        public static Real Log10(Real x) { return new Real(Math.Log((double)x, 10.0)); }
+        public static Real Sqrt(Real x) { return Math.Sqrt((double)x); }
+        public static Real Exp(Real x) { return Math.Exp((double)x); }
+        public static Real Ln(Real x) { return Math.Log((double)x); }
+        public static Real Log(Real x, Real b) { return Math.Log((double)x, (double)b); }
+        public static Real Log10(Real x) { return Math.Log((double)x, 10.0); }
         
-        public static Real Floor(Real x) { return new Real(BigRational.Floor(x.r)); }
-        public static Real Ceiling(Real x) { return new Real(BigRational.Ceiling(x.r)); }
-        public static Real Round(Real x) { return new Real(BigRational.Round(x.r)); }
+        public static Real Floor(Real x) { return BigRational.Floor(x.r); }
+        public static Real Ceiling(Real x) { return BigRational.Ceiling(x.r); }
+        public static Real Round(Real x) { return BigRational.Round(x.r); }
         
         // IComparable interface.
         public int CompareTo(Real x) { return r.CompareTo(x.r); }
