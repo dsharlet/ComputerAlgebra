@@ -32,8 +32,8 @@ namespace ComputerAlgebra
             return new Call(UnknownFunction.New(Target, Args.Count()), Args); 
         }
 
-        public static Call New(Function Target, params Expression[] Args) { return New(Target, Args.AsEnumerable()); }
-        public static Call New(string Target, params Expression[] Args) { return New(Target, Args.AsEnumerable()); }
+        public static Call New(Function Target, params Expression[] Args) { return new Call(Target, Args); }
+        public static Call New(string Target, params Expression[] Args) { return new Call(UnknownFunction.New(Target, Args.Length), Args); }
 
         public override bool Matches(Expression E, MatchContext Matched)
         {
