@@ -18,6 +18,14 @@ namespace ComputerAlgebra
         public int ColumnCount { get { return lines.Max(i => i.Length); } }
         public int ZeroRow { get { return zero; } }
 
+        public PrettyString PadLines(int Min, int Max)
+        {
+            int l0 = Math.Min(-ZeroRow, Min);
+            int l1 = Math.Max(LineCount - ZeroRow, Max);
+
+            return new PrettyString(ZeroRow, Enumerable.Repeat("", -ZeroRow - l0).Concat(Lines).Concat(Enumerable.Repeat("", l1 - (LineCount - ZeroRow))));
+        }
+
         public static PrettyString ConcatLines(int Zero, PrettyString A, PrettyString B)
         {
             int cols = Math.Max(A.ColumnCount, B.ColumnCount);
@@ -167,7 +175,8 @@ namespace ComputerAlgebra
             PrettyString DS = Visit(D);
             precedence.Pop();
 
-            if (DS.ColumnCount <= 2 && DS.ColumnCount <= 2)
+            // Note that since there must be less than 2 columns, there can be no precedence issues.
+            if (NS.ColumnCount <= 2 && DS.ColumnCount <= 2)
                 return PrettyString.ConcatColumns(NS, "/", DS);
 
             int Cols = Math.Max(NS.ColumnCount, DS.ColumnCount);
@@ -211,6 +220,42 @@ namespace ComputerAlgebra
                     s = PrettyString.ConcatColumns(s, " + ", Visit(i));
             }
             return s;
+        }
+
+        protected override PrettyString VisitMatrix(Matrix A)
+        {
+            precedence.Push(0);
+            PrettyString[,] a = new PrettyString[A.M, A.N];
+
+            for (int i = 0; i < A.M; ++i)
+                for (int j = 0; j < A.N; ++j)
+                    a[i, j] = Visit(A[i, j]);
+
+            // Pad each rows' entries' height.
+            for (int i = 0; i < A.M; ++i)
+            {
+                int min = Enumerable.Range(0, A.N).Min(j => -a[i, j].ZeroRow);
+                int max = Enumerable.Range(0, A.N).Max(j => a[i, j].LineCount - a[i, j].ZeroRow);
+                for (int j = 0; j < A.N; ++j)
+                    a[i, j] = a[i, j].PadLines(min, max);
+            }
+
+            // Assemble the matrix in columns.
+            PrettyString s = "";
+            for (int j = 0; j < A.N; ++j)
+            {
+                PrettyString col = a[0, j];
+                for (int i = 1; i < A.M; ++i)
+                {
+                    col = PrettyString.ConcatLines(col.ZeroRow, col, "");
+                    col = PrettyString.ConcatLines((col.LineCount + a[i, j].LineCount) / 2, col, a[i, j]);
+                }
+
+                s = PrettyString.ConcatColumns(s, j == 0 ? "" : " ", col);
+            }
+
+            precedence.Pop();
+            return ConcatBrackets(s);
         }
 
         protected override PrettyString VisitBinary(Binary B)
