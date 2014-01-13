@@ -477,7 +477,7 @@ namespace ComputerAlgebra.LinqCompiler
         public void DoWhile(Action<LinqExpr> Body, LinqExpr Condition) { DoWhile((end, y) => Body(end), Condition); }
         public void DoWhile(Action Body, LinqExpr Condition) { DoWhile((x, y) => Body(), Condition); }
 
-        private string LabelName() { return (++anonymous).ToString(); }
-        private string AnonymousName() { return "!" + (++anonymous).ToString(); }
+        public string LabelName() { return (++anonymous).ToString(); }
+        public string AnonymousName() { return "!" + (++anonymous).ToString(); }
     }
 }

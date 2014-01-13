@@ -59,57 +59,121 @@ namespace ComputerAlgebra.LinqCompiler
             return null;
         }
 
-        protected override object VisitFor(For F)
+        protected override object VisitIf(If I)
         {
-            target.For(
-                () => Visit(F.Init),
-                target.Compile(F.Condition),
-                () => Visit(F.Next),
-                (Break, Continue) => 
-            {
-                loops.Push(new Loop(Break, Continue)); 
-                Visit(F.Body);
-                loops.Pop();
-            });
+            string name = target.LabelName();
+            LinqExprs.LabelTarget _else = LinqExpr.Label("if_" + name + "_else");
+            LinqExprs.LabelTarget end = LinqExpr.Label("if_" + name + "_end");
+
+            // Check the condition, exit if necessary.
+            target.Add(LinqExpr.IfThen(LinqExpr.Not(target.Compile(I.Condition)), LinqExpr.Goto(_else)));
+
+            // Execute true code.
+            target.PushScope();
+            Visit(I.True);
+            target.PopScope();
+            target.Add(LinqExpr.Goto(end));
+
+            // Execute false code.
+            target.Add(LinqExpr.Label(_else));
+            target.PushScope();
+            Visit(I.False);
+            target.PopScope();
+
+            // Exit point.
+            target.Add(LinqExpr.Label(end));
             return null;
         }
 
-        protected override object VisitIf(If I)
+
+        protected override object VisitFor(For F)
         {
-            target.If(
-                target.Compile(I.Condition), 
-                () => Visit(I.True), 
-                () => Visit(I.False));
+            target.PushScope();
+
+            // Generate the loop header code.
+            Visit(F.Init);
+
+            string name = target.LabelName();
+            LinqExprs.LabelTarget begin = LinqExpr.Label("for_" + name + "_begin");
+            LinqExprs.LabelTarget end = LinqExpr.Label("for_" + name + "_end");
+            loops.Push(new Loop(LinqExpr.Goto(end), LinqExpr.Goto(begin)));
+
+            // Check the condition, exit if necessary.
+            target.Add(LinqExpr.Label(begin));
+            target.Add(LinqExpr.IfThen(LinqExpr.Not(target.Compile(F.Condition)), LinqExpr.Goto(end)));
+
+            // Generate the body code.
+            Visit(F.Body);
+            
+            // Generate the step code.
+            Visit(F.Next);
+            target.Add(LinqExpr.Goto(begin));
+
+            // Exit point.
+            target.Add(LinqExpr.Label(end));
+
+            loops.Pop();
+            target.PopScope();
+
             return null;
         }
 
         protected override object VisitWhile(While W)
         {
-            target.While(
-                target.Compile(W.Condition),
-                (Break, Continue) =>
-            {
-                loops.Push(new Loop(Break, Continue));
-                Visit(W.Body);
-                loops.Pop();
-            });
+            string name = target.LabelName();
+            LinqExprs.LabelTarget begin = LinqExpr.Label("while_" + name + "_begin");
+            LinqExprs.LabelTarget end = LinqExpr.Label("while_" + name + "_end");
+            loops.Push(new Loop(LinqExpr.Goto(end), LinqExpr.Goto(begin)));
+
+            target.PushScope();
+
+            // Check the condition, exit if necessary.
+            target.Add(LinqExpr.Label(begin));
+            target.Add(LinqExpr.IfThen(LinqExpr.Not(target.Compile(W.Condition)), LinqExpr.Goto(end)));
+
+            // Generate the body target.
+            Visit(W.Body);
+
+            // Loop.
+            target.Add(LinqExpr.Goto(begin));
+
+            // Exit label.
+            target.Add(LinqExpr.Label(end));
+
+            loops.Pop();
+            target.PopScope();
             return null;
         }
 
         protected override object VisitDoWhile(DoWhile W)
         {
-            target.DoWhile((Break, Continue) =>
-            {
-                loops.Push(new Loop(Break, Continue));
-                Visit(W.Body);
-                loops.Pop();
-            }, target.Compile(W.Condition));
+            string name = target.LabelName();
+            LinqExprs.LabelTarget begin = LinqExpr.Label("do_" + name + "_begin");
+            LinqExprs.LabelTarget end = LinqExpr.Label("do_" + name + "_end");
+            loops.Push(new Loop(LinqExpr.Goto(end), LinqExpr.Goto(begin)));
+
+            target.PushScope();
+
+            // Check the condition, exit if necessary.
+            target.Add(LinqExpr.Label(begin));
+
+            // Generate the body target.
+            Visit(W.Body);
+
+            // Loop.
+            target.Add(LinqExpr.IfThen(target.Compile(W.Condition), LinqExpr.Goto(begin)));
+
+            // Exit label.
+            target.Add(LinqExpr.Label(end));
+
+            loops.Pop();
+            target.PopScope();
             return null;
         }
         
         protected override object VisitIncrement(Increment A)
         {
-            target.Add(LinqExpr.PreDecrementAssign(target.LookUp(A.Assign)));
+            target.Add(LinqExpr.PreIncrementAssign(target.LookUp(A.Assign)));
             return null;
         }
 
