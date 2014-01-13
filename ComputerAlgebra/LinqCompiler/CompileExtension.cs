@@ -9,21 +9,30 @@ namespace ComputerAlgebra.LinqCompiler
 {
     public static class CompileExtension
     {
+        // Compile a function into a CodeGen instance.
+        private static CodeGen CodeGenFunction(Function f, Module Module)
+        {
+            CodeGen code = new CodeGen(Module);
+            foreach (Variable i in f.Parameters)
+                code.Decl(Scope.Parameter, i);
+            if (f is StmtFunction)
+            {
+                StmtFunction sf = f as StmtFunction;
+                code.Compile(sf.Body);
+            }
+            else
+            {
+                code.Return(code.Compile(f.Call(f.Parameters)));
+            }
+            return code;
+        }
+
         /// <summary>
         /// Compile function to a delegate.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static Delegate Compile(this Function This, Module Module)
-        {
-            // Compile the function.
-            CodeGen code = new CodeGen(Module);
-            foreach (Variable i in This.Parameters)
-                code.Decl(Scope.Parameter, i);
-            code.Return<double>(code.Compile(This.Call(This.Parameters)));
-            return code.Build().Compile();
-        }
-
+        public static Delegate Compile(this Function This, Module Module) { return CodeGenFunction(This, Module).Build().Compile(); }
         public static Delegate Compile(this Function This) { return Compile(This, null); }
 
         /// <summary>
@@ -39,11 +48,7 @@ namespace ComputerAlgebra.LinqCompiler
                 throw new InvalidOperationException("Different parameters for Function '" + This.Name + "' and '" + typeof(T).ToString() + "'");
 
             // Compile the function.
-            CodeGen code = new CodeGen(Module);
-            foreach (Variable i in This.Parameters)
-                code.Decl(Scope.Parameter, i);
-            code.Return<double>(code.Compile(This.Call(This.Parameters)));
-            return code.Build<T>().Compile();
+            return CodeGenFunction(This, Module).Build<T>().Compile();
         }
 
         public static T Compile<T>(this Function This) { return Compile<T>(This, null); }

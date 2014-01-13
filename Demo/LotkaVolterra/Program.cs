@@ -150,7 +150,7 @@ namespace Demo
                 }
             });
 
-            code.Return<int>(N);
+            code.Return(N);
 
             // Compile the generated code.
             LinqExprs.Expression<Func<int, double[,], int>> expr = code.Build<Func<int, double[,], int>>();

@@ -166,7 +166,7 @@ namespace ComputerAlgebra
             }
 
             // return error
-            code.Return<double>(error);
+            code.Return(error);
 
             Func<double[,], double[], double, double> JxH = code.Build<Func<double[,], double[], double, double>>().Compile();
 

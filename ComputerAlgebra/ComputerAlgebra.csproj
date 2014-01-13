@@ -48,6 +48,18 @@
   <ItemGroup>
     <Compile Include="Expression\Arrow.cs" />
     <Compile Include="Expression\Atom.cs" />
+    <Compile Include="Expression\Functions\StmtFunction.cs" />
+    <Compile Include="LinqCompiler\CompileStatement.cs" />
+    <Compile Include="Statement\Assignment.cs" />
+    <Compile Include="Statement\BreakContinue.cs" />
+    <Compile Include="Statement\DoWhile.cs" />
+    <Compile Include="Statement\Return.cs" />
+    <Compile Include="Statement\If.cs" />
+    <Compile Include="Statement\Visitors\Visitor.cs" />
+    <Compile Include="Statement\While.cs" />
+    <Compile Include="Statement\For.cs" />
+    <Compile Include="Statement\Block.cs" />
+    <Compile Include="Statement\Statement.cs" />
     <Compile Include="Utils\LazyExpression.cs" />
     <Compile Include="Namespace\Global\ExpFunction.cs" />
     <Compile Include="Namespace\Global\LnFunction.cs" />
@@ -74,7 +86,7 @@
     <Compile Include="Extensions\SolutionSet.cs" />
     <Compile Include="Extensions\SystemOfEquations.cs" />
     <Compile Include="LinqCompiler\CompileExtension.cs" />
-    <Compile Include="LinqCompiler\CompileVisitor.cs" />
+    <Compile Include="LinqCompiler\CompileExpression.cs" />
     <Compile Include="Extensions\FindMatches.cs" />
     <Compile Include="Extensions\LaTeX.cs" />
     <Compile Include="Extensions\NSolve.cs" />
@@ -108,9 +120,9 @@
     <Compile Include="Utils\MatchContext.cs" />
     <Compile Include="Utils\Real.cs" />
     <Compile Include="Utils\ReferenceEqualityComparer.cs" />
-    <Compile Include="Visitors\CachedRecursiveVisitor.cs" />
-    <Compile Include="Visitors\CachedVisitor.cs" />
-    <Compile Include="Visitors\RecursiveVisitor.cs" />
+    <Compile Include="Expression\Visitors\CachedRecursiveVisitor.cs" />
+    <Compile Include="Expression\Visitors\CachedVisitor.cs" />
+    <Compile Include="Expression\Visitors\RecursiveVisitor.cs" />
     <Compile Include="Extensions\Evaluate.cs" />
     <Compile Include="Expression\Binary.cs" />
     <Compile Include="Expression\Power.cs" />
@@ -131,7 +143,7 @@
     <Compile Include="Extensions\Factor.cs" />
     <Compile Include="Extensions\Differentiate.cs" />
     <Compile Include="Extensions\Expand.cs" />
-    <Compile Include="Visitors\Visitor.cs" />
+    <Compile Include="Expression\Visitors\Visitor.cs" />
     <Compile Include="Extensions\LaplaceTransform.cs" />
     <Compile Include="Expression\Sum\LinearCombination.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

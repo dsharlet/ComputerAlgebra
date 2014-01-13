@@ -35,13 +35,15 @@ namespace ComputerAlgebra.LinqCompiler
 
         private IEnumerable<Type> libraries = new Type[] { typeof(StandardMath) };
         public IEnumerable<Type> Libraries { get { return libraries; } set { libraries = value; } }
-        private CompileVisitor compiler;
+        private CompileExpression expressionCompiler;
+        private CompileStatement statementCompiler;
 
         public CodeGen() : this(null) { }
 
         public CodeGen(Module Module) : base(Module != null ? Module : new Module())
         {
-            compiler = new CompileVisitor(this);
+            expressionCompiler = new CompileExpression(this);
+            statementCompiler = new CompileStatement(this);
             scope = new ScopeDeclContext(this);
         }
 
@@ -80,11 +82,11 @@ namespace ComputerAlgebra.LinqCompiler
         /// Generate a return statement.
         /// </summary>
         /// <param name="Value"></param>
-        public void Return<T>(LinqExpr Value)
+        public void Return(LinqExpr Value)
         {
             // Create the return label if it doesn't already exist.
             if (ret == null)
-                ret = LinqExpr.Label(typeof(T), "ret");
+                ret = LinqExpr.Label(Value.Type, "ret");
             code.Add(LinqExpr.Return(ret, Value));
         }
 
@@ -164,7 +166,13 @@ namespace ComputerAlgebra.LinqCompiler
         /// </summary>
         /// <param name="Expr"></param>
         /// <returns></returns>
-        public LinqExpr Compile(Expression Expr) { return compiler.Visit(Expr); }
+        public LinqExpr Compile(Expression Expr) { return expressionCompiler.Visit(Expr); }
+
+        /// <summary>
+        /// Compile the statement.
+        /// </summary>
+        /// <param name="Stmt"></param>
+        public void Compile(Statement Stmt) { statementCompiler.Visit(Stmt); }
 
         /// <summary>
         /// Add variables to the specified scope.
@@ -294,7 +302,36 @@ namespace ComputerAlgebra.LinqCompiler
         public ParamExpr Decl(Expression Expr) { return Decl(Scope.Local, "_" + AnonymousName(), Expr); }
         public ParamExpr DeclInit(Expression Expr, LinqExpr Init) { return DeclInit(Scope.Local, Expr, Init); }
         public ParamExpr DeclInit(Expression Expr, Expression Init) { return DeclInit(Scope.Local, Expr, Init); }
-        
+
+        public void If(
+            LinqExpr Condition,
+            Action True,
+            Action False)
+        {
+            string name = LabelName();
+            LinqExprs.LabelTarget _else = LinqExpr.Label("if_" + name + "_else");
+            LinqExprs.LabelTarget end = LinqExpr.Label("if_" + name + "_end");
+
+            // Check the condition, exit if necessary.
+            code.Add(LinqExpr.IfThen(LinqExpr.Not(Condition), LinqExpr.Goto(_else)));
+
+            // Execute true code.
+            PushScope();
+            True();
+            PopScope();
+            code.Add(LinqExpr.Goto(end));
+
+            // Execute false code.
+            code.Add(LinqExpr.Label(_else));
+            PushScope();
+            False();
+            PopScope();
+
+            // Exit point.
+            code.Add(LinqExpr.Label(end));
+        }
+        public void If(LinqExpr Condition, Action True) { If(Condition, True, () => { }); }
+
         /// <summary>
         /// Generate a for loop with the given code generator functions.
         /// </summary>

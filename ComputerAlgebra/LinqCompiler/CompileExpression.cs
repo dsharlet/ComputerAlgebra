@@ -10,21 +10,13 @@ using LinqExpr = System.Linq.Expressions.Expression;
 namespace ComputerAlgebra.LinqCompiler
 {
     /// <summary>
-    /// Exception thrown when the compiler encounters an undefined variable.
-    /// </summary>
-    public class UndefinedVariable : UnresolvedName
-    {
-        public UndefinedVariable(string Name) : base(Name) { }
-    }
-
-    /// <summary>
     /// Visitor to generate LINQ expressions for our Expressions.
     /// </summary>
-    class CompileVisitor : ExpressionVisitor<LinqExpr>
+    class CompileExpression : ExpressionVisitor<LinqExpr>
     {
         private CodeGen target;
         
-        public CompileVisitor(CodeGen Target) { target = Target; }
+        public CompileExpression(CodeGen Target) { target = Target; }
         
         public override LinqExpr Visit(Expression E)
         {
