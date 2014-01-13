@@ -23,7 +23,7 @@ namespace ComputerAlgebra
         /// </summary>
         public Statement Body { get { return body; } }
 
-        private DoWhile(Expression Condition, Statement Body) { cond = Condition; body = Body; }
+        private DoWhile(Statement Body, Expression Condition) { body = Body; cond = Condition; }
 
         /// <summary>
         /// Create a new while loop.
@@ -31,8 +31,8 @@ namespace ComputerAlgebra
         /// <param name="Condition"></param>
         /// <param name="Body"></param>
         /// <returns></returns>
-        public static DoWhile New(Expression Condition, Statement Body) { return new DoWhile(Condition, Body); }
-        public static DoWhile New(Statement Body) { return new DoWhile(null, Body); }
+        public static DoWhile New(Statement Body, Expression Condition) { return new DoWhile(Body, Condition); }
+        public static DoWhile New(Statement Body) { return new DoWhile(Body, null); }
 
         public override void Execute(Dictionary<Expression, Expression> State)
         {
