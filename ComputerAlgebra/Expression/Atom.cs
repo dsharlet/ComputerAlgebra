@@ -12,13 +12,6 @@ namespace ComputerAlgebra
     /// </summary>
     public abstract class Atom : Expression
     {
-        private static List<Type> TypeOrder = new List<Type>()
-        {
-            typeof(Constant),
-            typeof(Variable),
-            typeof(Call),
-            typeof(Atom),
-        };
         protected virtual int TypeRank { get { return 3; } }
 
         public override sealed IEnumerable<Atom> Atoms { get { yield return this; } }
