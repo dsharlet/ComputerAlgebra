@@ -97,7 +97,7 @@
     <Compile Include="Namespace\Namespace.cs" />
     <Compile Include="Expression\Functions\Function.cs" />
     <Compile Include="Extensions\DSolve.cs" />
-    <Compile Include="Extensions\Matrix.cs" />
+    <Compile Include="Expression\Matrix.cs" />
     <Compile Include="Expression\Sum\Polynomial.cs" />
     <Compile Include="Transform\AlgebraTransform.cs" />
     <Compile Include="Transform\CachedTransform.cs" />
