@@ -207,16 +207,38 @@ namespace ComputerAlgebra
             }
             else if (IsUnaryPreOperator(tokens.Tok, ref op))
             {
+                // Unary operator.
                 tokens.Consume();
                 Expression t = Exp(Precedence(op));
                 return Unary.New(op, t);
             }
             else if (tokens.Tok == "(")
             {
+                // Group.
                 tokens.Consume();
                 Expression t = Exp(0);
                 tokens.Expect(")");
                 return t;
+            }
+            else if (tokens.Tok == "{")
+            {
+                // Set.
+                tokens.Consume();
+                return Set.New(L(",", "}"));
+            }
+            else if (tokens.Tok == "[")
+            {
+                // Matrix.
+                tokens.Consume();
+                List<List<Expression>> entries = new List<List<Expression>>();
+                while (tokens.Tok == "[")
+                {
+                    tokens.Consume();
+                    entries.Add(L(",", "]"));
+                }
+                tokens.Expect("]");
+
+                return Matrix.New(entries);
             }
             else
             {
@@ -234,16 +256,16 @@ namespace ComputerAlgebra
                     return Constant.New(false);
                 else if (tok == "\u221E" || tok == "oo")
                     return Constant.New(Real.Infinity);
-                else if (tok == "{")
-                    return Set.New(L(",", "}"));
                 else if (tokens.Tok == "[")
                 {
+                    // Bracket function call.
                     tokens.Consume();
                     List<Expression> args = L(",", "]");
                     return Call.New(Resolve(tok, args), args);
                 }
                 else if (tokens.Tok == "(")
                 {
+                    // Paren function call.
                     tokens.Consume();
                     List<Expression> args = L(",", ")");
                     return Call.New(Resolve(tok, args), args);
