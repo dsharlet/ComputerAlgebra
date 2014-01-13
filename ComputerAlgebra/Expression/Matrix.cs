@@ -77,7 +77,7 @@ namespace ComputerAlgebra
 
             using (IEnumerator<Expression> e = Elements.GetEnumerator())
                 for (int i = 0; i < M; ++i)
-                    for (int j = 0; j < N; ++j)
+                    for (int j = 0; j < N && e.MoveNext(); ++j)
                         A.m[i, j] = e.Current;
 
             return A;
@@ -245,7 +245,7 @@ namespace ComputerAlgebra
         {
             private Matrix a;
             private int i = 0;
-            private int j = 0;
+            private int j = -1;
 
             object IEnumerator.Current { get { return a[i, j]; } }
             Expression IEnumerator<Expression>.Current { get { return a[i, j]; } }
@@ -263,7 +263,7 @@ namespace ComputerAlgebra
                 }
                 return true;
             }
-            public void Reset() { i = 0; j = 0; }
+            public void Reset() { i = 0; j = -1; }
         }
         IEnumerator<Expression> IEnumerable<Expression>.GetEnumerator() { return new Enumerator(this); }
         IEnumerator IEnumerable.GetEnumerator() { return new Enumerator(this); }
