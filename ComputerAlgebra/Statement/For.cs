@@ -23,11 +23,11 @@ namespace ComputerAlgebra
         /// </summary>
         public Expression Condition { get { return cond; } }
 
-        private Statement next;
+        private Statement step;
         /// <summary>
         /// Statement executed after each loop iteration.
         /// </summary>
-        public Statement Next { get { return next; } }
+        public Statement Step { get { return step; } }
 
         private Statement body;
         /// <summary>
@@ -35,11 +35,11 @@ namespace ComputerAlgebra
         /// </summary>
         public Statement Body { get { return body; } }
 
-        private For(Statement Init, Expression Condition, Statement Next, Statement Body)
+        private For(Statement Init, Expression Condition, Statement Step, Statement Body)
         {
             init = Init;
             cond = Condition;
-            next = Next;
+            step = Step;
             body = Body;
         }
 
@@ -48,14 +48,14 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="Init"></param>
         /// <param name="Condition"></param>
-        /// <param name="Next"></param>
+        /// <param name="Step"></param>
         /// <param name="Body"></param>
         /// <returns></returns>
-        public static For New(Statement Init, Expression Condition, Statement Next, Statement Body) { return new For(Init, Condition, Next, Body); }
+        public static For New(Statement Init, Expression Condition, Statement Step, Statement Body) { return new For(Init, Condition, Step, Body); }
 
         public override void Execute(Dictionary<Expression, Expression> State)
         {
-            for (init.Execute(State); cond.Evaluate(State); next.Execute(State))
+            for (init.Execute(State); cond.Evaluate(State); step.Execute(State))
             {
                 try
                 {

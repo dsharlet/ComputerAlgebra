@@ -106,7 +106,7 @@ namespace ComputerAlgebra.LinqCompiler
             Visit(F.Body);
             
             // Generate the step code.
-            Visit(F.Next);
+            Visit(F.Step);
             target.Add(LinqExpr.Goto(begin));
 
             // Exit point.
