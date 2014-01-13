@@ -15,6 +15,7 @@ namespace ComputerAlgebra
 
         protected virtual T VisitAssignment(Assignment A) { return VisitUnknown(A); }
         protected virtual T VisitIncrement(Increment A) { return VisitUnknown(A); }
+        protected virtual T VisitDecrement(Decrement D) { return VisitUnknown(D); }
         protected virtual T VisitBlock(Block B) { return VisitUnknown(B); }
         protected virtual T VisitFor(For F) { return VisitUnknown(F); }
         protected virtual T VisitIf(If I) { return VisitUnknown(I); }
@@ -28,6 +29,7 @@ namespace ComputerAlgebra
         {
             if (S is Assignment) return VisitAssignment(S as Assignment);
             if (S is Increment) return VisitIncrement(S as Increment);
+            if (S is Decrement) return VisitDecrement(S as Decrement);
             if (S is Block) return VisitBlock(S as Block);
             if (S is For) return VisitFor(S as For);
             if (S is If) return VisitIf(S as If);

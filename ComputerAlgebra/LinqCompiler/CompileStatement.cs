@@ -170,10 +170,16 @@ namespace ComputerAlgebra.LinqCompiler
             target.PopScope();
             return null;
         }
-        
+
         protected override object VisitIncrement(Increment A)
         {
             target.Add(LinqExpr.PreIncrementAssign(target.LookUp(A.Assign)));
+            return null;
+        }
+
+        protected override object VisitDecrement(Decrement D)
+        {
+            target.Add(LinqExpr.PreDecrementAssign(target.LookUp(D.Assign)));
             return null;
         }
 

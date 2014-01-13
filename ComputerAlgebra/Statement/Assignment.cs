@@ -19,13 +19,13 @@ namespace ComputerAlgebra
     /// </summary>
     public abstract class BaseAssignment : Statement
     {
-        private Variable assign;
+        private Expression assign;
         /// <summary>
-        /// Variable to assign to.
+        /// Expression to assign to.
         /// </summary>
-        public Variable Assign { get { return assign; } }
+        public Expression Assign { get { return assign; } }
 
-        protected BaseAssignment(Variable Assign) { assign = Assign; }
+        protected BaseAssignment(Expression Assign) { assign = Assign; }
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace ComputerAlgebra
         /// </summary>
         public Expression Value { get { return value; } }
 
-        private Assignment(Variable Assign, Operator Operator, Expression Value) : base(Assign) { op = Operator; value = Value; }
+        private Assignment(Expression Assign, Operator Operator, Expression Value) : base(Assign) { op = Operator; value = Value; }
 
         /// <summary>
         /// Create a new assignment.
@@ -54,14 +54,14 @@ namespace ComputerAlgebra
         /// <param name="Operator"></param>
         /// <param name="Value"></param>
         /// <returns></returns>
-        public static Assignment New(Variable Assign, Operator Operator, Expression Value) { return new Assignment(Assign, Operator, Value); }
-        public static Assignment New(Variable Assign, Expression Value) { return new Assignment(Assign, Operator.Equal, Value); }
+        public static Assignment New(Expression Assign, Operator Operator, Expression Value) { return new Assignment(Assign, Operator, Value); }
+        public static Assignment New(Expression Assign, Expression Value) { return new Assignment(Assign, Operator.Equal, Value); }
         /// <summary>
         /// Create a new assignment from an arrow expression. The left side of the arrow must be a variable.
         /// </summary>
         /// <param name="Assign"></param>
         /// <returns></returns>
-        public static Assignment New(Arrow Assign) { return New((Variable)Assign.Left, Assign.Right); }
+        public static Assignment New(Arrow Assign) { return New(Assign.Left, Assign.Right); }
 
         public override void Execute(Dictionary<Expression, Expression> State)
         {
@@ -92,9 +92,24 @@ namespace ComputerAlgebra
     /// </summary>
     public class Increment : BaseAssignment
     {
-        private Increment(Variable Assign) : base(Assign) { }
+        private Increment(Expression Assign) : base(Assign) { }
 
-        public static Increment New(Variable Assign) { return new Increment(Assign); }
+        public static Increment New(Expression Assign) { return new Increment(Assign); }
+
+        public override void Execute(Dictionary<Expression, Expression> State)
+        {
+            State[Assign] += 1;
+        }
+    }
+
+    /// <summary>
+    /// Represents decrementing and assigning a variable.
+    /// </summary>
+    public class Decrement : BaseAssignment
+    {
+        private Decrement(Expression Assign) : base(Assign) { }
+
+        public static Decrement New(Expression Assign) { return new Decrement(Assign); }
 
         public override void Execute(Dictionary<Expression, Expression> State)
         {
