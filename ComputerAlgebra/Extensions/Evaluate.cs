@@ -121,6 +121,27 @@ namespace ComputerAlgebra
             return C;
         }
 
+        protected override Expression VisitIndex(Index I)
+        {
+            I = (Index)base.VisitIndex(I);
+
+            // We can only index matrices.
+            Matrix A = I.Target as Matrix;
+            if (ReferenceEquals(A, null))
+                return I;
+
+            // We can only evaluate index expressions with constant integer indices.
+            if (!I.Indices.All(i => i.IsInteger()))
+                return I;
+
+            switch (I.Indices.Count())
+            {
+                case 1: return A[(int)I.Indices.ElementAt(0)];
+                case 2: return A[(int)I.Indices.ElementAt(0), (int)I.Indices.ElementAt(1)];
+            }
+            return I;
+        }
+
         protected override Expression VisitPower(Power P)
         {
             Expression L = Visit(P.Left);

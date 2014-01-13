@@ -23,6 +23,7 @@ namespace ComputerAlgebra
         protected virtual T VisitPower(Power P) { return VisitBinary(P); }
         protected virtual T VisitCall(Call F) { return VisitUnknown(F); }
         protected virtual T VisitMatrix(Matrix A) { return VisitUnknown(A); }
+        protected virtual T VisitIndex(Index I) { return VisitUnknown(I); }
 
         public virtual T Visit(Expression E)
         {
@@ -36,6 +37,7 @@ namespace ComputerAlgebra
             else if (E is Unary) return VisitUnary(E as Unary);
             else if (E is Call) return VisitCall(E as Call);
             else if (E is Matrix) return VisitMatrix(E as Matrix);
+            else if (E is Index) return VisitIndex(E as Index);
             else return VisitUnknown(E);
         }
     }
