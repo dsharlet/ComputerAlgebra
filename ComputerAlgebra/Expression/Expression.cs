@@ -115,6 +115,7 @@ namespace ComputerAlgebra
         public static implicit operator Expression(decimal x) { return Constant.New(x); }
         public static implicit operator Expression(double x) { return Constant.New(x); }
         public static implicit operator Expression(int x) { return Constant.New(x); }
+        public static implicit operator Expression(bool x) { return Constant.New(x); }
         public static implicit operator Expression(string x) { return Parse(x); }
         public static implicit operator bool(Expression x) { return x.IsTrue(); }
         public static explicit operator Real(Expression x) { return (Constant)x; }
