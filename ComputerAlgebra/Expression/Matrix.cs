@@ -96,6 +96,25 @@ namespace ComputerAlgebra
         }
 
         /// <summary>
+        /// Create a new matrix representing a linear system of equations.
+        /// </summary>
+        /// <param name="Rows"></param>
+        /// <param name="Columns"></param>
+        /// <returns></returns>
+        public static Matrix New(IEnumerable<LinearCombination> Rows, IEnumerable<Expression> Columns)
+        {
+            Matrix A = new Matrix(Rows.Count(), Columns.Count() + 1);
+
+            using (IEnumerator<LinearCombination> ei = Rows.GetEnumerator())
+                for (int i = 0; i < A.M && ei.MoveNext(); ++i)
+                    using (IEnumerator<Expression> ej = Columns.Append(1).GetEnumerator())
+                        for (int j = 0; j < A.N && ej.MoveNext(); ++j)
+                            A.m[i, j] = ei.Current[ej.Current];
+
+            return A;
+        }
+
+        /// <summary>
         /// Create an identity matrix.
         /// </summary>
         /// <param name="N"></param>
