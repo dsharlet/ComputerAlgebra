@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Expression\Arrow.cs" />
     <Compile Include="Expression\Atom.cs" />
+    <Compile Include="Expression\Array.cs" />
     <Compile Include="Expression\Index.cs" />
     <Compile Include="Expression\Functions\StmtFunction.cs" />
     <Compile Include="LinqCompiler\CompileStatement.cs" />

@@ -124,21 +124,27 @@ namespace ComputerAlgebra
         protected override Expression VisitIndex(Index I)
         {
             I = (Index)base.VisitIndex(I);
-
-            // We can only index matrices.
-            Matrix A = I.Target as Matrix;
-            if (ReferenceEquals(A, null))
-                return I;
-
+            
             // We can only evaluate index expressions with constant integer indices.
             if (!I.Indices.All(i => i.IsInteger()))
                 return I;
 
-            switch (I.Indices.Count())
+            // Index a matrix.
+            Matrix M = I.Target as Matrix;
+            if (!ReferenceEquals(M, null))
             {
-                case 1: return A[(int)I.Indices.ElementAt(0)];
-                case 2: return A[(int)I.Indices.ElementAt(0), (int)I.Indices.ElementAt(1)];
+                switch (I.Indices.Count())
+                {
+                    case 1: return M[(int)I.Indices.ElementAt(0)];
+                    case 2: return M[(int)I.Indices.ElementAt(0), (int)I.Indices.ElementAt(1)];
+                }
             }
+
+            // Index an array.
+            Array A = I.Target as Array;
+            if (!ReferenceEquals(A, null))
+                return Constant.New(A.Value.GetValue(I.Indices.Select(i => (int)i).ToArray()));
+
             return I;
         }
 
