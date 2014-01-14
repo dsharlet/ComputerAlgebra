@@ -11,9 +11,6 @@ namespace ComputerAlgebra
         public abstract void Execute(Dictionary<Expression, Expression> State);
         public void Execute(IEnumerable<Arrow> State) { Execute(State.ToDictionary(i => i.Left, i => i.Right)); }
 
-        //public static implicit operator Statement(Expression Expr)
-        //{
-
-        //}
+        public static implicit operator Statement(Arrow Assign) { return Assignment.New(Assign); }
     }
 }
