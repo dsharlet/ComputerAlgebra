@@ -109,7 +109,10 @@ namespace ComputerAlgebra
         public static LazyExpression operator <=(Expression L, Expression R) { return new LazyExpression(Binary.LessEqual(L, R)); }
         public static LazyExpression operator >(Expression L, Expression R) { return new LazyExpression(Binary.Greater(L, R)); }
         public static LazyExpression operator >=(Expression L, Expression R) { return new LazyExpression(Binary.GreaterEqual(L, R)); }
-        
+
+        public LazyExpression this[params Expression[] i] { get { return new LazyExpression(Index.New(this, i)); } }
+
+        // Conversions.
         public static implicit operator Expression(Real x) { return Constant.New(x); }
         public static implicit operator Expression(BigRational x) { return Constant.New(x); }
         public static implicit operator Expression(decimal x) { return Constant.New(x); }
