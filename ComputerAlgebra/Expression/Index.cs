@@ -20,7 +20,7 @@ namespace ComputerAlgebra
 
         protected Index(Expression Target, IEnumerable<Expression> Indices) 
         {
-            Debug.Assert(Target != null);
+            Debug.Assert(!ReferenceEquals(Target, null));
             target = Target; 
             indices = Indices; 
         }

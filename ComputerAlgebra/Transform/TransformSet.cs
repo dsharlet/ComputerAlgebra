@@ -41,7 +41,7 @@ namespace ComputerAlgebra
 
         private bool IsChild(Expression P)
         {
-            return pattern == null || pattern.Matches(P) != null;
+            return ReferenceEquals(pattern, null) || pattern.Matches(P) != null;
         }
 
         private TransformSet(Expression Pattern, PatternTransform Transform) { pattern = Pattern; Add(Transform); }
@@ -69,7 +69,7 @@ namespace ComputerAlgebra
 
             // If the pattern can be split, create a new child.
             Expression parent = Split(T.Pattern);
-            if (parent != null && !parent.Equals(pattern))
+            if (!ReferenceEquals(parent, null) && !parent.Equals(pattern))
             {
                 children.Add(new TransformSet(parent, T));
                 return;
@@ -100,7 +100,7 @@ namespace ComputerAlgebra
         public Expression Transform(Expression x, Func<Expression, bool> Validate)
         {
             // If the expression doesn't match the base pattern, it won't match any of the transforms here.
-            if (pattern != null && pattern.Matches(x) == null)
+            if (!ReferenceEquals(pattern, null) && pattern.Matches(x) == null)
                 return x;
             
             // Try child nodes.

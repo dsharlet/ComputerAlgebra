@@ -20,7 +20,7 @@ namespace ComputerAlgebra
 
         protected Call(Function Target, IEnumerable<Expression> Args) 
         {
-            Debug.Assert(Target != null);
+            Debug.Assert(!ReferenceEquals(Target, null));
             target = Target; 
             arguments = Args; 
         }

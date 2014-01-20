@@ -53,7 +53,7 @@ namespace ComputerAlgebra
         public static Expression Prime(Expression Operand) 
         { 
             Call f = Operand as Call;
-            if (f != null && f.Arguments.Count() == 1)
+            if (!ReferenceEquals(f, null) && f.Arguments.Count() == 1)
                 return Call.D(f, f.Arguments.First());
             return new Unary(Operator.Prime, Operand); 
         }
