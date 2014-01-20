@@ -51,6 +51,8 @@
     <Compile Include="Expression\Array.cs" />
     <Compile Include="Expression\Index.cs" />
     <Compile Include="Expression\Functions\StmtFunction.cs" />
+    <Compile Include="Expression\Sets\Rings.cs" />
+    <Compile Include="Expression\Sets\FiniteSet.cs" />
     <Compile Include="LinqCompiler\CompileStatement.cs" />
     <Compile Include="Statement\Assignment.cs" />
     <Compile Include="Statement\BreakContinue.cs" />
@@ -128,7 +130,7 @@
     <Compile Include="Extensions\Evaluate.cs" />
     <Compile Include="Expression\Binary.cs" />
     <Compile Include="Expression\Power.cs" />
-    <Compile Include="Expression\Set.cs" />
+    <Compile Include="Expression\Sets\Set.cs" />
     <Compile Include="Expression\Unary.cs" />
     <Compile Include="Expression\Constant.cs" />
     <Compile Include="Expression\Call.cs" />

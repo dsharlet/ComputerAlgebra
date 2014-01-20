@@ -9,18 +9,19 @@ namespace ComputerAlgebra
     /// <summary>
     /// Represents an unordered collection of elements.
     /// </summary>
-    public class Set : Expression
+    public class FiniteSet : Set
     {
         protected IEnumerable<Expression> members;
         /// <summary>
         /// Elements contained in this set.
         /// </summary>
-        public IEnumerable<Expression> Members { get { return members; } }
+        public override IEnumerable<Expression> Members { get { return members; } }
 
-        protected Set(IEnumerable<Expression> Members) { members = Members; }
+        protected FiniteSet(IEnumerable<Expression> Members) { members = Members; }
 
-        public static Set New(IEnumerable<Expression> Members) { return new Set(Members.OrderBy(i => i).Distinct().Buffer()); }
-        public static Set New(params Expression[] Members) { return New(Members.AsEnumerable()); }
+        public static FiniteSet New(IEnumerable<Expression> Members) { return new FiniteSet(Members.OrderBy(i => i).Distinct().Buffer()); }
+
+        public override bool Contains(Expression x) { return members.Contains(x); }
 
         public override bool Matches(Expression Expr, MatchContext Matched)
         {
@@ -38,7 +39,7 @@ namespace ComputerAlgebra
         }
         public override int CompareTo(Expression R)
         {
-            Set RS = R as Set;
+            FiniteSet RS = R as FiniteSet;
             if (!ReferenceEquals(RS, null))
                 return members.LexicalCompareTo(RS.Members);
 
@@ -47,7 +48,7 @@ namespace ComputerAlgebra
 
         public override bool Equals(Expression E)
         {
-            Set S = E as Set;
+            FiniteSet S = E as FiniteSet;
             if (ReferenceEquals(S, null)) return base.Equals(E);
 
             return Members.SequenceEqual(S.Members);
@@ -55,15 +56,7 @@ namespace ComputerAlgebra
         public override string ToString() { return "{" + String.Join(", ", members) + "}"; }
         public override int GetHashCode() { return Members.UnorderedHashCode(); }
         
-        public static IEnumerable<Expression> MembersOf(Expression E)
-        {
-            if (E is Set)
-                return (E as Set).Members;
-            else
-                return new[] { E };
-        }
-
-        public static Set Union(Set A, Set B) { return Set.New(A.Members.Union(B.Members)); }
-        public static Set Intersection(Set A, Set B) { return Set.New(A.Members.Intersect(B.Members)); }
+        public static FiniteSet Union(FiniteSet A, FiniteSet B) { return FiniteSet.New(A.Members.Union(B.Members)); }
+        public static FiniteSet Intersection(FiniteSet A, FiniteSet B) { return FiniteSet.New(A.Members.Intersect(B.Members)); }
     }
 }
