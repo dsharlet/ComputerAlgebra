@@ -38,7 +38,7 @@ namespace ComputerAlgebra
                 return args[2];
 
             // Couldn't evaluate with these arguments.
-            throw new ArgumentException();
+            return null;
         }
     }
 }
