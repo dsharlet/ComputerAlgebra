@@ -30,11 +30,11 @@ namespace ComputerAlgebra
             throw new InvalidCastException();
         }
 
+        public override bool IsInteger() { return x.IsInteger(); }
         public override bool EqualsZero() { return x.EqualsZero(); }
         public override bool EqualsOne() { return x.EqualsOne(); }
-        public override bool IsFalse() { return x.EqualsZero(); }
-        public override bool IsTrue() { return !x.EqualsZero(); }
-        public override bool IsInteger() { return x.IsInteger(); }
+        public override bool IsFalse() { return EqualsZero(); }
+        public override bool IsTrue() { return !EqualsZero(); }
 
         public static implicit operator Real(Constant x) { return x.x; }
         

@@ -80,7 +80,7 @@ namespace ComputerAlgebra
             if (F.Target.Name == "D" && F.Arguments.Count() == 2)
                 return @"\frac{d}{d" + Visit(F.Arguments.ElementAt(1)) + "}[" + Visit(F.Arguments.ElementAt(0)) + "]";
 
-            return Visit(F.Target) + @"(" + String.Join(", ", F.Arguments.Select(i => Visit(i))) + @")";
+            return Escape(F.Target.Name) + @"(" + String.Join(", ", F.Arguments.Select(i => Visit(i))) + @")";
         }
 
         protected override string VisitPower(Power P)
@@ -91,7 +91,7 @@ namespace ComputerAlgebra
 
         protected override string VisitConstant(Constant C)
         {
-            return C.Value.ToLaTeX();
+            return ((Real)C).ToLaTeX();
         }
 
         protected override string VisitUnknown(Expression E)
@@ -153,7 +153,7 @@ namespace ComputerAlgebra
         {
             Constant C = Product.TermsOf(x).FirstOrDefault(i => i is Constant) as Constant;
             if (C != null)
-                return C.Value < 0;
+                return (Real)C < 0;
             return false;
         }
     }

@@ -136,7 +136,7 @@ namespace ComputerAlgebra
         {
             Constant C = Product.TermsOf(x).FirstOrDefault(i => i is Constant) as Constant;
             if (C != null)
-                return C.Value < 0;
+                return (Real)C < 0;
             return false;
         }
 

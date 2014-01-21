@@ -105,7 +105,7 @@ namespace ComputerAlgebra
         {
             Constant C = Product.TermsOf(x).First() as Constant;
             if (C != null)
-                return C.Value < 0;
+                return (Real)C < 0;
             return false;
         }
         private static bool IsInDenominator(Expression x)
