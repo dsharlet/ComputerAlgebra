@@ -13,9 +13,15 @@ namespace ComputerAlgebra
     public class Call : Atom
     {
         protected Function target;
+        /// <summary>
+        /// Function called by this call expression.
+        /// </summary>
         public Function Target { get { return target; } }
 
         protected IEnumerable<Expression> arguments;
+        /// <summary>
+        /// Arguments for the call.
+        /// </summary>
         public IEnumerable<Expression> Arguments { get { return arguments; } }
 
         protected Call(Function Target, IEnumerable<Expression> Args) 
@@ -25,20 +31,29 @@ namespace ComputerAlgebra
             arguments = Args; 
         }
 
+        /// <summary>
+        /// Create a new Call expression.
+        /// </summary>
+        /// <param name="Target">Function to call.</param>
+        /// <param name="Args">Arguments for the call.</param>
+        /// <returns>Constructed Call expression.</returns>
         public static Call New(Function Target, IEnumerable<Expression> Args) { return new Call(Target, Args.Buffer()); }
+        public static Call New(Function Target, params Expression[] Args) { return new Call(Target, Args); }
+
+        /// <summary>
+        /// Create a new Call expression to an unknown function.
+        /// </summary>
+        /// <param name="Target">Name of the function to call.</param>
+        /// <param name="Args">Arguments for the call.</param>
+        /// <returns>Constructed Call expression.</returns>
         public static Call New(string Target, IEnumerable<Expression> Args) 
         {
             Args = Args.Buffer();
             return new Call(UnknownFunction.New(Target, Args.Count()), Args); 
         }
-
-        public static Call New(Function Target, params Expression[] Args) { return new Call(Target, Args); }
         public static Call New(string Target, params Expression[] Args) { return new Call(UnknownFunction.New(Target, Args.Length), Args); }
 
-        public override bool Matches(Expression E, MatchContext Matched)
-        {
-            return target.CallMatches(arguments, E, Matched);
-        }
+        public override bool Matches(Expression E, MatchContext Matched) { return target.CallMatches(arguments, E, Matched); }
 
         // object interface.
         public override string ToString() { return target.ToString() + "[" + String.Join(", ", arguments) + "]"; }
@@ -46,16 +61,6 @@ namespace ComputerAlgebra
         public override int GetHashCode() { return target.GetHashCode() ^ arguments.OrderedHashCode(); }
 
         protected override int TypeRank { get { return 2; } }
-        //public override IEnumerable<Atom> Atoms
-        //{
-        //    get 
-        //    {
-        //        yield return ConstantString.New(Name);
-        //        foreach (Expression i in arguments)
-        //            foreach (Atom j in i.Atoms)
-        //                yield return j;
-        //    }
-        //}
         public override int CompareTo(Expression R)
         {
             Call RF = R as Call;
@@ -68,10 +73,7 @@ namespace ComputerAlgebra
         }
 
         // Resolve a call to a function Name in the global namespace.
-        private static Call CallGlobal(string Name, params Expression[] Args)
-        {
-            return Call.New(Namespace.Global.Resolve(Name, Args), Args);
-        }
+        private static Call CallGlobal(string Name, params Expression[] Args) { return Call.New(Namespace.Global.Resolve(Name, Args), Args); }
 
         public static Expression If(Expression c, Expression t, Expression f) { return CallGlobal("If", c, t, f); }
 
