@@ -45,12 +45,14 @@ namespace ComputerAlgebra
         public bool EqualsZero() { return r.EqualsZero(); }
         public bool EqualsOne() { return r.EqualsOne(); }
 
+        public static explicit operator bool(Real x) { return !x.r.EqualsZero(); }
         public static explicit operator int(Real x) { return (int)x.r; }
         public static explicit operator double(Real x) { return (double)x.r; }
         public static explicit operator decimal(Real x) { return (decimal)x.r; }
         public static explicit operator BigInteger(Real x) { return (BigInteger)x.r; }
         public static explicit operator BigRational(Real x) { return x.r; }
 
+        public static implicit operator Real(bool x) { return new Real(x ? 1 : 0); }
         public static implicit operator Real(int x) { return new Real(x); }
         public static implicit operator Real(double x) { return new Real(x); }
         public static implicit operator Real(decimal x) { return new Real(x); }
