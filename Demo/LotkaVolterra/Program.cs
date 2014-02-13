@@ -98,9 +98,6 @@ namespace Demo
         // dt. The number of timesteps and the data buffer are parameters of the defined function.
         static Func<int, double[,], int> DefineSimulate(double dt, PopulationSystem S)
         {
-            // The population variable for species 'i' is x_i[t], i.e. a 
-            // variable dependent on t.
-
             CodeGen code = new CodeGen();
 
             // Define a parameter for the current population x, and define mappings to the 
