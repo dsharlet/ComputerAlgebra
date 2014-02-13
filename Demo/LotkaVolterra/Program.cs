@@ -124,8 +124,8 @@ namespace Demo
                     // Define a variable xi.
                     Expression xi = "x" + i.ToString();
                     x.Add(xi);
-                    // Map xi to Data[n, i].
-                    code.Map(Scope.Local, xi, LinqExpr.ArrayAccess(Data, LinqExpr.Subtract(n, LinqExpr.Constant(1)), LinqExpr.Constant(i)));
+                    // xi = Data[n, i].
+                    code.DeclInit(xi, LinqExpr.ArrayAccess(Data, LinqExpr.Subtract(n, LinqExpr.Constant(1)), LinqExpr.Constant(i)));
                 }
 
                 for (int i = 0; i < S.N; ++i)
