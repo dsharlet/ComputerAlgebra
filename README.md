@@ -1,18 +1,18 @@
 About
 -----
 
-This project is a library for enabling computer algebra in .Net applications. It is focused on providing tools to help perform numerical computations efficiently. 
+This project is a library for enabling computer algebra as a service in .Net applications. It is focused on providing tools to help perform numerical computations efficientlyn
 
-A key feature of the project is enabling compilation of expresions resulting from computer algebraic operations to "native" .Net code (via LINQ Expressions compiled to delegates). This allows complex systems to be defined at runtime, the solutions can be found and compiled once, and then the solutions used nearly as efficiently as hand-written .Net coded solutions. In other words, ComputerAlgebra compiled expressions allow programs to have the flexibility of behavior defined at runtime by the user, but retain the performance of hand-written hardcoded solutions to specific problems.
+A key feature of the project is enabling compilation of expresions resulting from algebraic operations to "native" .Net code (via LINQ Expressions compiled to delegates). This allows complex systems to be defined at runtime, the solutions can be found and compiled once, and then the solutions used nearly as efficiently as hand-written .Net coded solutions. In other words, ComputerAlgebra compiled expressions allow programs to have the flexibility of behavior defined at runtime by the user, but retain the performance of hand-written hardcoded solutions to specific problems.
 
-Development of this project is mostly motivated by a specific use case, LiveSPICE: http://www.livespice.org. LiveSPICE is a circuit simulation project loosely aimed at replicating the functionality of other SPICE simulations, with the unique feature of being able to run simulations in real time on live audio signals.
+Development of this project is mostly motivated by a specific use case, **LiveSPICE**: http://www.livespice.org. LiveSPICE is a circuit simulation project loosely aimed at replicating the functionality of other SPICE simulations, with the unique feature of being able to run simulations in real time on live audio signals.
 
-ComputerAlgebra is quite early in development. The only functionality that could be considered reliable is that which is stressed by LiveSPICE. There are many features of ComputerAlgebra that I started working on believing they would be useful for LiveSPICE, but I later abandoned because they proved not to be useful. A good example of this is the DSolve function, which uses the Laplace transform to solve systems of differential equations. While it will probably work for some small problems, it will generally not be reliable. I would certainly appreciate any contributions if you find something missing or broken! At the very least, a bug report would be appreciated :)
+ComputerAlgebra is quite early in development. The only functionality that could be considered reliable is that which is used by LiveSPICE. There are many features of ComputerAlgebra that I started working on believing they would be useful for LiveSPICE, but I later abandoned because they proved not to be useful. A good example of this is the DSolve function, which uses the Laplace transform to solve systems of differential equations. While it will probably work for some small problems, it will generally not be reliable. I would certainly appreciate any contributions if you find something missing or broken! At the very least, a bug report would be appreciated :)
 
 Basic Usage
 -----------
 
-This section is basically a reproduction of the 'Intro' project in the repo. 
+This section is basically a reproduction of the **Intro** project in the repo. 
 
 Here are some examples of creating expressions:
 
@@ -52,11 +52,11 @@ foreach (Arrow i in solutions)
     Console.WriteLine(i.ToString());
 ```
 
-A fundamental building block of ComputerAlgebra is the 'Arrow' expression. Arrow expressions define the value of one expression to be the value given by another expression. For example, 'x->2' defines the expression 'x' to have the value '2'.
+A fundamental building block of ComputerAlgebra is the `Arrow` expression. Arrow expressions define the value of one expression to be the value given by another expression. For example, `x->2` defines the expression `x` to have the value `2`. `x->2` can be constructed with `Arrow.New(x, 2)` in code.
 
-The 'Solve' function used above returns a list of Arrow expressions defining the solutions of the system. 
+The `Solve` function used above returns a list of Arrow expressions defining the solutions of the system. 
 
-Arrow expressions are used by the 'Evaluate' function to substitute values for expressions into other expressions. To demonstrate the usage of Evaluate, let's validate the solution by using Evaluate to substitute the solutions into the original system of equations, and then substitute a value for C.
+Arrow expressions are used by the `Evaluate` function to substitute values for expressions into other expressions. To demonstrate the usage of Evaluate, let's validate the solution by using Evaluate to substitute the solutions into the original system of equations, and then substitute a value for C.
 
 ```csharp
 Expression f_xy = f.Evaluate(solutions).Evaluate(Arrow.New("C", 2));
@@ -67,7 +67,7 @@ else
     Console.WriteLine("Failure! f = {0}, g = {1}", f_xy, g_xy);
 ```
 
-Suppose we need to evaluate the solutions efficiently many times. We can compile the solutions to delegates where 'C' is a parameter to the delegate, allowing it to be specified later.
+Suppose we need to evaluate the solutions efficiently many times. We can compile the solutions to delegates where `C` is a parameter to the delegate, allowing it to be specified later.
 
 ```csharp
 var x_C = x.Evaluate(solutions).Compile<Func<double, double>>("C");
@@ -83,21 +83,21 @@ for (int i = 0; i < 20; ++i)
 Performance
 -----------
 
-To demonstrate the potential performance advantages of the concept of compiling simulations, the LotkaVolterra demo program uses the compilation features of ComputerAlgebra to compile the Lotka-Volterra predator-prey population model. The model is a differential equation, solutions are produced using Euler integration. For more information about the model, see http://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations.
+To demonstrate the potential performance advantages of the concept of compiling simulations, the **LotkaVolterra** demo program uses the compilation features of ComputerAlgebra to compile the competitive Lotka-Volterra predator-prey population model. The model is a differential equation, solutions are produced using Euler integration. For more information about the model, see http://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations.
 
 Several implementations of the simulation are provided:
 
-* **SimulateNative**: A normal C# implementation. This implementation is fully general, it can support any PopulationSystem instance given.
-* **SimulateNativeHardCoded**: A C# implementation that is hardcoded to the specific PopulationSystem given in Main.
-* **SimulateAlgebra**: This implementation is generated at runtime via ComputerAlgebra simplified expressions. The meat of this implementation is in the 'DefineSimulate' function, which generates a function for the particular PopulationSystem.
+* **SimulateNative**: A normal C# implementation. This implementation is fully general, it can support any `PopulationSystem` instance given.
+* **SimulateNativeHardCoded**: A C# implementation that is hardcoded to the specific PopulationSystem defined in `Main`.
+* **SimulateAlgebra**: This implementation is generated at runtime via ComputerAlgebra simplified expressions. The meat of this implementation is in the `DefineSimulate` function, which generates a function definition for the given PopulationSystem.
 * **SimulateNativeHardCoded(C++)**: A C++ implementation of the hardcoded simulation.
 
 On my machine, I get the following timings:
 
-* **SimulateNative**: 3.9s (15.7x Algebra)
-* **SimulateNativeHardCoded**: 0.46s (1.85x Algebra)
+* **SimulateNative**: 3.9s (**15.7x** SimulateAlgebra)
+* **SimulateNativeHardCoded**: 0.46s (**1.85x** SimulateAlgebra)
 * **SimulateAlgebra**: 0.249s
-* **SimulateNativeHardCoded(C++)**: 0.10s
+* **SimulateNativeHardCoded(C++)**: 0.10s (**0.4x** SimulateAlgebra)
 
 All simulations should produce identical output, less some subtle differences due to the algebraic manipulations performed by the algebra simulation, which do not necessarily preserve floating point equivalence.
 
