@@ -1,9 +1,9 @@
 About
 -----
 
-This project is a library for enabling computer algebra as a service in .Net applications. It is focused on providing tools to help perform numerical computations efficientlyn
+This project is a library for enabling computer algebra as a service in .Net applications. It is focused on providing tools to help perform numerical computations efficiently.
 
-A key feature of the project is enabling compilation of expresions resulting from algebraic operations to "native" .Net code (via LINQ Expressions compiled to delegates). This allows complex systems to be defined at runtime, the solutions can be found and compiled once, and then the solutions used nearly as efficiently as hand-written .Net coded solutions. In other words, ComputerAlgebra compiled expressions allow programs to have the flexibility of behavior defined at runtime by the user, but retain the performance of hand-written hardcoded solutions to specific problems.
+A key feature of the project is enabling compilation of expresions resulting from algebraic operations to "native" .Net code via LINQ Expressions compiled to delegates. This allows complex systems to be defined at runtime, the solutions can be found and compiled once, and then the solutions used nearly as efficiently as hand-written .Net coded solutions. In other words, ComputerAlgebra compiled expressions allow programs to have the flexibility of behavior defined at runtime by the user, but retain the performance of hand-written hardcoded solutions to specific problems.
 
 Development of this project is mostly motivated by a specific use case, **LiveSPICE**: http://www.livespice.org. LiveSPICE is a circuit simulation project loosely aimed at replicating the functionality of other SPICE simulations, with the unique feature of being able to run simulations in real time on live audio signals.
 
@@ -94,10 +94,10 @@ Several implementations of the simulation are provided:
 
 On my machine, I get the following timings:
 
-* **SimulateNative**: 3.9s (**15.7x** SimulateAlgebra)
-* **SimulateNativeHardCoded**: 0.46s (**1.85x** SimulateAlgebra)
-* **SimulateAlgebra**: 0.249s
-* **SimulateNativeHardCoded(C++)**: 0.10s (**0.4x** SimulateAlgebra)
+* SimulateNative: **0.83s** (**4.43x** SimulateAlgebra)
+* SimulateNativeHardCoded: **0.22s** (**1.17x** SimulateAlgebra)
+* **SimulateAlgebra: 0.19s**
+* SimulateNativeHardCoded(C++): **0.10s** (**0.53x** SimulateAlgebra)
 
 All simulations should produce identical output, less some subtle differences due to the algebraic manipulations performed by the algebra simulation, which do not necessarily preserve floating point equivalence.
 
