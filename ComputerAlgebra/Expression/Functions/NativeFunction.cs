@@ -63,7 +63,7 @@ namespace ComputerAlgebra
         /// <param name="Name"></param>
         /// <param name="Method"></param>
         /// <returns></returns>
-        public static NativeFunction New(string Name, Delegate Method) { return new NativeFunction(Name, Method, Method.GetMethodInfo()); }
+        //public static NativeFunction New(string Name, Delegate Method) { return new NativeFunction(Name, Method, Method.GetMethodInfo()); }
         public static NativeFunction New<T>(string Name, T Method) { return new NativeFunction(Name, Method, typeof(T).GetMethod("Invoke")); }
 
         public override Expression Call(IEnumerable<Expression> Args)
@@ -100,7 +100,7 @@ namespace ComputerAlgebra
 
             foreach (var i in method.GetParameters().Zip(C.Arguments, (p, a) => new { p, a }))
             {
-                if (i.p.GetCustomAttribute<NoSubstitute>() != null)
+                if (i.p.CustomAttribute<NoSubstitute>() != null)
                 {
                     if (now.ContainsKey(i.a))
                     {

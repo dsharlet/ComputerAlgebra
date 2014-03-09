@@ -10,9 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ComputerAlgebra</RootNamespace>
     <AssemblyName>ComputerAlgebra</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +64,7 @@
     <Compile Include="Statement\For.cs" />
     <Compile Include="Statement\Block.cs" />
     <Compile Include="Statement\Statement.cs" />
+    <Compile Include="Utils\CustomAttribute.cs" />
     <Compile Include="Utils\LazyExpression.cs" />
     <Compile Include="Namespace\Global\ExpFunction.cs" />
     <Compile Include="Namespace\Global\LnFunction.cs" />
