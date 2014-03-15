@@ -94,10 +94,10 @@ Several implementations of the simulation are provided:
 
 On my machine, I get the following timings:
 
-* SimulateNative: **0.83s** (**4.43x** SimulateAlgebra)
-* SimulateNativeHardCoded: **0.22s** (**1.17x** SimulateAlgebra)
+* SimulateNative: **0.68s** (**5.96x** SimulateAlgebra)
+* SimulateNativeHardCoded: **0.14s** (**1.22x** SimulateAlgebra)
 * **SimulateAlgebra: 0.19s**
-* SimulateNativeHardCoded(C++): **0.10s** (**0.53x** SimulateAlgebra)
+* SimulateNativeHardCoded(C++): **0.099s** (**0.86x** SimulateAlgebra)
 
 All simulations should produce identical output, less some subtle differences due to the algebraic manipulations performed by the algebra simulation, which do not necessarily preserve floating point equivalence.
 
