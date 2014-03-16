@@ -12,7 +12,7 @@ ComputerAlgebra is quite early in development. The only functionality that could
 Basic Usage
 -----------
 
-This section is basically a reproduction of the **Intro** project in the repo. 
+This section is basically a reproduction of the **Demo** project in the repo. 
 
 Here are some examples of creating expressions:
 
