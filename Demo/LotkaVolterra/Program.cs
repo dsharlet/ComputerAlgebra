@@ -130,7 +130,6 @@ namespace Demo
                     // This list is the elements of the sum representing the i'th 
                     // row of f, i.e. r_i + (A*x)_i.
                     Expression dx_dt = 1;
-                    List<Expression> terms = new List<Expression>();
                     for (int j = 0; j < S.N; ++j)
                         dx_dt -= S.A[i, j] * x[j];
 
