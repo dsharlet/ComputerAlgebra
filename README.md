@@ -25,7 +25,7 @@ Constant B = Constant.New(3);
 Expression x = "x";
 Variable y = Variable.New("y");
             
-// Create a basic expressions.
+// Create basic expression with operator overloads.
 Expression f = A*x + B*y + 4;
 
 // This expression uses the implicit conversion from string to
