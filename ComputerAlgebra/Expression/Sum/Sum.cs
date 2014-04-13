@@ -30,7 +30,7 @@ namespace ComputerAlgebra
             if (Constants.Any())
             {
                 E = Binary.Subtract(E, New(Constants)).Evaluate();
-                PTerms = PTerms.ExceptUnique(Constants, RefComparer);
+                PTerms = PTerms.Except(Constants, RefComparer);
             }
             
             IEnumerable<Expression> ETerms = TermsOf(E);
