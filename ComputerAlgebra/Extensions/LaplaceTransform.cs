@@ -47,6 +47,13 @@ namespace ComputerAlgebra
             if (!Equals(E, Ex))
                 return Visit(Ex);
 
+            // Try -L(-E, s, t)
+            // TODO: It would be nice to handle this case in LinearTransform somehow.
+            Expression NE = Unary.Negate(E);
+            Expression NEx = NE.Evaluate();
+            if (!Equals(NE, NEx))
+                return Unary.Negate(Visit(NEx));
+
             // Give up.
             return LE;
         }
@@ -87,6 +94,13 @@ namespace ComputerAlgebra
             Expression Ex = E.Expand(s);
             if (!Equals(E, Ex))
                 return Visit(Ex);
+
+            // Try -IL(-E, s, t)
+            // TODO: It would be nice to handle this case in LinearTransform somehow.
+            Expression NE = Unary.Negate(E);
+            Expression NEx = NE.Evaluate();
+            if (!Equals(NE, NEx))
+                return Unary.Negate(Visit(NEx));
 
             // Give up.
             return LE;
