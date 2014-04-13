@@ -11,7 +11,7 @@ namespace ComputerAlgebra
     public class LazyExpression
     {
         private Expression value;
-        public Expression Evaluate() { return value.Evaluate(); }
+        private Expression evaluated = null;
 
         /// <summary>
         /// Construct a new lazy expression.
@@ -24,7 +24,13 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="LazyExpr"></param>
         /// <returns>Evaluated value of x.</returns>
-        public static implicit operator Expression(LazyExpression x) { return x.Evaluate(); }
+        public static implicit operator Expression(LazyExpression x) 
+        {
+            if (ReferenceEquals(x.evaluated, null))
+                x.evaluated = x.value.Evaluate();
+
+            return x.evaluated;
+        }
 
         public static implicit operator LazyExpression(Real x) { return new LazyExpression(x); }
         public static implicit operator LazyExpression(BigRational x) { return new LazyExpression(x); }
@@ -70,7 +76,8 @@ namespace ComputerAlgebra
         public static LazyExpression operator >=(LazyExpression L, LazyExpression R) { return new LazyExpression(Binary.GreaterEqual(L.value, R.value)); }
 
         // object interface.
-        public override int GetHashCode() { return value.GetHashCode(); }
-        public override bool Equals(object obj) { return value.Equals(obj); }
+        public override int GetHashCode() { return ((Expression)this).GetHashCode(); }
+        public override bool Equals(object obj) { return ((Expression)this).Equals(obj); }
+        public override string ToString() { return ((Expression)this).ToString(); }
     }
 }
