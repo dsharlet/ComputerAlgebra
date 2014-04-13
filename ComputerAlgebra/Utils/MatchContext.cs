@@ -27,7 +27,7 @@ namespace ComputerAlgebra
                     throw new InvalidOperationException("Duplicate prematch failed.");
         }
         public MatchContext(Expression Matching, params Arrow[] PreMatch) : this(Matching, PreMatch.AsEnumerable()) { }
-
+        
         /// <summary>
         /// Check if Key has already been matched to Value. If not, store it as the match.
         /// </summary>
@@ -62,6 +62,11 @@ namespace ComputerAlgebra
                 Remove(history[i]);
             history.RemoveRange(at, history.Count - at);
             return false;
+        }
+
+        public override string ToString()
+        {
+            return String.Join(", ", this.Select(i => i.Key.ToString() + " -> " + i.Value.ToString()));
         }
     }
 }
