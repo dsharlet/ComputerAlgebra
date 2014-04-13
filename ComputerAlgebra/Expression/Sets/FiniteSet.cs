@@ -19,7 +19,7 @@ namespace ComputerAlgebra
 
         protected FiniteSet(IEnumerable<Expression> Members) { members = Members; }
 
-        public static FiniteSet New(IEnumerable<Expression> Members) { return new FiniteSet(Members.OrderBy(i => i).Distinct().Buffer()); }
+        public new static FiniteSet New(IEnumerable<Expression> Members) { return new FiniteSet(Members.OrderBy(i => i).Distinct().Buffer()); }
 
         public override bool Contains(Expression x) { return members.Contains(x); }
 
