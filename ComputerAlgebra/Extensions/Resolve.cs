@@ -6,7 +6,7 @@ using System.Text;
 namespace ComputerAlgebra
 {
     /// <summary>
-    /// Expression visitor for substiting expressions in for other expressions.
+    /// Expression visitor for performing namespace lookups on unresolved variables/calls.
     /// </summary>
     class ResolveVisitor : RecursiveExpressionVisitor
     {
@@ -16,6 +16,8 @@ namespace ComputerAlgebra
         
         protected override Expression VisitCall(Call F)
         {
+            F = (Call)base.VisitCall(F);
+
             if (F.Target is UnknownFunction)
             {
                 IEnumerable<Function> lookup = ns.LookupFunction(F.Target.Name, F.Arguments);
