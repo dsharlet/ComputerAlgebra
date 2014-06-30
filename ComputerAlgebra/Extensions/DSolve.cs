@@ -48,36 +48,35 @@ namespace ComputerAlgebra
         }
 
         /// <summary>
-        /// Compute expressions for y[t] at t = t0 + h in terms of y[t0], the resulting expressions will be implicit for implicit methods.
+        /// Compute expressions for y[t + h] in terms of y[t], the resulting expressions will be implicit for implicit methods.
         /// </summary>
         /// <param name="dy_dt">Equations to solve.</param>
         /// <param name="y">Functions to solve for.</param>
         /// <param name="t">Independent variable.</param>
-        /// <param name="t0">Previous timestep.</param>
         /// <param name="h">Step size.</param>
         /// <param name="method">Integration method to use for differential equations.</param>
-        /// <returns>Expressions for y[t0 + h].</returns>
-        public static IEnumerable<Arrow> NDIntegrate(this IEnumerable<Arrow> dy_dt, Expression t, Expression t0, Expression h, IntegrationMethod method)
+        /// <returns>Expressions for y[t + h].</returns>
+        public static IEnumerable<Arrow> NDIntegrate(this IEnumerable<Arrow> dy_dt, Expression t, Expression h, IntegrationMethod method)
         {            
             switch (method)
             {
-                // y[t] = y[t0] + h*f[t0, y[t0]]
+                // y[t + h] = y[t] + h*f[t, y[t]]
                 case IntegrationMethod.Euler:
                     return dy_dt.Select(i => Arrow.New(
-                        DOf(i.Left),
-                        DOf(i.Left).Evaluate(t, t0) + h * i.Right.Evaluate(t, t0)));
+                        DOf(i.Left).Evaluate(t, t + h),
+                        DOf(i.Left) + h * i.Right));
 
-                // y[t] = y[t0] + h*f[t, y[t]]
+                // y[t + h] = y[t] + h*f[t + h, y[t + h]]
                 case IntegrationMethod.BackwardEuler:
                     return dy_dt.Select(i => Arrow.New(
-                        DOf(i.Left),
-                        DOf(i.Left).Evaluate(t, t0) + h * i.Right));
+                        DOf(i.Left).Evaluate(t, t + h),
+                        DOf(i.Left) + h * i.Right.Evaluate(t, t + h)));
 
-                // y[t] = y[t0] + (h/2)*(f[t0, y[t0]] + f[t, y[t]])
+                // y[t + h] = y[t] + (h/2)*(f[t, y[t]] + f[t + h, y[t + h]])
                 case IntegrationMethod.Trapezoid:
                     return dy_dt.Select(i => Arrow.New(
-                        DOf(i.Left),
-                        DOf(i.Left).Evaluate(t, t0) + (h / 2) * (i.Right.Evaluate(t, t0) + i.Right)));
+                        DOf(i.Left).Evaluate(t, t + h),
+                        DOf(i.Left) + (h / 2) * (i.Right + i.Right.Evaluate(t, t + h))));
 
                 default:
                     throw new NotImplementedException(method.ToString());
@@ -85,16 +84,15 @@ namespace ComputerAlgebra
         }
 
         /// <summary>
-        /// Solve a linear system of differential equations for y[t] at t = t0 + h in terms of y[t0].
+        /// Solve a linear system of differential equations for y[t + h] in terms of y[t].
         /// </summary>
         /// <param name="f">Equations to solve.</param>
         /// <param name="y">Functions to solve for.</param>
         /// <param name="t">Independent variable.</param>
-        /// <param name="t0">Previous timestep.</param>
         /// <param name="h">Step size.</param>
         /// <param name="method">Integration method to use for differential equations.</param>
-        /// <returns>Expressions for y[t0 + h].</returns>
-        public static List<Arrow> NDSolve(this IEnumerable<Equal> f, IEnumerable<Expression> y, Expression t, Expression t0, Expression h, IntegrationMethod method)
+        /// <returns>Expressions for y[t + h].</returns>
+        public static List<Arrow> NDSolve(this IEnumerable<Equal> f, IEnumerable<Expression> y, Expression t, Expression h, IntegrationMethod method)
         {
             // Find y' in terms of y.
             List<Arrow> dy_dt = f.Solve(y.Select(i => D(i, t)));
@@ -103,22 +101,21 @@ namespace ComputerAlgebra
             if (dy_dt.Any(i => i.Right.DependsOn(dy_dt.Select(j => j.Left))))
                 throw new ArgumentException("Differential equation is singular or not linear.");
 
-            return NDIntegrate(dy_dt, t, t0, h, method)
+            return NDIntegrate(dy_dt, t, h, method)
                 .Select(i => Equal.New(i.Left, i.Right))
-                .Solve(y);
+                .Solve(y.Evaluate(t, t + h));
         }
 
         /// <summary>
-        /// Partially solve a linear system of differential equations for y[t] at t = t0 + h in terms of y[t0]. See SolveExtensions.PartialSolve for more information.
+        /// Partially solve a linear system of differential equations for y[t + h] in terms of y[t]. See SolveExtensions.PartialSolve for more information.
         /// </summary>
         /// <param name="f">Equations to solve.</param>
         /// <param name="y">Functions to solve for.</param>
         /// <param name="t">Independent variable.</param>
-        /// <param name="t0">Previous timestep.</param>
         /// <param name="h">Step size.</param>
         /// <param name="method">Integration method to use for differential equations.</param>
-        /// <returns>Expressions for y[t0 + h].</returns>
-        public static List<Arrow> NDPartialSolve(this IEnumerable<Equal> f, IEnumerable<Expression> y, Expression t, Expression t0, Expression h, IntegrationMethod method)
+        /// <returns>Expressions for y[t + h].</returns>
+        public static List<Arrow> NDPartialSolve(this IEnumerable<Equal> f, IEnumerable<Expression> y, Expression t, Expression h, IntegrationMethod method)
         {
             // Find y' in terms of y.
             List<Arrow> dy_dt = f.Solve(y.Select(i => D(i, t)));
@@ -127,15 +124,15 @@ namespace ComputerAlgebra
             if (dy_dt.Any(i => i.Right.DependsOn(dy_dt.Select(j => j.Left))))
                 throw new ArgumentException("Differential equation is singular or not linear.");
 
-            return NDIntegrate(dy_dt, t, t0, h, method)
+            return NDIntegrate(dy_dt, t, h, method)
                 .Select(i => Equal.New(i.Left, i.Right))
-                .PartialSolve(y);
+                .PartialSolve(y.Evaluate(t, t + h));
         }
 
         // Get the expression that x is a derivative of.
-        private static Expression DOf(Expression x)
+        private static Expression DOf(Expression Dx)
         {
-            Call d = (Call)x;
+            Call d = (Call)Dx;
             if (d.Target.Name == "D")
                 return d.Arguments.First();
             throw new InvalidCastException("Expression is not a derivative");
