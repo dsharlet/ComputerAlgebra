@@ -16,6 +16,8 @@ namespace ComputerAlgebra
         
         protected override Expression VisitCall(Call F)
         {
+            F = (Call)base.VisitCall(F);
+
             if (F.Target is UnknownFunction)
             {
                 IEnumerable<Function> lookup = ns.LookupFunction(F.Target.Name, F.Arguments);
