@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
@@ -78,8 +79,12 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        private static Parser parser = new Parser(Namespace.Global);
-        public static Expression Parse(string s) { return parser.Parse(s); }
+        public static Expression Parse(string s, CultureInfo culture) 
+        {
+            Parser parser = new Parser(Namespace.Global) { Culture = culture };
+            return parser.Parse(s); 
+        }
+        public static Expression Parse(string s) { return Parse(s, CultureInfo.InstalledUICulture); }
 
         // Expression operators.
         public static LazyExpression operator +(Expression L, Expression R) { return new LazyExpression(Sum.New(L, R)); }

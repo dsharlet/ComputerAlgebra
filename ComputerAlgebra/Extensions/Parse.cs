@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -33,7 +34,7 @@ namespace ComputerAlgebra
         }
 
         static string Name = @"[a-zA-Z_]\w*";
-        static string Literal = @"[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?";
+        static string Literal = @"[-+]?[0-9]*[\.,]?[0-9]+([eE][-+]?[0-9]+)?";
         static Regex token = new Regex(
             "(" + Name + ")|(" + Literal + ")" +
             Escape("==", "=", "!=", ">=", ">", "<=", "<", "~=", "->",
@@ -108,6 +109,11 @@ namespace ComputerAlgebra
     public class Parser
     {
         private Namespace context = Namespace.Global;
+        public Namespace Context { get { return context; } set { context = value; } }
+
+        private CultureInfo culture = CultureInfo.InstalledUICulture;
+        public CultureInfo Culture { get { return culture; } set { culture = value; } }
+
         private TokenStream tokens;
 
         public Parser(Namespace Context) { context = Context; }
@@ -243,12 +249,12 @@ namespace ComputerAlgebra
             else
             {
                 string tok = tokens.Consume();
-
+                
                 decimal dec = 0;
                 double dbl = 0.0;
-                if (decimal.TryParse(tok, out dec))
+                if (decimal.TryParse(tok, NumberStyles.Float, culture, out dec))
                     return Constant.New(dec);
-                else if (double.TryParse(tok, out dbl))
+                if (double.TryParse(tok, NumberStyles.Float, culture, out dbl))
                     return Constant.New(dbl);
                 else if (tok == "True")
                     return Constant.New(true);
