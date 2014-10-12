@@ -98,7 +98,7 @@ namespace ComputerAlgebra
         }
 
         // IFormattable interface.
-        public string ToString(string format, IFormatProvider formatProvider) { return ((double)this).ToString(format); }
+        public string ToString(string format, IFormatProvider formatProvider) { return ((double)this).ToString(format, formatProvider); }
         public string ToString(string format) { return ToString(format, null); }
 
         // object interface.
