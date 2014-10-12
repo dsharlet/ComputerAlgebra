@@ -121,7 +121,6 @@ namespace ComputerAlgebra
         }
 
         // object interface.
-        public override string ToString() { return ToStringPrefix(Operator) + Operand.ToString(Parser.Precedence(Operator)) + ToStringPostfix(Operator); }
         public override int GetHashCode() { return Operator.GetHashCode() ^ Operand.GetHashCode(); }
         public override bool Equals(Expression E)
         {

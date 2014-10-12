@@ -41,8 +41,6 @@ namespace ComputerAlgebra
         public static Booleans New() { return instance; }
 
         public override bool Contains(Expression x) { return x.IsTrue() || x.IsFalse(); }
-        
-        public override string ToString() { return "Booleans"; }
     }
 
     public class Integers : Ring
@@ -53,8 +51,6 @@ namespace ComputerAlgebra
         public static Integers New() { return instance; }
 
         public override bool Contains(Expression x) { return x.IsInteger(); }
-        
-        public override string ToString() { return "Integers"; }
     }
 
     public class Reals : Ring
@@ -65,7 +61,5 @@ namespace ComputerAlgebra
         public static Reals New() { return instance; }
 
         public override bool Contains(Expression x) { return true; }
-        
-        public override string ToString() { return "Reals"; }
     }
 }

@@ -11,7 +11,7 @@ namespace ComputerAlgebra
     /// Arbitrary precision real number. Represents numbers as close to exactly as possible.
     /// </summary>
     [TypeConverter(typeof(RealConverter))]
-    public struct Real : IComparable<Real>, IEquatable<Real>
+    public struct Real : IComparable<Real>, IEquatable<Real>, IFormattable
     {
         private BigRational r;
 

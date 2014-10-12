@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ComputerAlgebra
 {
-    public class Constant : Atom, IFormattable
+    public class Constant : Atom
     {
         protected Real x;
         public Real Value { get { return x; } }
@@ -49,8 +49,6 @@ namespace ComputerAlgebra
 
         // object interface.
         public override int GetHashCode() { return x.GetHashCode(); }
-        public override string ToString() { return x.ToString("G6"); }
-        public string ToString(string format, IFormatProvider formatProvider) { return x.ToString(format, formatProvider); }
 
         // Note that this is *not* an arithmetic comparison, it is a canonicalization ordering.
         public override int CompareTo(Expression R)

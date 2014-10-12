@@ -119,6 +119,7 @@
     <Compile Include="Utils\DictionaryExtensions.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
     <Compile Include="Utils\ListExtensions.cs" />
+    <Compile Include="Utils\StringVisitor.cs" />
     <Compile Include="Utils\RealConverter.cs" />
     <Compile Include="Utils\ExpressionConverter.cs" />
     <Compile Include="LinqCompiler\CodeGen.cs" />

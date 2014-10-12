@@ -56,7 +56,6 @@ namespace ComputerAlgebra
         public override bool Matches(Expression E, MatchContext Matched) { return target.CallMatches(arguments, E, Matched); }
 
         // object interface.
-        public override string ToString() { return target.ToString() + "[" + String.Join(", ", arguments) + "]"; }
         public override bool Equals(Expression E) { return target.CallEquals(arguments, E) || base.Equals(E); }
         public override int GetHashCode() { return target.GetHashCode() ^ arguments.OrderedHashCode(); }
 

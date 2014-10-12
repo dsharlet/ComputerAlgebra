@@ -49,7 +49,6 @@ namespace ComputerAlgebra
                 cmp |= (ulong)name[i] << ((length - i - 1) * 16);
         }
 
-        public override string ToString() { return Name; }
         public override int GetHashCode() { return name.GetHashCode(); }
         public override bool Equals(Expression E)
         {

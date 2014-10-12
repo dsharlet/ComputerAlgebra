@@ -167,11 +167,6 @@ namespace ComputerAlgebra
         }
 
         // object interface.
-        public override string ToString() 
-        {
-            int pr = Parser.Precedence(Operator);
-            return Left.ToString(pr) + ToString(Operator) + Right.ToString(pr);
-        }
         public override int GetHashCode() { return Operator.GetHashCode() ^ Left.GetHashCode() ^ Right.GetHashCode(); }
 
         // Expression interface.

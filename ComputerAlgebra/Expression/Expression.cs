@@ -45,7 +45,7 @@ namespace ComputerAlgebra
     }
     
     [TypeConverter(typeof(ExpressionConverter))]
-    public abstract class Expression : IComparable<Expression>, IEquatable<Expression>
+    public abstract class Expression : IComparable<Expression>, IEquatable<Expression>, IFormattable
     {
         /// <summary>
         /// Try matching this pattern against an expression such that if Matches(Expr, Matched) is true, Substitute(Matched) is equal to Expr.
@@ -126,14 +126,18 @@ namespace ComputerAlgebra
 
         public static bool operator true(Expression x) { return x.IsTrue(); }
         public static bool operator false(Expression x) { return x.IsFalse(); }
-
-        public string ToString(int Precedence)
+        
+        // IFormattable interface.
+        public string ToString(string Format, IFormatProvider FormatProvider)
         {
-            string r = ToString();
-            if (Parser.Precedence(this) < Precedence)
-                r = "(" + r + ")";
-            return r;
+            StringVisitor visitor = new StringVisitor() 
+            { 
+                NumberFormat = Format, 
+                NumberFormatProvider = FormatProvider 
+            };
+            return visitor.Visit(this);
         }
+        public string ToString(IFormatProvider FormatProvider) { return ToString("G6", FormatProvider); }
 
         // object interface.
         public virtual bool Equals(Expression E) 
@@ -147,8 +151,13 @@ namespace ComputerAlgebra
             Expression E = obj as Expression;
             return ReferenceEquals(E, null) ? false : Equals(E);
         }
+        public sealed override string ToString()
+        {
+            StringVisitor visitor = new StringVisitor();
+            return visitor.Visit(this);
+        }
         public abstract override int GetHashCode();
-        
+
         /// <summary>
         /// Get an ordered list of the atomic Expression elements in this expression.
         /// </summary>

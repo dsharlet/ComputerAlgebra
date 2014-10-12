@@ -98,22 +98,6 @@ namespace ComputerAlgebra
         }
 
         // object interface.
-        private static int Precedence = Parser.Precedence(Operator.Add);
-        public override string ToString() 
-        {
-            StringBuilder s = new StringBuilder();
-            s.Append(Terms.First().ToString(Precedence));
-            foreach (Expression i in Terms.Skip(1))
-            {
-                string si = i.ToString(Precedence);
-                string nsi = ((Expression)(-i)).ToString(Precedence);
-                if (si.Length < nsi.Length)
-                    s.Append(" + " + si);
-                else
-                    s.Append(" - " + nsi);
-            }
-            return s.ToString();
-        }
         public override int GetHashCode() { return Terms.OrderedHashCode(); }
         public override bool Equals(Expression E)
         {

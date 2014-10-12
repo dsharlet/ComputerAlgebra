@@ -53,7 +53,6 @@ namespace ComputerAlgebra
 
             return Members.SequenceEqual(S.Members);
         }
-        public override string ToString() { return "{" + String.Join(", ", members) + "}"; }
         public override int GetHashCode() { return Members.UnorderedHashCode(); }
         
         public static FiniteSet Union(FiniteSet A, FiniteSet B) { return FiniteSet.New(A.Members.Union(B.Members)); }

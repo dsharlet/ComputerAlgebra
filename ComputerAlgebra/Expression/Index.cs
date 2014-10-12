@@ -45,7 +45,6 @@ namespace ComputerAlgebra
         }
 
         // object interface.
-        public override string ToString() { return target.ToString() + "[" + String.Join(", ", indices) + "]"; }
         public override bool Equals(Expression E)
         {
             Index I = E as Index;

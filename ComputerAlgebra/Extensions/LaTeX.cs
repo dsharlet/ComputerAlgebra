@@ -5,21 +5,8 @@ using System.Text;
 
 namespace ComputerAlgebra
 {
-    class LaTeXVisitor : ExpressionVisitor<string>
+    class LaTeXVisitor : StringVisitor
     {
-        private string Visit(Expression E, int Precedence)
-        {
-            string v = Visit(E);
-            if (Parser.Precedence(E) < Precedence)
-                v = "(" + v + ")";
-            return v;
-        }
-
-        public override string Visit(Expression E)
-        {
-            return base.Visit(E);
-        }
-        
         protected override string VisitProduct(Product M)
         {
             int pr = Parser.Precedence(Operator.Multiply);
@@ -147,14 +134,6 @@ namespace ComputerAlgebra
                     sb.Append(i);
             }
             return sb.ToString();
-        }
-
-        private static bool IsNegative(Expression x)
-        {
-            Constant C = Product.TermsOf(x).FirstOrDefault(i => i is Constant) as Constant;
-            if (C != null)
-                return (Real)C < 0;
-            return false;
         }
     }
 

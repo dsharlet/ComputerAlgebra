@@ -286,27 +286,7 @@ namespace ComputerAlgebra
         }
         IEnumerator<Expression> IEnumerable<Expression>.GetEnumerator() { return new Enumerator(this); }
         IEnumerator IEnumerable.GetEnumerator() { return new Enumerator(this); }
-
-        public override string ToString()
-        {
-            StringBuilder SB = new StringBuilder();
-
-            SB.Append("[");
-            for (int i = 0; i < M; ++i)
-            {
-                SB.Append("[");
-                for (int j = 0; j < N; ++j)
-                {
-                    if (j > 0) SB.Append(", ");
-                    SB.Append(m[i, j].ToString());
-                }
-                SB.Append("]");
-            }
-            SB.Append("]");
-
-            return SB.ToString();
-        }
-
+        
         public override int GetHashCode()
         {
             int hash = 33;
