@@ -34,7 +34,7 @@ namespace ComputerAlgebra
         }
 
         static string Name = @"[a-zA-Z_]\w*";
-        static string Literal = @"[-+]?[0-9]*[\.,]?[0-9]+([eE][-+]?[0-9]+)?";
+        static string Literal = @"[0-9]*[\.,]?[0-9]+([eE][-+]?[0-9]+)?";
         static Regex token = new Regex(
             "(" + Name + ")|(" + Literal + ")" +
             Escape("==", "=", "!=", ">=", ">", "<=", "<", "~=", "->",
