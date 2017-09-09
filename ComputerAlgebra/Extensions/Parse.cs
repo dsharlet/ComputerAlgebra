@@ -294,7 +294,7 @@ namespace ComputerAlgebra
 
         private Expression Resolve(string Token)
         {
-            Expression resolve = context.LookupName(Token).SingleOrDefault();
+            Expression resolve = context.LookupName(Token).Where(i => !(i is Function)).SingleOrDefault();
             if (!ReferenceEquals(resolve, null))
                 return resolve;
             else

@@ -152,6 +152,13 @@ namespace ComputerAlgebra
             return C.Value.ToString(NumberFormat, NumberFormatProvider);
         }
 
+        public override string Visit(Expression E)
+        {
+            if (E is Function)
+                return E.GetType().ToString();
+            return base.Visit(E);
+        }
+
         protected override string VisitUnknown(Expression E)
         {
             throw new NotImplementedException("ToString(" + E.GetType().ToString() + ")");
