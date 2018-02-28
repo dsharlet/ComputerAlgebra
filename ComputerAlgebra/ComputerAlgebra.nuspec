@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ComputerAlgebra</id>
+    <version>0.0.1</version>
+    <title>ComputerAlgebra</title>
+    <authors>Voxel8</authors>
+    <owners>Voxel8</owners>
+    <licenseUrl>https://github.com/Voxel8/ComputerAlgebra/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Voxel8/ComputerAlgebra</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Library for symbolic manipulation of mathematical expressions.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags></tags>
+  </metadata>
+</package>
