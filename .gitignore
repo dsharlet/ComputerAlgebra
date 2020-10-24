@@ -16,6 +16,9 @@ local.properties
 .settings/
 .loadpath
 
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
 # External tool builders
 .externalToolBuilders/
 
