@@ -79,7 +79,9 @@ namespace ComputerAlgebra.Plotting
             form.Paint += Plot_Paint;
             form.SizeChanged += Plot_SizeChanged;
 
-            thread = new Thread(() => Application.Run(form));
+            // The sleep is a lame hack to avoid errors when using the properties
+            // to change the form in a racy way.
+            thread = new Thread(() => { Thread.Sleep(100); Application.Run(form); });
             thread.Start();
         }
 
