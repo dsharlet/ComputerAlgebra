@@ -9,7 +9,7 @@ namespace ComputerAlgebra
     {
         string numberFormat;
         IFormatProvider numberFormatProvider;
-        
+
         public string NumberFormat { get { return numberFormat; } set { numberFormat = value; } }
         public IFormatProvider NumberFormatProvider { get { return numberFormatProvider; } set { numberFormatProvider = value; } }
 
@@ -112,8 +112,8 @@ namespace ComputerAlgebra
         protected override string VisitBinary(Binary B)
         {
             int pr = Parser.Precedence(B.Operator);
-            return Visit(B.Left, pr) 
-                + Binary.ToString(B.Operator) 
+            return Visit(B.Left, pr)
+                + Binary.ToString(B.Operator)
                 + Visit(B.Right, pr);
         }
 
@@ -131,8 +131,8 @@ namespace ComputerAlgebra
         protected override string VisitUnary(Unary U)
         {
             int pr = Parser.Precedence(U.Operator);
-            return Unary.ToStringPrefix(U.Operator) 
-                + Visit(U.Operand, pr) 
+            return Unary.ToStringPrefix(U.Operator)
+                + Visit(U.Operand, pr)
                 + Unary.ToStringPostfix(U.Operator);
         }
 

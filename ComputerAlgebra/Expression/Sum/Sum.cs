@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace ComputerAlgebra
 {
@@ -21,7 +17,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static Expression New(IEnumerable<Expression> Terms) { return Add.New(Terms); }
         public static Expression New(params Expression[] Terms) { return Add.New(Terms); }
-        
+
         public override bool Matches(Expression E, MatchContext Matched)
         {
             // Move the constants in this pattern to E.
@@ -32,7 +28,7 @@ namespace ComputerAlgebra
                 E = Binary.Subtract(E, New(Constants)).Evaluate();
                 PTerms = PTerms.Except(Constants, RefComparer);
             }
-            
+
             IEnumerable<Expression> ETerms = TermsOf(E);
 
             // Try starting the match at each term of the pattern.
@@ -107,7 +103,7 @@ namespace ComputerAlgebra
             return Terms.SequenceEqual(S.Terms);
         }
 
-        public override IEnumerable<Atom> Atoms 
+        public override IEnumerable<Atom> Atoms
         {
             get
             {

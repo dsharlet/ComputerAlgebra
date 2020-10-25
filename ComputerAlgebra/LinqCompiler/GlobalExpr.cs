@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-
-using LinqExprs = System.Linq.Expressions;
-using LinqExpr = System.Linq.Expressions.Expression;
-using ParamExpr = System.Linq.Expressions.ParameterExpression;
+﻿using LinqExpr = System.Linq.Expressions.Expression;
 
 namespace ComputerAlgebra.LinqCompiler
 {

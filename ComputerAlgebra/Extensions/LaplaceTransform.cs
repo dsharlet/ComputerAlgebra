@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ComputerAlgebra
+﻿namespace ComputerAlgebra
 {
     class LaplaceTransform : LinearTransform
     {
@@ -20,20 +15,20 @@ namespace ComputerAlgebra
         };
 
         protected Expression t, s;
-        
+
         private LaplaceTransform(Expression t, Expression s) { this.t = t; this.s = s; }
 
         protected override bool IsConstant(Expression x) { return !x.DependsOn(t); }
 
-        public override Expression Visit(Expression E) 
+        public override Expression Visit(Expression E)
         {
             if (!E.DependsOn(t))
                 return E / s;
-            
+
             return base.Visit(E);
         }
-                
-        protected override Expression VisitUnknown(Expression E) 
+
+        protected override Expression VisitUnknown(Expression E)
         {
             Expression LE = Call.L(E, t, s);
 
@@ -80,7 +75,7 @@ namespace ComputerAlgebra
         private InverseLaplaceTransform(Expression s, Expression t) { this.s = s; this.t = t; }
 
         protected override bool IsConstant(Expression x) { return !x.DependsOn(s); }
-        
+
         protected override Expression VisitUnknown(Expression E)
         {
             Expression LE = Call.IL(E, s, t);

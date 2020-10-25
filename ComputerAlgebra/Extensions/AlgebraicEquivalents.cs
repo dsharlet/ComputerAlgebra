@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
+﻿using System.Collections.Generic;
 
 namespace ComputerAlgebra
 {
@@ -11,6 +7,7 @@ namespace ComputerAlgebra
         private static List<ITransform> rules = new List<ITransform>()
         {
             // Functional equivalents.
+            //new SubstituteTransform("1/x", "x^-1"),
             new SubstituteTransform("Sqrt[x]", "x^(1/2)"),
             new SubstituteTransform("Log[x, e]", "Ln[x]"),
 
@@ -27,7 +24,7 @@ namespace ComputerAlgebra
             new SubstituteTransform("Csch[-x]", "-Csch[x]"),
             new SubstituteTransform("Sech[-x]", "Sech[x]"),
             new SubstituteTransform("Coth[-x]", "-Coth[x]"),
-            
+
             new SubstituteTransform("1/Cosh[x]", "Sech[x]"),
             new SubstituteTransform("1/Sinh[x]", "Csch[x]"),
             new SubstituteTransform("1/Tanh[x]", "Coth[x]"),
@@ -38,7 +35,7 @@ namespace ComputerAlgebra
             new SubstituteTransform("Cosh[x]^2 - Sinh[x]^2", "1"),
             new SubstituteTransform("Sech[x]^2", "1 - Tanh[x]^2"),
             new SubstituteTransform("Coth[x]^2", "1 + Csch[x]^2"),
-            
+
             new SubstituteTransform("Exp[x] - Exp[-x]", "2*Sinh[x]"),
             new SubstituteTransform("Exp[x] + Exp[-x]", "2*Cosh[x]"),
             new SubstituteTransform("Cosh[x] + Sinh[x]", "Exp[x]"),
@@ -58,7 +55,7 @@ namespace ComputerAlgebra
             new SubstituteTransform("Sin[x]/Cos[x]", "Tan[x]"),
             new SubstituteTransform("Sin[x]*Sec[x]", "Tan[x]"),
             new SubstituteTransform("Cos[x]*Csc[x]", "Cot[x]"),
-            
+
             new SubstituteTransform("Sin[x]^2 + Cos[x]^2", "1"),
             new SubstituteTransform("1 + Tan[x]^2", "Sec[x]^2"),
             new SubstituteTransform("1 + Cot[x]^2", "Csc[x]^2"),

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace ComputerAlgebra
 {
@@ -57,7 +55,7 @@ namespace ComputerAlgebra
         /// <param name="method">Integration method to use for differential equations.</param>
         /// <returns>Expressions for y[t + h].</returns>
         public static IEnumerable<Arrow> NDIntegrate(this IEnumerable<Arrow> dy_dt, Expression t, Expression h, IntegrationMethod method)
-        {            
+        {
             switch (method)
             {
                 // y[t + h] = y[t] + h*f[t, y[t]]

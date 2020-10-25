@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputerAlgebra
 {
@@ -83,7 +81,7 @@ namespace ComputerAlgebra
             return A;
         }
         public static Matrix New(int N, IEnumerable<Expression> Elements) { return New(N, N, Elements); }
-        public static Matrix New(IEnumerable<IEnumerable<Expression>> Elements) 
+        public static Matrix New(IEnumerable<IEnumerable<Expression>> Elements)
         {
             Matrix A = new Matrix(Elements.Count(), Elements.Max(i => i.Count()));
 
@@ -286,7 +284,7 @@ namespace ComputerAlgebra
         }
         IEnumerator<Expression> IEnumerable<Expression>.GetEnumerator() { return new Enumerator(this); }
         IEnumerator IEnumerable.GetEnumerator() { return new Enumerator(this); }
-        
+
         public override int GetHashCode()
         {
             int hash = 33;

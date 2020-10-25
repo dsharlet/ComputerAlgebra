@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 using System.Numerics;
 
 namespace ComputerAlgebra
@@ -56,7 +54,7 @@ namespace ComputerAlgebra
         public static Expression ArcTan(Constant x) { return Real.ArcTan(x); }
         public static Expression ArcSec(Constant x) { return Real.ArcSec(x); }
         public static Expression ArcCsc(Constant x) { return Real.ArcCsc(x); }
-        public static Expression ArcCot(Constant x) { return Real.ArcCot(x); } 
+        public static Expression ArcCot(Constant x) { return Real.ArcCot(x); }
 
         public static Expression Sinh(Constant x) { return Real.Sinh(x); }
         public static Expression Cosh(Constant x) { return Real.Cosh(x); }
@@ -91,7 +89,7 @@ namespace ComputerAlgebra
         public static Expression IsNatural(Constant x) { return Constant.New(x.IsInteger() && (Real)x > 0); }
 
         public static Expression DependsOn(Expression f, Expression x) { return Constant.New(f.DependsOn(x)); }
-        
+
         public static Expression Simplify(Expression x) { return x.Simplify(); }
 
         public static Expression Factor(Expression f) { return f.Factor(); }
@@ -148,14 +146,14 @@ namespace ComputerAlgebra
         /// <param name="f">Expression to differentiate.</param>
         /// <param name="x">Differentiation variable.</param>
         /// <returns>Derivative of f with respect to x.</returns>
-        public static Expression D(Expression f, [NoSubstitute]Expression x) { return f.Differentiate(x); }
+        public static Expression D(Expression f, [NoSubstitute] Expression x) { return f.Differentiate(x); }
         /// <summary>
         /// Integrate f with respect to x.
         /// </summary>
         /// <param name="f">Expression to integrate.</param>
         /// <param name="x">Integration variable.</param>
         /// <returns>Antiderivative of f with respect to x.</returns>
-        public static Expression I(Expression f, [NoSubstitute]Expression x) { return f.Integrate(x); }
+        public static Expression I(Expression f, [NoSubstitute] Expression x) { return f.Integrate(x); }
         /// <summary>
         /// Find the Laplace transform of f[t].
         /// </summary>
@@ -163,7 +161,7 @@ namespace ComputerAlgebra
         /// <param name="t"></param>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static Expression L(Expression f, [NoSubstitute]Expression t, Expression s) { return f.LaplaceTransform(t, s); }
+        public static Expression L(Expression f, [NoSubstitute] Expression t, Expression s) { return f.LaplaceTransform(t, s); }
         /// <summary>
         /// Find the inverse Laplace transform of F[s].
         /// </summary>
@@ -171,7 +169,7 @@ namespace ComputerAlgebra
         /// <param name="s"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static Expression IL(Expression f, [NoSubstitute]Expression s, Expression t) { return f.InverseLaplaceTransform(s, t); }
+        public static Expression IL(Expression f, [NoSubstitute] Expression s, Expression t) { return f.InverseLaplaceTransform(s, t); }
 
 
         private static BigInteger Factorial(BigInteger x)

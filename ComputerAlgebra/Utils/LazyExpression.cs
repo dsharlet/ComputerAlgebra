@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ComputerAlgebra
+﻿namespace ComputerAlgebra
 {
     /// <summary>
     /// Expression that is evaluated upon conversion to Expression.
@@ -18,13 +13,13 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="Expr">Expression to be lazily evaluated.</param>
         public LazyExpression(Expression Expr) { value = Expr; }
-        
+
         /// <summary>
         /// Implicit conversion from LazyExpression to Expression.
         /// </summary>
         /// <param name="LazyExpr"></param>
         /// <returns>Evaluated value of x.</returns>
-        public static implicit operator Expression(LazyExpression x) 
+        public static implicit operator Expression(LazyExpression x)
         {
             if (ReferenceEquals(x.evaluated, null))
                 x.evaluated = x.value.Evaluate();

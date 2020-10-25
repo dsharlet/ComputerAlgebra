@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -27,7 +26,7 @@ namespace ComputerAlgebra
                     throw new InvalidOperationException("Duplicate prematch failed.");
         }
         public MatchContext(Expression Matching, params Arrow[] PreMatch) : this(Matching, PreMatch.AsEnumerable()) { }
-        
+
         /// <summary>
         /// Check if Key has already been matched to Value. If not, store it as the match.
         /// </summary>

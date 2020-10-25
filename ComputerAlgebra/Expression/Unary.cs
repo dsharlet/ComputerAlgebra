@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -50,12 +48,12 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="Operand"></param>
         /// <returns></returns>
-        public static Expression Prime(Expression Operand) 
-        { 
+        public static Expression Prime(Expression Operand)
+        {
             Call f = Operand as Call;
             if (!ReferenceEquals(f, null) && f.Arguments.Count() == 1)
                 return Call.D(f, f.Arguments.First());
-            return new Unary(Operator.Prime, Operand); 
+            return new Unary(Operator.Prime, Operand);
         }
         /// <summary>
         /// Create a new negation unary expression. Negate(x) -> -x.
@@ -126,7 +124,7 @@ namespace ComputerAlgebra
         {
             Unary U = E as Unary;
             if (ReferenceEquals(U, null)) return base.Equals(E);
-            
+
             return Operator.Equals(U.Operator) && Operand.Equals(U.Operand);
         }
 

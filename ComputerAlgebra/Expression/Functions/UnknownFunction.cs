@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace ComputerAlgebra
 {
@@ -21,7 +18,7 @@ namespace ComputerAlgebra
         public static UnknownFunction New(string Name, int ParamCount) { return New(Name, Enumerable.Range(0, ParamCount).Select(i => Variable.New("_" + i.ToString()))); }
 
         public override Expression Call(IEnumerable<Expression> Args) { throw new UnresolvedName("Call to unknown function '" + Name + "'."); }
-        
+
         public override bool CanCall() { return false; }
     }
 }

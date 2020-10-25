@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -68,7 +66,7 @@ namespace ComputerAlgebra
         /// Get the right operand of this binary expression.
         /// </summary>
         public Expression Right { get { return r; } }
-        
+
         /// <summary>
         /// Determine if this operator expression is commutative.
         /// </summary>
@@ -77,7 +75,7 @@ namespace ComputerAlgebra
         /// Determine if this operator expression is a logic operation.
         /// </summary>
         public bool IsLogicOp { get { return IsLogic(op); } }
-        
+
         protected Binary(Operator Op, Expression L, Expression R) { op = Op; l = L; r = R; }
 
         static public Expression Add(Expression L, Expression R) { return ComputerAlgebra.Sum.New(L, R); }

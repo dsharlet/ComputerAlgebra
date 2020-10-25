@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 namespace ComputerAlgebra
 {
@@ -33,7 +29,7 @@ namespace ComputerAlgebra
             Expression L = Visit(B.Left);
             Expression R = Visit(B.Right);
             if (ReferenceEquals(L, null) || ReferenceEquals(R, null)) return null;
-            
+
             if (ReferenceEquals(L, B.Left) && ReferenceEquals(R, B.Right))
                 return B;
             else
@@ -44,7 +40,7 @@ namespace ComputerAlgebra
         {
             Expression O = Visit(U.Operand);
             if (ReferenceEquals(O, null)) return null;
-            
+
             if (ReferenceEquals(O, U.Operand))
                 return U;
             else

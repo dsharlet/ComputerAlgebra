@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -51,7 +49,7 @@ namespace ComputerAlgebra
             }
 
             public Expression Expression { get { return Sum.New(this.Select(i => Product.New(i.Key, i.Value))); } }
-            
+
             public bool DependsOn(IEnumerable<Expression> x)
             {
                 return this.Any(i => i.Key.DependsOn(x) || i.Value.DependsOn(x));
@@ -153,7 +151,7 @@ namespace ComputerAlgebra
                 KeyValuePair<int, Real> partial = PartialPivot(i1, i2, Columns[j]);
                 if (partial.Key == -1)
                     continue;
-                
+
                 if (partial.Value > max)
                 {
                     bool constant = partial.Value > 0;
@@ -318,7 +316,7 @@ namespace ComputerAlgebra
                     }
                 }
             }
-            
+
             return solutions;
         }
 
@@ -337,7 +335,7 @@ namespace ComputerAlgebra
         /// </summary>
         /// <returns></returns>
         public List<Arrow> Solve() { return Solve(unknowns); }
-        
+
         /// <summary>
         /// Find independent systems of equations within this system.
         /// </summary>
@@ -358,14 +356,14 @@ namespace ComputerAlgebra
 
                     x.AddRange(unknowns.Where(i => eqs.Any(j => j.DependsOn(i))));
                     unknowns.RemoveAll(i => x.Contains(i));
-                } while(equations.Any(i => i.DependsOn(x)));
+                } while (equations.Any(i => i.DependsOn(x)));
 
                 yield return new SystemOfEquations(eqs, x);
                 x.Clear();
                 eqs.Clear();
             }
         }
-        
+
         // IEnumerable<LinearCombination>
         public IEnumerator<LinearCombination> GetEnumerator() { return Equations.GetEnumerator(); }
 

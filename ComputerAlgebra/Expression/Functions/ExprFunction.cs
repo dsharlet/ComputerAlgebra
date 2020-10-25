@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace ComputerAlgebra
 {
@@ -20,13 +18,13 @@ namespace ComputerAlgebra
         private IEnumerable<Variable> parameters;
         public override IEnumerable<Variable> Parameters { get { return parameters; } }
 
-        private ExprFunction(string Name, Expression Body, IEnumerable<Variable> Params) : base(Name) 
+        private ExprFunction(string Name, Expression Body, IEnumerable<Variable> Params) : base(Name)
         {
             if (ReferenceEquals(Body, null))
                 throw new ArgumentNullException("Body");
 
-            body = Body; 
-            parameters = Params; 
+            body = Body;
+            parameters = Params;
         }
 
         /// <summary>

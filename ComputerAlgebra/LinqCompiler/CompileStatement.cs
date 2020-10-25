@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using LinqExprs = System.Linq.Expressions;
 using LinqExpr = System.Linq.Expressions.Expression;
+using LinqExprs = System.Linq.Expressions;
 
 namespace ComputerAlgebra.LinqCompiler
 {
@@ -25,7 +21,7 @@ namespace ComputerAlgebra.LinqCompiler
         private Stack<Loop> loops = new Stack<Loop>();
 
         private CodeGen target;
-        
+
         public CompileStatement(CodeGen Target) { target = Target; }
 
         protected override object VisitAssignment(Assignment A)
@@ -104,7 +100,7 @@ namespace ComputerAlgebra.LinqCompiler
 
             // Generate the body code.
             Visit(F.Body);
-            
+
             // Generate the step code.
             Visit(F.Step);
             target.Add(LinqExpr.Goto(begin));

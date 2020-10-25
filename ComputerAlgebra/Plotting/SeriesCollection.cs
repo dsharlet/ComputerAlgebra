@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.Linq;
 
 namespace ComputerAlgebra.Plotting
 {
@@ -25,11 +22,11 @@ namespace ComputerAlgebra.Plotting
         protected List<Series> x = new List<Series>();
         protected List<Color> colors = new List<Color>()
         {
-            Color.Red, 
-            Color.Blue, 
-            Color.Green, 
-            Color.DarkRed, 
-            Color.DarkGreen, 
+            Color.Red,
+            Color.Blue,
+            Color.Green,
+            Color.DarkRed,
+            Color.DarkGreen,
             Color.DarkBlue,
         };
 
@@ -111,7 +108,7 @@ namespace ComputerAlgebra.Plotting
         }
 
         // ICollection<Series>
-        public int Count { get { lock(x) return x.Count; } }
+        public int Count { get { lock (x) return x.Count; } }
         public bool IsReadOnly { get { return false; } }
         public void Add(Series item)
         {
@@ -127,7 +124,7 @@ namespace ComputerAlgebra.Plotting
         public void AddRange(IEnumerable<Series> items)
         {
             lock (x) foreach (Series i in items)
-                Add(i);
+                    Add(i);
         }
         public void Clear()
         {
@@ -141,12 +138,12 @@ namespace ComputerAlgebra.Plotting
             foreach (Series i in removed)
                 OnItemRemoved(new SeriesEventArgs(i));
         }
-        public bool Contains(Series item) { lock(x) return x.Contains(item); }
+        public bool Contains(Series item) { lock (x) return x.Contains(item); }
         public void CopyTo(Series[] array, int arrayIndex) { lock (x) x.CopyTo(array, arrayIndex); }
         public bool Remove(Series item)
         {
             bool ret;
-            lock(x) ret = x.Remove(item);
+            lock (x) ret = x.Remove(item);
             if (ret)
                 OnItemRemoved(new SeriesEventArgs(item));
             return ret;
@@ -160,7 +157,7 @@ namespace ComputerAlgebra.Plotting
         public void ForEach(Action<Series> f)
         {
             lock (x) foreach (Series i in x)
-                f(i);
+                    f(i);
         }
 
         // IEnumerable<Series>

@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Reflection.Emit;
-using LinqExprs = System.Linq.Expressions;
 using LinqExpr = System.Linq.Expressions.Expression;
+using LinqExprs = System.Linq.Expressions;
 using ParamExpr = System.Linq.Expressions.ParameterExpression;
 
 namespace ComputerAlgebra.LinqCompiler
@@ -151,7 +145,7 @@ namespace ComputerAlgebra.LinqCompiler
 
         public LinqExpr this[Expression Expr]
         {
-            get 
+            get
             {
                 LinqExpr expr = LookUp(Expr);
                 if (expr != null)
@@ -189,13 +183,13 @@ namespace ComputerAlgebra.LinqCompiler
                 default: throw new InvalidOperationException("Unknown variable scope.");
             }
         }
-        
+
         /// <summary>
         /// Add variables to the local scope.
         /// </summary>
         /// <param name="Vars"></param>
         public void Declare(params ParamExpr[] Vars) { Declare(Scope.Local, Vars); }
-        
+
         /// <summary>
         /// Declare a new variable.
         /// </summary>
@@ -370,7 +364,7 @@ namespace ComputerAlgebra.LinqCompiler
 
             PopScope();
         }
-        
+
         public void For(Action Init, LinqExpr Condition, Action Step, Action<LinqExpr> Body) { For(Init, Condition, Step, (end, y) => Body(end)); }
         public void For(Action Init, LinqExpr Condition, Action Step, Action Body) { For(Init, Condition, Step, (x, y) => Body()); }
         public void For(int Begin, int End, Action<LinqExpr> Body)
@@ -378,8 +372,8 @@ namespace ComputerAlgebra.LinqCompiler
             LinqExpr i = DeclInit<int>(AnonymousName(), Begin);
             LinqExpr end = LinqExpr.Constant(End);
             For(() => { },
-                LinqExpr.LessThan(i, end), 
-                () => Add(LinqExpr.PreIncrementAssign(i)), 
+                LinqExpr.LessThan(i, end),
+                () => Add(LinqExpr.PreIncrementAssign(i)),
                 () => Body(i));
         }
 

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ComputerAlgebra
 {
@@ -18,11 +15,11 @@ namespace ComputerAlgebra
         protected IEnumerable<Expression> indices;
         public IEnumerable<Expression> Indices { get { return indices; } }
 
-        protected Index(Expression Target, IEnumerable<Expression> Indices) 
+        protected Index(Expression Target, IEnumerable<Expression> Indices)
         {
             Debug.Assert(!ReferenceEquals(Target, null));
-            target = Target; 
-            indices = Indices; 
+            target = Target;
+            indices = Indices;
         }
 
         public static Index New(Expression Target, IEnumerable<Expression> Indices) { return new Index(Target, Indices.Buffer()); }

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Matrix2D = System.Drawing.Drawing2D.Matrix;
 
@@ -70,10 +65,10 @@ namespace ComputerAlgebra.Plotting
             series.ItemAdded += (o, e) => Invalidate();
             series.ItemRemoved += (o, e) => Invalidate();
 
-            form = new Form() 
-            { 
+            form = new Form()
+            {
                 Text = "Plot",
-                Width = 300, 
+                Width = 300,
                 Height = 300,
             };
             form.Paint += Plot_Paint;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ComputerAlgebra
 {
@@ -10,7 +7,7 @@ namespace ComputerAlgebra
     /// </summary>
     public abstract class CachedVisitor<T> : ExpressionVisitor<T>
     {
-        private Dictionary<Expression, T> cache = new Dictionary<Expression,T>();
+        private Dictionary<Expression, T> cache = new Dictionary<Expression, T>();
 
         public override T Visit(Expression E)
         {

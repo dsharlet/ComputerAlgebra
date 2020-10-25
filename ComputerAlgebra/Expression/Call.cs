@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ComputerAlgebra
 {
@@ -24,11 +21,11 @@ namespace ComputerAlgebra
         /// </summary>
         public IEnumerable<Expression> Arguments { get { return arguments; } }
 
-        protected Call(Function Target, IEnumerable<Expression> Args) 
+        protected Call(Function Target, IEnumerable<Expression> Args)
         {
             Debug.Assert(!ReferenceEquals(Target, null));
-            target = Target; 
-            arguments = Args; 
+            target = Target;
+            arguments = Args;
         }
 
         /// <summary>
@@ -46,10 +43,10 @@ namespace ComputerAlgebra
         /// <param name="Target">Name of the function to call.</param>
         /// <param name="Args">Arguments for the call.</param>
         /// <returns>Constructed Call expression.</returns>
-        public static Call New(string Target, IEnumerable<Expression> Args) 
+        public static Call New(string Target, IEnumerable<Expression> Args)
         {
             Args = Args.Buffer();
-            return new Call(UnknownFunction.New(Target, Args.Count()), Args); 
+            return new Call(UnknownFunction.New(Target, Args.Count()), Args);
         }
         public static Call New(string Target, params Expression[] Args) { return new Call(UnknownFunction.New(Target, Args.Length), Args); }
 

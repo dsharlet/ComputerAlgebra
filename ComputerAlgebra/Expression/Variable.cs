@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -15,7 +12,7 @@ namespace ComputerAlgebra
         /// Identifies the ring this variable is a member of.
         /// </summary>
         public Set Ring { get { return ring; } }
-        
+
         protected Variable(string Name, Set Ring) : base(Name) { ring = Ring; }
 
         /// <summary>
@@ -31,11 +28,11 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static Variable New(string Name) { return new Variable(Name, Reals.New()); }
 
-        public override bool Matches(Expression E, MatchContext Matched) 
-        { 
-            return (ReferenceEquals(Ring, null) || Ring.Contains(E)) && Matched.Matches(this, E); 
+        public override bool Matches(Expression E, MatchContext Matched)
+        {
+            return (ReferenceEquals(Ring, null) || Ring.Contains(E)) && Matched.Matches(this, E);
         }
-        
+
         protected override int TypeRank { get { return 1; } }
     }
 

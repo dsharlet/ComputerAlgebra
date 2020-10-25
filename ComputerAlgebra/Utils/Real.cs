@@ -1,8 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Numerics;
 
 namespace ComputerAlgebra
@@ -24,7 +21,7 @@ namespace ComputerAlgebra
         public Real(decimal x) { r = x; }
         public Real(BigInteger x) { r = x; }
         public Real(BigRational x) { r = x; }
-        public Real(double x) 
+        public Real(double x)
         {
             if (double.IsNaN(x))
                 r = NaN;
@@ -58,7 +55,7 @@ namespace ComputerAlgebra
         public static implicit operator Real(decimal x) { return new Real(x); }
         public static implicit operator Real(BigInteger x) { return new Real(x); }
         public static implicit operator Real(BigRational x) { return new Real(x); }
-               
+
         // Relational operators.
         public static bool operator ==(Real a, Real b) { return a.CompareTo(b) == 0; }
         public static bool operator !=(Real a, Real b) { return a.CompareTo(b) != 0; }
@@ -66,7 +63,7 @@ namespace ComputerAlgebra
         public static bool operator <=(Real a, Real b) { return a.CompareTo(b) <= 0; }
         public static bool operator >(Real a, Real b) { return a.CompareTo(b) > 0; }
         public static bool operator >=(Real a, Real b) { return a.CompareTo(b) >= 0; }
-        
+
         // Arithmetic operators.
         public static Real operator +(Real a, Real b) { return a.r + b.r; }
         public static Real operator -(Real a, Real b) { return a.r - b.r; }
@@ -75,7 +72,7 @@ namespace ComputerAlgebra
         public static Real operator /(Real a, Real b) { return a.r / b.r; }
         public static Real operator ^(Real a, Real b) { return a.r ^ b.r; }
         public static Real operator -(Real x) { return -x.r; }
-        
+
         public static readonly Real Pi = Math.PI;
         public static readonly Real e = Math.E;
 
@@ -119,11 +116,11 @@ namespace ComputerAlgebra
         public static Real Ln(Real x) { return Math.Log((double)x); }
         public static Real Log(Real x, Real b) { return Math.Log((double)x, (double)b); }
         public static Real Log10(Real x) { return Math.Log((double)x, 10.0); }
-        
+
         public static Real Floor(Real x) { return BigRational.Floor(x.r); }
         public static Real Ceiling(Real x) { return BigRational.Ceiling(x.r); }
         public static Real Round(Real x) { return BigRational.Round(x.r); }
-        
+
         // IComparable interface.
         public int CompareTo(Real x) { return r.CompareTo(x.r); }
 
@@ -149,7 +146,7 @@ namespace ComputerAlgebra
             return r.ToString(format, formatProvider);
         }
         public string ToString(string format) { return ToString(format, null); }
-         
+
         // object interface.
         public override bool Equals(object obj) { return obj is Real ? Equals((Real)obj) : base.Equals(obj); }
         public override int GetHashCode() { return r.GetHashCode(); }

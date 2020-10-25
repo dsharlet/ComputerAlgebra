@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 
 namespace ComputerAlgebra
@@ -38,8 +35,8 @@ namespace ComputerAlgebra
         private string name;
         public string Name { get { return name; } }
 
-        protected NamedAtom(string Name) 
-        { 
+        protected NamedAtom(string Name)
+        {
             name = Name;
 
             // Put the first few characters in an integer for fast comparisons.

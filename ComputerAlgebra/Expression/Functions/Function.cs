@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace ComputerAlgebra
 {
@@ -26,7 +22,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public abstract Expression Call(IEnumerable<Expression> Args);
         public Expression Call(params Expression[] Args) { return Call(Args.AsEnumerable()); }
-        
+
         /// <summary>
         /// Check if this function could be called with the given parameters.
         /// </summary>

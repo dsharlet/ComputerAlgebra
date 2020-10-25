@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -11,7 +9,7 @@ namespace ComputerAlgebra
     /// </summary>
     public class CachedRecursiveVisitor : RecursiveExpressionVisitor
     {
-        private Dictionary<Expression, Expression> cache = new Dictionary<Expression,Expression>();
+        private Dictionary<Expression, Expression> cache = new Dictionary<Expression, Expression>();
 
         /// <summary>
         /// Called when visiting an Expression has tentatively been added to the cache, but Visit has not yet returned. This likely indicates infinite recursion.

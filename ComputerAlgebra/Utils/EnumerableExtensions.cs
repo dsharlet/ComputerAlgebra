@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace System.Collections.Generic
 {
@@ -65,13 +63,13 @@ namespace System.Collections.Generic
         /// <param name="This"></param>
         /// <returns></returns>
         [DebuggerStepThrough]
-        public static IEnumerable<T> Buffer<T>(this IEnumerable<T> This) 
+        public static IEnumerable<T> Buffer<T>(this IEnumerable<T> This)
         {
             // TODO: Shouldn't this be faster?
             //if (This is ICollection<T>)
             //    return This.ToArray();
             //else
-                return This.ToList();
+            return This.ToList();
         }
 
         /// <summary>
@@ -289,7 +287,7 @@ namespace System.Collections.Generic
             }
             return max;
         }
-        
+
         /// <summary>
         /// Compute the hash of an ordered IEnumerable.
         /// </summary>

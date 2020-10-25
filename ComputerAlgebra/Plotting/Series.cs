@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using ComputerAlgebra.LinqCompiler;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using ComputerAlgebra.LinqCompiler;
 using Matrix2D = System.Drawing.Drawing2D.Matrix;
 
 namespace ComputerAlgebra.Plotting
@@ -50,9 +44,9 @@ namespace ComputerAlgebra.Plotting
 
         protected static float ToFloat(double x)
         {
-            if (x > 1e6) 
+            if (x > 1e6)
                 return 1e6f;
-            else if (x < -1e6) 
+            else if (x < -1e6)
                 return -1e6f;
             else
                 return (float)x;
@@ -104,9 +98,9 @@ namespace ComputerAlgebra.Plotting
     public class Scatter : Series
     {
         protected PointF[] points;
-        public Scatter(KeyValuePair<double, double>[] Points) 
+        public Scatter(KeyValuePair<double, double>[] Points)
         {
-            points = Points.Select(i => new PointF((float)i.Key, ToFloat(i.Value))).ToArray(); 
+            points = Points.Select(i => new PointF((float)i.Key, ToFloat(i.Value))).ToArray();
         }
 
         public override List<PointF[]> Evaluate(double x0, double x1)

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace ComputerAlgebra
 {
@@ -21,13 +19,13 @@ namespace ComputerAlgebra
         public override IEnumerable<Variable> Parameters { get { return parameters; } }
 
         private StmtFunction(string Name, Statement Body, IEnumerable<Variable> Params)
-            : base(Name) 
+            : base(Name)
         {
             if (ReferenceEquals(Body, null))
                 throw new ArgumentNullException("Body");
 
-            body = Body; 
-            parameters = Params; 
+            body = Body;
+            parameters = Params;
         }
 
         /// <summary>
@@ -49,7 +47,7 @@ namespace ComputerAlgebra
         public static StmtFunction New(string Name, Statement Body, IEnumerable<Variable> Params) { return new StmtFunction(Name, Body, Params.Buffer()); }
         public static StmtFunction New(string Name, Statement Body, params Variable[] Params) { return New(Name, Body, Params.AsEnumerable()); }
 
-        public override Expression Call(IEnumerable<Expression> Args) 
+        public override Expression Call(IEnumerable<Expression> Args)
         {
             try
             {

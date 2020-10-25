@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Numerics;
+﻿using System.Collections.Generic;
 
 namespace ComputerAlgebra
 {
@@ -31,7 +26,7 @@ namespace ComputerAlgebra
         /// Add a member to the namespace.
         /// </summary>
         /// <param name="f"></param>
-        public void Add(string Name, Expression x) 
+        public void Add(string Name, Expression x)
         {
             List<Expression> values;
             if (!members.TryGetValue(Name, out values))
@@ -39,7 +34,7 @@ namespace ComputerAlgebra
                 values = new List<Expression>();
                 members[Name] = values;
             }
-            values.Add(x); 
+            values.Add(x);
         }
         public void Add(Function f) { Add(f.Name, f); }
     }

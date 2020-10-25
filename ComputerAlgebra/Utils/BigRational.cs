@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Numerics;
 
 namespace ComputerAlgebra
@@ -52,7 +49,7 @@ namespace ComputerAlgebra
         }
 
         private static string ToLaTeX(BigInteger x)
-        { 
+        {
             int insig = InsignificantDigits(x);
             if (insig >= 3)
                 return (x / BigInteger.Pow(10, insig)).ToString() + @"\times 10^{" + insig + "}";
@@ -124,19 +121,19 @@ namespace ComputerAlgebra
         public static BigRational operator /(BigRational a, BigRational b) { return new BigRational(a.n * b.d, a.d * b.n); }
         public static BigRational operator +(BigRational a, BigRational b) { return new BigRational(a.n * b.d + b.n * a.d, a.d * b.d); }
         public static BigRational operator -(BigRational a, BigRational b) { return new BigRational(a.n * b.d - b.n * a.d, a.d * b.d); }
-        public static BigRational operator ^(BigRational a, int b) 
+        public static BigRational operator ^(BigRational a, int b)
         {
             if (b < 0)
                 return Unchecked(BigInteger.Pow(a.d, -b), BigInteger.Pow(a.n, -b));
             else
                 return Unchecked(BigInteger.Pow(a.n, b), BigInteger.Pow(a.d, b));
         }
-        public static BigRational operator ^(BigRational a, BigRational b) 
+        public static BigRational operator ^(BigRational a, BigRational b)
         {
             if (!b.d.IsOne)
                 return Math.Pow((double)a, (double)b);
             else
-                return a ^ (int)b.n; 
+                return a ^ (int)b.n;
         }
         public static BigRational operator %(BigRational a, BigRational b) { return a - Floor(a / b) * b; }
 
@@ -147,7 +144,7 @@ namespace ComputerAlgebra
         public static bool operator <=(BigRational a, BigRational b) { return a.CompareTo(b) <= 0; }
         public static bool operator >(BigRational a, BigRational b) { return a.CompareTo(b) > 0; }
         public static bool operator >=(BigRational a, BigRational b) { return a.CompareTo(b) >= 0; }
-                
+
         // Conversions.
         public static implicit operator BigRational(BigInteger x) { return new BigRational(x); }
         public static implicit operator BigRational(long x) { return new BigRational(x); }

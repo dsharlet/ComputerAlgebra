@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -20,7 +17,7 @@ namespace ComputerAlgebra
         public static Constant New(decimal x) { return new Constant(x); }
         public static Constant New(Real x) { return new Constant(x); }
         public static Constant New(bool x) { return x ? One : Zero; }
-        public static Expression New(object x) 
+        public static Expression New(object x)
         {
             if (x.GetType() == typeof(int)) return New((int)x);
             if (x.GetType() == typeof(double)) return New((double)x);
@@ -37,7 +34,7 @@ namespace ComputerAlgebra
         public override bool IsTrue() { return !EqualsZero(); }
 
         public static implicit operator Real(Constant x) { return x.x; }
-        
+
         public static implicit operator Constant(Real x) { return Constant.New(x); }
         public static implicit operator Constant(BigRational x) { return Constant.New(x); }
         public static implicit operator Constant(decimal x) { return Constant.New(x); }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -38,12 +36,12 @@ namespace ComputerAlgebra
         /// <param name="f"></param>
         /// <param name="x0"></param>
         /// <returns></returns>
-        public static Expression Substitute(this Expression f, IDictionary<Expression, Expression> x0, bool IsTransform = false) 
+        public static Expression Substitute(this Expression f, IDictionary<Expression, Expression> x0, bool IsTransform = false)
         {
             if (x0.Empty())
                 return f;
             else
-                return new SubstituteVisitor(x0, IsTransform).Visit(f); 
+                return new SubstituteVisitor(x0, IsTransform).Visit(f);
         }
 
         /// <summary>

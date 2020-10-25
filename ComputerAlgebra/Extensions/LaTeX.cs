@@ -108,7 +108,7 @@ namespace ComputerAlgebra
                 return @"\frac{" + n + "}{" + d + "}";
         }
 
-        private static readonly Dictionary<char, string> EscapeMap = new Dictionary<char,string>()
+        private static readonly Dictionary<char, string> EscapeMap = new Dictionary<char, string>()
         {
             { '&', @"\&" },
             { '%', @"\%" },

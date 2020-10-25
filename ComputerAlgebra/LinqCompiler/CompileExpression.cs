@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using LinqExprs = System.Linq.Expressions;
 using LinqExpr = System.Linq.Expressions.Expression;
 
 namespace ComputerAlgebra.LinqCompiler
@@ -15,9 +11,9 @@ namespace ComputerAlgebra.LinqCompiler
     class CompileExpression : ExpressionVisitor<LinqExpr>
     {
         private CodeGen target;
-        
+
         public CompileExpression(CodeGen Target) { target = Target; }
-        
+
         public override LinqExpr Visit(Expression E)
         {
             // Check if this expression has already been compiled to an intermediate expression or otherwise.
@@ -116,7 +112,7 @@ namespace ComputerAlgebra.LinqCompiler
         {
             LinqExpr[] args = C.Arguments.Select(i => Visit(i)).ToArray();
             return Int(C, LinqExpr.Call(
-                target.Module.Compile(C.Target, args.Select(i => i.Type).ToArray()), 
+                target.Module.Compile(C.Target, args.Select(i => i.Type).ToArray()),
                 args));
         }
 

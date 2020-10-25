@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -26,7 +24,7 @@ namespace ComputerAlgebra
             new SubstituteTransform("D[ArcSec[u], x]", "D[u, x]/(Abs[u]*Sqrt[u^2 - 1])"),
             new SubstituteTransform("D[ArcCsc[u], x]", "-D[u, x]/(Abs[u]*Sqrt[u^2 - 1])"),
             new SubstituteTransform("D[ArcCot[u], x]", "-D[u, x]/(u^2 + 1)"),
-            
+
             new SubstituteTransform("D[Sinh[u], x]", "Cosh[u]*D[u, x]"),
             new SubstituteTransform("D[Cosh[u], x]", "Sinh[u]*D[u, x]"),
             new SubstituteTransform("D[Tanh[u], x]", "Sech[u]^2*D[u, x]"),
@@ -44,6 +42,7 @@ namespace ComputerAlgebra
             new SubstituteTransform("D[Abs[u], x]", "Sign[u]*D[u, x]"),
             new SubstituteTransform("D[Sign[u], x]", "0"),
             new SubstituteTransform("D[Exp[u], x]", "Exp[u]*D[u, x]"),
+            //new SubstituteTransform("D[Sqrt[u], x]", "D[u, x]/(2*Sqrt[u])"),
             new SubstituteTransform("D[Ln[u], x]", "D[u, x]/u"),
             new SubstituteTransform("D[I[u, x], x]", "u"),
             new SubstituteTransform("D[If[c, t, f], x]", "If[c, D[t, x], D[f, x]]"),
@@ -58,7 +57,7 @@ namespace ComputerAlgebra
 
         public static Expression Transform(Expression f, Expression x) { return new DifferentiateTransform(x).Visit(f); }
 
-        public override Expression Visit(Expression E) 
+        public override Expression Visit(Expression E)
         {
             if (x.Equals(E))
                 return 1;
@@ -140,9 +139,9 @@ namespace ComputerAlgebra
             return base.VisitUnary(U);
         }
 
-        protected override Expression VisitUnknown(Expression E) 
-        { 
-            return rules.Transform(Call.D(E, x)); 
+        protected override Expression VisitUnknown(Expression E)
+        {
+            return rules.Transform(Call.D(E, x));
         }
     }
 

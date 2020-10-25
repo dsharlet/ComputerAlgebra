@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.ComponentModel;
 
 namespace ComputerAlgebra
 {
@@ -16,7 +14,7 @@ namespace ComputerAlgebra
         Multiply,
         Divide,
         Power,
-        
+
         // Binary logic.
         And,
         Or,
@@ -44,7 +42,7 @@ namespace ComputerAlgebra
         Arrow,
         Substitute,
     }
-    
+
     [TypeConverter(typeof(ExpressionConverter))]
     public abstract class Expression : IComparable<Expression>, IEquatable<Expression>, IFormattable
     {
@@ -60,14 +58,14 @@ namespace ComputerAlgebra
             MatchContext Matched = new MatchContext(Expr, PreMatch);
             if (!Matches(Expr, Matched))
                 return null;
-            
+
             return Matched;
         }
         public MatchContext Matches(Expression Expr, params Arrow[] PreMatch)
         {
             return Matches(Expr, PreMatch.AsEnumerable());
         }
-        
+
         public virtual bool EqualsZero() { return false; }
         public virtual bool EqualsOne() { return false; }
         public virtual bool IsFalse() { return EqualsZero(); }
@@ -79,10 +77,10 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static Expression Parse(string s, CultureInfo culture) 
+        public static Expression Parse(string s, CultureInfo culture)
         {
             Parser parser = new Parser(Namespace.Global) { Culture = culture };
-            return parser.Parse(s); 
+            return parser.Parse(s);
         }
         public static Expression Parse(string s) { return Parse(s, CultureInfo.InstalledUICulture); }
 
@@ -131,21 +129,21 @@ namespace ComputerAlgebra
 
         public static bool operator true(Expression x) { return x.IsTrue(); }
         public static bool operator false(Expression x) { return x.IsFalse(); }
-        
+
         // IFormattable interface.
         public string ToString(string Format, IFormatProvider FormatProvider)
         {
-            StringVisitor visitor = new StringVisitor() 
-            { 
-                NumberFormat = Format, 
-                NumberFormatProvider = FormatProvider 
+            StringVisitor visitor = new StringVisitor()
+            {
+                NumberFormat = Format,
+                NumberFormatProvider = FormatProvider
             };
             return visitor.Visit(this);
         }
         public string ToString(IFormatProvider FormatProvider) { return ToString("G6", FormatProvider); }
 
         // object interface.
-        public virtual bool Equals(Expression E) 
+        public virtual bool Equals(Expression E)
         {
             if (!(this is Call) && E is Call)
                 return E.Equals(this);
@@ -168,11 +166,11 @@ namespace ComputerAlgebra
         /// </summary>
         /// <returns></returns>
         public abstract IEnumerable<Atom> Atoms { get; }
-        public virtual int CompareTo(Expression R) 
+        public virtual int CompareTo(Expression R)
         {
             if (ReferenceEquals(this, R))
                 return 0;
-            return Atoms.LexicalCompareTo(R.Atoms); 
+            return Atoms.LexicalCompareTo(R.Atoms);
         }
 
         /// <summary>
@@ -190,7 +188,7 @@ namespace ComputerAlgebra
             }
             return 0;
         }
-        
+
         public static readonly ReferenceEqualityComparer<Expression> RefComparer = new ReferenceEqualityComparer<Expression>();
     }
 }

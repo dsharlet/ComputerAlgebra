@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 
 namespace ComputerAlgebra
 {
@@ -95,13 +92,13 @@ namespace ComputerAlgebra
             guesses = Guesses.Buffer();
         }
 
-        public override bool DependsOn(Expression x) 
+        public override bool DependsOn(Expression x)
         {
             if (knowns != null && knowns.Any(i => i.Right.DependsOn(x)))
                 return true;
             if (guesses != null && guesses.Any(i => i.Right.DependsOn(x)))
                 return true;
-            return equations.Any(i => i.DependsOn(x)); 
+            return equations.Any(i => i.DependsOn(x));
         }
 
         private static Function d = UnknownFunction.New("d", Variable.New("x"));

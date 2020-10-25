@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace ComputerAlgebra
 {
@@ -16,7 +14,7 @@ namespace ComputerAlgebra
 
         private SortedDictionary<double, double> points = new SortedDictionary<double, double>();
 
-        private LutFunction(string Name, IEnumerable<Arrow> Points) : base(Name) 
+        private LutFunction(string Name, IEnumerable<Arrow> Points) : base(Name)
         {
             parameters = new List<Variable>() { Variable.New("x1") };
             foreach (Arrow i in Points)

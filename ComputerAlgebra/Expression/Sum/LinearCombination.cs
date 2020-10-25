@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -42,7 +40,7 @@ namespace ComputerAlgebra
             foreach (KeyValuePair<Expression, Expression> i in Terms)
                 terms[i.Key] = i.Value;
         }
-        
+
         private void AddTerm(IEnumerable<Expression> B, Expression t)
         {
             foreach (Expression b in B)

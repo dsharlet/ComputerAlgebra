@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -13,7 +11,7 @@ namespace ComputerAlgebra
         protected Namespace ns;
 
         public ResolveVisitor(Namespace Namespace) { ns = Namespace; }
-        
+
         protected override Expression VisitCall(Call F)
         {
             F = (Call)base.VisitCall(F);
@@ -54,7 +52,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static Expression Resolve(this Expression f, Namespace Namespace)
         {
-            return new ResolveVisitor(Namespace).Visit(f); 
+            return new ResolveVisitor(Namespace).Visit(f);
         }
 
         /// <summary>

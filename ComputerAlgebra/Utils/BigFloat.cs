@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Numerics;
-
-namespace ComputerAlgebra
+﻿namespace ComputerAlgebra
 {
     ///// <summary>
     ///// Represents a floating point number with arbitrary length mantissa and exponent.
@@ -18,7 +12,7 @@ namespace ComputerAlgebra
     //    { 
     //        m = Mantissa; 
     //        e = Exponent; 
-            
+
     //        while ((m & 255) == 0)
     //        {
     //            m >>= 8;

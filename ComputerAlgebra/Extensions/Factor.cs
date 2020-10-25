@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -35,7 +34,7 @@ namespace ComputerAlgebra
         /// <param name="f"></param>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static Expression Factor(this Expression f, Expression x) 
+        public static Expression Factor(this Expression f, Expression x)
         {
             // If f is a product, just factor its terms.
             if (f is Product)
@@ -70,7 +69,7 @@ namespace ComputerAlgebra
                 Sum s = (Sum)f;
 
                 IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
-                
+
                 // All of the distinct factors.
                 IEnumerable<Expression> factors = terms.SelectMany(i => FactorsOf(i).Except(1, -1)).Distinct();
                 // Choose the most common factor to use.

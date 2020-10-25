@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ComputerAlgebra
 {
@@ -21,7 +18,7 @@ namespace ComputerAlgebra
     /// </summary>
     public class Break : Statement
     {
-        private Break() {}
+        private Break() { }
 
         private static Break instance = new Break();
 

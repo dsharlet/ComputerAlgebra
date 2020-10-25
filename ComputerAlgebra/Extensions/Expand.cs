@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -131,7 +130,7 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static Expression Expand(this Expression f, Expression x) 
+        public static Expression Expand(this Expression f, Expression x)
         {
             if (f is Product)
                 return ExpandMultiply(f, x);

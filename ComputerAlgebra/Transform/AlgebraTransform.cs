@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace ComputerAlgebra
 {
@@ -15,7 +12,7 @@ namespace ComputerAlgebra
         protected Stack<Expression> conditions;
 
         protected TransformSet target;
-        
+
         public AlgebraTransformGenerator(Expression EqualTo, IEnumerable<Expression> Conditions, TransformSet Target)
         {
             equal.Push(EqualTo);

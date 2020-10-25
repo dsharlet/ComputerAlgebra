@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -108,7 +107,7 @@ namespace ComputerAlgebra
 
         private static Dictionary<string, string> FlipMap = new Dictionary<string, string>() { { "(", ")" }, { "{", "}" }, { "[", "]" }, { "|", "|" }, { "<", ">" }, { "/", "\\" }, { "\\", "/" } };
         private static PrettyString FlipParen(PrettyString x) { return new PrettyString(x.ZeroRow, x.Lines.Select(i => FlipMap[i])); }
-        
+
         private static PrettyString MakeRParen(PrettyString For) { return FlipParen(MakeLParen(For)); }
         private static PrettyString MakeRBrace(PrettyString For) { return FlipParen(MakeLBrace(For)); }
         private static PrettyString MakeRBracket(PrettyString For) { return FlipParen(MakeLBracket(For)); }

@@ -1,9 +1,7 @@
-﻿using System;
+﻿using ComputerAlgebra.LinqCompiler;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ComputerAlgebra.LinqCompiler;
-using LinqExprs = System.Linq.Expressions;
 using LinqExpr = System.Linq.Expressions.Expression;
 using ParamExpr = System.Linq.Expressions.ParameterExpression;
 
@@ -47,7 +45,7 @@ namespace ComputerAlgebra
         {
             return F.Select(i => i.Gradient(x));
         }
-        
+
         // Use neton's method to solve F(x) = 0, with initial guess x0.
         private static void NewtonsMethod(int M, int N, Func<double[,], double[], double, double> J, double s, double[] x, double Epsilon, int MaxIterations)
         {
@@ -133,7 +131,7 @@ namespace ComputerAlgebra
         {
             int M = F.Count;
             int N = x0.Count;
-            
+
             // Compute JxF, the Jacobian of F.
             List<Dictionary<Expression, Expression>> JxF = Jacobian(F, x0.Select(i => i.Left)).ToList();
 

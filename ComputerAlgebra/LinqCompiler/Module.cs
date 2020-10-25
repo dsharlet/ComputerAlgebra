@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
-
-using LinqExprs = System.Linq.Expressions;
-using LinqExpr = System.Linq.Expressions.Expression;
-using ParamExpr = System.Linq.Expressions.ParameterExpression;
 
 namespace ComputerAlgebra.LinqCompiler
 {
@@ -24,7 +18,7 @@ namespace ComputerAlgebra.LinqCompiler
     /// </summary>
     public class Module : DeclContext
     {
-        private Dictionary<Function, MethodInfo> functions = new Dictionary<Function,MethodInfo>();
+        private Dictionary<Function, MethodInfo> functions = new Dictionary<Function, MethodInfo>();
         private IEnumerable<Type> libraries;
 
         public Module() : this(null) { }
@@ -36,24 +30,24 @@ namespace ComputerAlgebra.LinqCompiler
             else
                 libraries = Libraries.ToArray();
         }
-        
+
         /// <summary>
         /// Declare a new global in this module mapped to expression Map.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="Map"></param>
         /// <returns></returns>
-        public GlobalExpr<T> Declare<T>(Expression Map) 
+        public GlobalExpr<T> Declare<T>(Expression Map)
         {
             GlobalExpr<T> decl = new GlobalExpr<T>();
-            base.Declare(Map, decl); 
-            return decl; 
+            base.Declare(Map, decl);
+            return decl;
         }
-        public GlobalExpr<T> Declare<T>(Expression Map, T Init) 
+        public GlobalExpr<T> Declare<T>(Expression Map, T Init)
         {
             GlobalExpr<T> decl = new GlobalExpr<T>(Init);
-            base.Declare(Map, decl); 
-            return decl; 
+            base.Declare(Map, decl);
+            return decl;
         }
 
         private MethodInfo LookupFunction(string Name, params Type[] ArgTypes)

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Diagnostics;
 
 namespace ComputerAlgebra
 {
@@ -13,7 +9,7 @@ namespace ComputerAlgebra
     public abstract class Product : Expression
     {
         public abstract IEnumerable<Expression> Terms { get; }
-        
+
         /// <summary>
         /// Create a new product expression in canonical form.
         /// </summary>
@@ -118,11 +114,11 @@ namespace ComputerAlgebra
         public static Expression Denominator(Expression x) { return Product.New(Product.TermsOf(x).Where(i => IsInDenominator(i)).Select(i => (Expression)(i ^ -1))); }
 
         public override int GetHashCode() { return Terms.OrderedHashCode(); }
-        public override bool Equals(Expression E) 
+        public override bool Equals(Expression E)
         {
             Product P = E as Product;
             if (ReferenceEquals(P, null)) return base.Equals(E);
-            
+
             return Terms.SequenceEqual(P.Terms);
         }
 

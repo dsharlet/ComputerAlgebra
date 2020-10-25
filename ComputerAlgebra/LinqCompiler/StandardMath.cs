@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
 
 namespace ComputerAlgebra.LinqCompiler
 {
@@ -48,11 +43,6 @@ namespace ComputerAlgebra.LinqCompiler
 
         public static double Sqrt(double x) { return Math.Sqrt(x); }
         public static double Exp(double x) { return Math.Exp(x); }
-        //public static double Exp(double x)
-        //{
-        //    var tmp = (long)(1512775 * x + 1072632447);
-        //    return BitConverter.Int64BitsToDouble(tmp << 32);
-        //}
         public static double Ln(double x) { return Math.Log(x); }
         public static double Log(double x, double b) { return Math.Log(x, b); }
         public static double Pow(double x, double y) { return Math.Pow(x, y); }

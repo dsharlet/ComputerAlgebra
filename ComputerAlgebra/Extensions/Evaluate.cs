@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 
 namespace ComputerAlgebra
 {
@@ -55,7 +53,7 @@ namespace ComputerAlgebra
         {
             return EvaluateSum(A.Terms.SelectMany(i => Sum.TermsOf(Visit(i))));
         }
-        
+
         // Combine like terms and multiply constants.
         protected override Expression VisitProduct(Product M)
         {
@@ -124,7 +122,7 @@ namespace ComputerAlgebra
         protected override Expression VisitIndex(Index I)
         {
             I = (Index)base.VisitIndex(I);
-            
+
             // We can only evaluate index expressions with constant integer indices.
             if (!I.Indices.All(i => i.IsInteger()))
                 return I;
@@ -184,7 +182,7 @@ namespace ComputerAlgebra
             else
                 return Power.New(L, R);
         }
-        
+
         protected override Expression VisitBinary(Binary B)
         {
             Expression L = Visit(B.Left);
@@ -208,9 +206,10 @@ namespace ComputerAlgebra
                     case Operator.Greater: return Constant.New(LR.Value <= RR.Value);
                     case Operator.LessEqual: return Constant.New(LR.Value > RR.Value);
                     case Operator.GreaterEqual: return Constant.New(LR.Value >= RR.Value);
-                    case Operator.ApproxEqual: return Constant.New(
-                        LR.Value == RR.Value || 
-                        Real.Abs(LR.Value - RR.Value) < 1e-12 * Real.Max(Real.Abs(LR.Value), Real.Abs(RR.Value)));
+                    case Operator.ApproxEqual:
+                        return Constant.New(
+                            LR.Value == RR.Value ||
+                            Real.Abs(LR.Value - RR.Value) <= 1e-12 * Real.Max(Real.Abs(LR.Value), Real.Abs(RR.Value)));
                 }
             }
 
@@ -321,7 +320,7 @@ namespace ComputerAlgebra
         /// <returns>The evaluated expression.</returns>
         public static Expression Evaluate(this Expression f, Expression x, Expression x0) { return f.Evaluate(new Dictionary<Expression, Expression> { { x, x0 } }); }
 
-        public static IEnumerable<Expression> Evaluate(this IEnumerable<Expression> f, IDictionary<Expression, Expression> x0) 
+        public static IEnumerable<Expression> Evaluate(this IEnumerable<Expression> f, IDictionary<Expression, Expression> x0)
         {
             EvaluateVisitor V = new EvaluateVisitor();
             return f.Select(i => V.Visit(i.Substitute(x0)));

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -38,7 +36,7 @@ namespace ComputerAlgebra
                 }
             }
         }
-        
+
         /// <summary>
         /// Enumerate the combinations of n of length r.
         /// From: http://www.extensionmethod.net/csharp/ienumerable-t/combinations

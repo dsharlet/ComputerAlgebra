@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ComputerAlgebra
 {
@@ -24,7 +20,7 @@ namespace ComputerAlgebra
         public Statement True { get { return _true; } }
         public Statement False { get { return _false; } }
 
-        private If(Expression Condition, Statement True, Statement False) { cond = Condition;  _true = True; _false = False; }
+        private If(Expression Condition, Statement True, Statement False) { cond = Condition; _true = True; _false = False; }
 
         /// <summary>
         /// Create a new if statement.

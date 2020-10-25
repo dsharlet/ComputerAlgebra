@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace ComputerAlgebra
 {
@@ -54,7 +52,7 @@ namespace ComputerAlgebra
             return Members.SequenceEqual(S.Members);
         }
         public override int GetHashCode() { return Members.UnorderedHashCode(); }
-        
+
         public static FiniteSet Union(FiniteSet A, FiniteSet B) { return FiniteSet.New(A.Members.Union(B.Members)); }
         public static FiniteSet Intersection(FiniteSet A, FiniteSet B) { return FiniteSet.New(A.Members.Intersect(B.Members)); }
     }
