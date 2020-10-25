@@ -203,8 +203,8 @@ namespace ComputerAlgebra
                     case Operator.Equal: return Constant.New(LR.Value == RR.Value);
                     case Operator.NotEqual: return Constant.New(LR.Value != RR.Value);
                     case Operator.Less: return Constant.New(LR.Value < RR.Value);
-                    case Operator.Greater: return Constant.New(LR.Value <= RR.Value);
-                    case Operator.LessEqual: return Constant.New(LR.Value > RR.Value);
+                    case Operator.LessEqual: return Constant.New(LR.Value <= RR.Value);
+                    case Operator.Greater: return Constant.New(LR.Value > RR.Value);
                     case Operator.GreaterEqual: return Constant.New(LR.Value >= RR.Value);
                     case Operator.ApproxEqual:
                         return Constant.New(

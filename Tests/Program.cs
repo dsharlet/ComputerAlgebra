@@ -111,12 +111,25 @@ namespace Tests
             List<KeyValuePair<Expression, Expression>> tests = new List<KeyValuePair<Expression, Expression>>()
             {
                 // Basic operations.
+                Test("IsConstant[3]", "1"),
+                Test("IsConstant[x]", "IsConstant[x]"),
                 Test("IsInteger[2]", "1"),
                 Test("IsInteger[2.1]", "0"),
+                Test("IsInteger[x]", "IsInteger[x]"),
                 Test("-1.0", "-1"),
                 Test("-1.2e1", "-12"),
                 Test("Abs[e - 2.7183] < 0.01", "1"),
                 Test("Abs[Pi - 3.1416] < 0.01", "1"),
+                Test("1 > 0", "1"),
+                Test("0 > 1", "0"),
+                Test("1 >= 0", "1"),
+                Test("1 >= 1", "1"),
+                Test("1 >= 2", "0"),
+                Test("1 < 0", "0"),
+                Test("0 < 1", "1"),
+                Test("1 <= 0", "0"),
+                Test("1 <= 1", "1"),
+                Test("1 <= 2", "1"),
                 //KV("f'[t]", "D[f[t], t]"),
 
                 Test("Sqrt[x] : x->4", "2"),
