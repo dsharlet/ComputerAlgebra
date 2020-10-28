@@ -37,14 +37,14 @@ namespace ComputerAlgebra
         public static Expression Factor(this Expression f, Expression x)
         {
             // If f is a product, just factor its terms.
-            if (f is Product)
-                return Product.New(((Product)f).Terms.Select(i => i.Factor(x)));
+            if (f is Product product)
+                return Product.New(product.Terms.Select(i => i.Factor(x)));
 
             // If if is l^r, factor l and distribute r.
-            if (f is Power)
+            if (f is Power power)
             {
-                Expression l = ((Power)f).Left.Factor(x);
-                Expression r = ((Power)f).Right;
+                Expression l = power.Left.Factor(x);
+                Expression r = power.Right;
                 return Product.New(Product.TermsOf(l).Select(i => Power.New(i, r)));
             }
 
