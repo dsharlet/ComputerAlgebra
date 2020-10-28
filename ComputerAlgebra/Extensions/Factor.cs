@@ -16,10 +16,10 @@ namespace ComputerAlgebra
                     yield return -1;
                     yield return Real.Abs((Real)i);
                 }
-                else if (i is Power)
+                else if (i is Power power)
                 {
                     yield return i;
-                    yield return ((Power)i).Left;
+                    yield return power.Left;
                 }
                 else
                 {
