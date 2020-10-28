@@ -49,11 +49,11 @@ namespace ComputerAlgebra
             }
 
             // If f is a polynomial of x, use polynomial factoring methods.
-            if (f is Polynomial && (((Polynomial)f).Variable.Equals(x) || ReferenceEquals(x, null)))
-                return ((Polynomial)f).Factor();
+            if (f is Polynomial p && (p.Variable.Equals(x) || (x is null)))
+                return p.Factor();
 
             // Try interpreting f as a polynomial of x.
-            if (!ReferenceEquals(x, null))
+            if (!(x is null))
             {
                 // If f is a polynomial of x, factor it.
                 try
@@ -64,10 +64,8 @@ namespace ComputerAlgebra
             }
 
             // Just factor out common sub-expressions.
-            if (f is Sum)
+            if (f is Sum s)
             {
-                Sum s = (Sum)f;
-
                 IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
 
                 // All of the distinct factors.

@@ -50,8 +50,7 @@ namespace ComputerAlgebra
         // Note that this is *not* an arithmetic comparison, it is a canonicalization ordering.
         public override int CompareTo(Expression R)
         {
-            Constant RC = R as Constant;
-            if (!ReferenceEquals(RC, null))
+            if (R is Constant RC)
                 return Real.Abs(RC.Value).CompareTo(Real.Abs(Value));
 
             return base.CompareTo(R);
@@ -59,7 +58,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Constant C = E as Constant;
-            if (ReferenceEquals(C, null)) return base.Equals(E);
+            if ((C is null)) return base.Equals(E);
 
             return Value.Equals(C.Value);
         }

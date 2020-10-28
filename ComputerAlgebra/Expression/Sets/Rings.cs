@@ -14,15 +14,13 @@ namespace ComputerAlgebra
 
         public override int CompareTo(Expression R)
         {
-            Ring RR = R as Ring;
-            if (!ReferenceEquals(RR, null))
+            if (R is Ring RR)
                 return Order.CompareTo(RR.Order);
             return base.CompareTo(R);
         }
         public override bool Equals(Expression E)
         {
-            Ring R = E as Ring;
-            if (!ReferenceEquals(R, null))
+            if (E is Ring R)
                 return Order.Equals(R.Order);
             return base.Equals(E);
         }

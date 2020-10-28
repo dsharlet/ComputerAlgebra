@@ -98,13 +98,13 @@ namespace ComputerAlgebra
 
         public static LazyExpression operator ==(Expression L, Expression R)
         {
-            if (ReferenceEquals(L, null) || ReferenceEquals(R, null))
+            if ((L is null) || (R is null))
                 return new LazyExpression(Constant.New(ReferenceEquals(L, R)));
             return new LazyExpression(Binary.Equal(L, R));
         }
         public static LazyExpression operator !=(Expression L, Expression R)
         {
-            if (ReferenceEquals(L, null) || ReferenceEquals(R, null))
+            if ((L is null) || (R is null))
                 return new LazyExpression(Constant.New(!ReferenceEquals(L, R)));
             return new LazyExpression(Binary.NotEqual(L, R));
         }
@@ -151,8 +151,7 @@ namespace ComputerAlgebra
         }
         public sealed override bool Equals(object obj)
         {
-            Expression E = obj as Expression;
-            return ReferenceEquals(E, null) ? false : Equals(E);
+            return obj is Expression E && Equals(E);
         }
         public sealed override string ToString()
         {

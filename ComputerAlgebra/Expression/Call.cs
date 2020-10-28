@@ -23,7 +23,7 @@ namespace ComputerAlgebra
 
         protected Call(Function Target, IEnumerable<Expression> Args)
         {
-            Debug.Assert(!ReferenceEquals(Target, null));
+            Debug.Assert(!(Target is null));
             target = Target;
             arguments = Args;
         }
@@ -59,8 +59,7 @@ namespace ComputerAlgebra
         protected override int TypeRank { get { return 2; } }
         public override int CompareTo(Expression R)
         {
-            Call RF = R as Call;
-            if (!ReferenceEquals(RF, null))
+            if (R is Call RF)
                 return LexicalCompareTo(
                     () => target.CompareTo(RF.Target),
                     () => arguments.LexicalCompareTo(RF.Arguments));

@@ -127,10 +127,9 @@ namespace ComputerAlgebra
 
         public override bool Equals(Expression E)
         {
-            Polynomial P = E as Polynomial;
-            if (ReferenceEquals(P, null)) return base.Equals(E);
-
-            return Equals(P);
+            if (E is Polynomial P) 
+                return Equals(P);
+            return base.Equals(E);
         }
         public override int GetHashCode() { return coefficients.OrderedHashCode() ^ variable.GetHashCode(); }
 

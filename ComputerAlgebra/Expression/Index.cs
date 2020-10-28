@@ -17,7 +17,7 @@ namespace ComputerAlgebra
 
         protected Index(Expression Target, IEnumerable<Expression> Indices)
         {
-            Debug.Assert(!ReferenceEquals(Target, null));
+            Debug.Assert(!(Target is null));
             target = Target;
             indices = Indices;
         }
@@ -43,11 +43,10 @@ namespace ComputerAlgebra
         // object interface.
         public override bool Equals(Expression E)
         {
-            Index I = E as Index;
-            if (ReferenceEquals(I, null)) 
-                return base.Equals(E);
-
-            return target.Equals(I.Target) && indices.SequenceEqual(I.Indices);
+            if (E is Index I)
+                return target.Equals(I.Target) && indices.SequenceEqual(I.Indices);
+        
+            return base.Equals(E);
         }
         public override int GetHashCode() { return target.GetHashCode() ^ indices.OrderedHashCode(); }
 

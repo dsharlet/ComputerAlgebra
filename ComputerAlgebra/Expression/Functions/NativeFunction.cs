@@ -119,10 +119,10 @@ namespace ComputerAlgebra
 
         public override bool Equals(Expression E)
         {
-            NativeFunction F = E as NativeFunction;
-            if (ReferenceEquals(F, null)) return base.Equals(E);
-
-            return Equals(method, F.method) && Equals(_this, F._this);
+            if (E is NativeFunction F)
+                return Equals(method, F.method) && Equals(_this, F._this);
+          
+            return base.Equals(E);
         }
         public override int GetHashCode() { return method.GetHashCode(); }
     }

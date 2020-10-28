@@ -22,7 +22,7 @@ namespace ComputerAlgebra
         {
             Expression VE;
             if (cache.TryGetValue(E, out VE))
-                return !ReferenceEquals(VE, null) ? VE : Revisit(E);
+                return !(VE is null) ? VE : Revisit(E);
 
             // Tentatively cache this expression to detect revisits.
             cache[E] = null;

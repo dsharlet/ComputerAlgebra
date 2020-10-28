@@ -77,7 +77,7 @@ namespace ComputerAlgebra
             int n = Power.IntegralExponentOf(f);
 
             // If this is an an integral constant negative exponent, attempt to use partial fractions.
-            if (n < 0 && !ReferenceEquals(x, null))
+            if (n < 0 && !(x is null))
             {
                 Expression b = f.Left.Factor(x);
                 if (n != -1)
@@ -106,7 +106,7 @@ namespace ComputerAlgebra
         private static Expression ExpandMultiply(Expression f, Expression x)
         {
             // If the denominator is multiplication, expand partial fractions.
-            if (!ReferenceEquals(x, null))
+            if (!(x is null))
             {
                 Expression d = Product.Denominator(f).Factor(x);
                 if (d is Product)

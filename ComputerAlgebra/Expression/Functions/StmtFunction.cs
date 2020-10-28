@@ -21,7 +21,7 @@ namespace ComputerAlgebra
         private StmtFunction(string Name, Statement Body, IEnumerable<Variable> Params)
             : base(Name)
         {
-            if (ReferenceEquals(Body, null))
+            if (Body is null)
                 throw new ArgumentNullException("Body");
 
             body = Body;

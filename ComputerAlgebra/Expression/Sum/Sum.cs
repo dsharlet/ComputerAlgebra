@@ -86,8 +86,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static IEnumerable<Expression> TermsOf(Expression E)
         {
-            Sum S = E as Sum;
-            if (!ReferenceEquals(S, null))
+            if (E is Sum S)
                 return S.Terms;
             else
                 return new Expression[] { E };
@@ -97,10 +96,9 @@ namespace ComputerAlgebra
         public override int GetHashCode() { return Terms.OrderedHashCode(); }
         public override bool Equals(Expression E)
         {
-            Sum S = E as Sum;
-            if (ReferenceEquals(S, null)) return base.Equals(E);
-
-            return Terms.SequenceEqual(S.Terms);
+            if (E is Sum S)
+                return Terms.SequenceEqual(S.Terms);
+            return base.Equals(E);
         }
 
         public override IEnumerable<Atom> Atoms

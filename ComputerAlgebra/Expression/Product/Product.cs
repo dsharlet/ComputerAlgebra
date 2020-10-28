@@ -90,8 +90,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static IEnumerable<Expression> TermsOf(Expression E)
         {
-            Product M = E as Product;
-            if (!ReferenceEquals(M, null))
+            if (E is Product M)
                 return M.Terms;
             else
                 return new Expression[] { E };
@@ -99,15 +98,15 @@ namespace ComputerAlgebra
 
         private static bool IsNegative(Expression x)
         {
-            Constant C = Product.TermsOf(x).First() as Constant;
+            Constant C = TermsOf(x).First() as Constant;
             if (C != null)
                 return (Real)C < 0;
             return false;
         }
         private static bool IsInDenominator(Expression x)
         {
-            if (x is Power)
-                return IsNegative(((Power)x).Right);
+            if (x is Power power)
+                return IsNegative(power.Right);
             return false;
         }
         public static Expression Numerator(Expression x) { return Product.New(Product.TermsOf(x).Where(i => !IsInDenominator(i))); }
@@ -116,10 +115,10 @@ namespace ComputerAlgebra
         public override int GetHashCode() { return Terms.OrderedHashCode(); }
         public override bool Equals(Expression E)
         {
-            Product P = E as Product;
-            if (ReferenceEquals(P, null)) return base.Equals(E);
-
-            return Terms.SequenceEqual(P.Terms);
+            if (E is Product P)
+                return Terms.SequenceEqual(P.Terms);
+            
+            return base.Equals(E);
         }
 
         public override IEnumerable<Atom> Atoms

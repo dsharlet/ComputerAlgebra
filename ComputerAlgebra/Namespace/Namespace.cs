@@ -41,7 +41,7 @@ namespace ComputerAlgebra
         public Expression Resolve(string Name)
         {
             Expression resolved = LookupName(Name).SingleOrDefault();
-            if (!ReferenceEquals(resolved, null))
+            if (!(resolved is null))
                 return resolved;
             throw new UnresolvedName(Name);
         }
@@ -54,7 +54,7 @@ namespace ComputerAlgebra
         public Function Resolve(string Name, IEnumerable<Expression> Params)
         {
             Function resolved = LookupFunction(Name, Params).SingleOrDefault();
-            if (!ReferenceEquals(resolved, null))
+            if (!(resolved is null))
                 return resolved;
             throw new UnresolvedName(Name);
         }

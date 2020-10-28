@@ -40,8 +40,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public virtual bool CallMatches(IEnumerable<Expression> Arguments, Expression E, MatchContext Matched)
         {
-            Call EF = E as Call;
-            if (!ReferenceEquals(EF, null))
+            if (E is Call EF)
             {
                 if (!Equals(EF.Target))
                     return false;
@@ -62,10 +61,10 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public virtual bool CallEquals(IEnumerable<Expression> Arguments, Expression E)
         {
-            Call C = E as Call;
-            if (ReferenceEquals(C, null)) return false;
-
-            return Equals(C.Target) && Arguments.SequenceEqual(C.Arguments);
+            if (E is Call C)
+                return Equals(C.Target) && Arguments.SequenceEqual(C.Arguments);
+      
+            return false;
         }
 
         /// <summary>

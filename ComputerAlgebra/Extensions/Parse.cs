@@ -286,7 +286,7 @@ namespace ComputerAlgebra
         private Function Resolve(string Token, IEnumerable<Expression> Args)
         {
             Function resolve = context.LookupFunction(Token, Args).SingleOrDefault();
-            if (!ReferenceEquals(resolve, null))
+            if (!(resolve is null))
                 return resolve;
             else
                 return UnknownFunction.New(Token, Args.Count());
@@ -295,7 +295,7 @@ namespace ComputerAlgebra
         private Expression Resolve(string Token)
         {
             Expression resolve = context.LookupName(Token).Where(i => !(i is Function)).SingleOrDefault();
-            if (!ReferenceEquals(resolve, null))
+            if (!(resolve is null))
                 return resolve;
             else
                 return Variable.New(Token);

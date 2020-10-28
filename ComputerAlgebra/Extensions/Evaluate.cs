@@ -34,7 +34,7 @@ namespace ComputerAlgebra
                 {
                     // Find constant term.
                     Constant coeff = Product.TermsOf(i).OfType<Constant>().FirstOrDefault();
-                    if (!ReferenceEquals(coeff, null))
+                    if (!(coeff is null))
                         terms[Product.New(Product.TermsOf(i).ExceptUnique(coeff, Expression.RefComparer))] += (Real)coeff;
                     else
                         terms[i] += 1;
@@ -74,8 +74,7 @@ namespace ComputerAlgebra
                 }
                 else
                 {
-                    Power Pi = i as Power;
-                    if (!ReferenceEquals(Pi, null) && Pi.Right is Constant)
+                    if (i is Power Pi && Pi.Right is Constant)
                         terms[Pi.Left] += (Real)Pi.Right;
                     else
                         terms[i] += 1;
@@ -111,7 +110,7 @@ namespace ComputerAlgebra
                 if (C.Target.CanCall(C.Arguments))
                 {
                     Expression call = C.Target.Call(C.Arguments);
-                    if (!ReferenceEquals(call, null))
+                    if (!(call is null))
                         return call;
                 }
             }
@@ -128,8 +127,7 @@ namespace ComputerAlgebra
                 return I;
 
             // Index a matrix.
-            Matrix M = I.Target as Matrix;
-            if (!ReferenceEquals(M, null))
+            if (I.Target is Matrix M)
             {
                 switch (I.Indices.Count())
                 {
@@ -139,8 +137,7 @@ namespace ComputerAlgebra
             }
 
             // Index an array.
-            Array A = I.Target as Array;
-            if (!ReferenceEquals(A, null))
+            if (I.Target is Array A)
                 return Constant.New(A.Value.GetValue(I.Indices.Select(i => (int)i).ToArray()));
 
             return I;
@@ -154,14 +151,12 @@ namespace ComputerAlgebra
             if (R.IsInteger())
             {
                 // Transform (x*y)^z => x^z*y^z if z is an integer.
-                Product M = L as Product;
-                if (!ReferenceEquals(M, null))
+                if (L is Product M)
                     return Visit(Product.New(M.Terms.Select(i => Power.New(i, R))));
             }
 
             // Transform (x^y)^z => x^(y*z) if z is an integer.
-            Power LP = L as Power;
-            if (!ReferenceEquals(LP, null))
+            if (L is Power LP)
             {
                 L = LP.Left;
                 R = Visit(Product.New(P.Right, LP.Right));
@@ -177,7 +172,7 @@ namespace ComputerAlgebra
             if (EqualsOne(RR)) return L;
 
             // Evaluate result.
-            if (LR != null && RR != null)
+            if (!(LR is null) && !(RR is null))
                 return Constant.New(LR.Value ^ RR.Value);
             else
                 return Power.New(L, R);

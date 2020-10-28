@@ -16,7 +16,8 @@ namespace ComputerAlgebra
             foreach (Expression i in List)
             {
                 Expression Vi = Visit(i);
-                if (ReferenceEquals(Vi, null)) return null;
+                if (Vi is null) 
+                    return null;
                 list.Add(Vi);
 
                 Equal = Equal && ReferenceEquals(Vi, i);
@@ -28,7 +29,8 @@ namespace ComputerAlgebra
         {
             Expression L = Visit(B.Left);
             Expression R = Visit(B.Right);
-            if (ReferenceEquals(L, null) || ReferenceEquals(R, null)) return null;
+            if (L is null || R is null)
+                return null;
 
             if (ReferenceEquals(L, B.Left) && ReferenceEquals(R, B.Right))
                 return B;
@@ -39,7 +41,8 @@ namespace ComputerAlgebra
         protected override Expression VisitUnary(Unary U)
         {
             Expression O = Visit(U.Operand);
-            if (ReferenceEquals(O, null)) return null;
+            if (O is null) 
+                return null;
 
             if (ReferenceEquals(O, U.Operand))
                 return U;
@@ -50,42 +53,47 @@ namespace ComputerAlgebra
         protected override Expression VisitSum(Sum A)
         {
             IEnumerable<Expression> terms = VisitList(A.Terms);
-            if (ReferenceEquals(terms, null)) return null;
+            if (terms is null)
+                return null;
             return ReferenceEquals(terms, A.Terms) ? A : Sum.New(terms);
         }
 
         protected override Expression VisitProduct(Product M)
         {
             IEnumerable<Expression> terms = VisitList(M.Terms);
-            if (ReferenceEquals(terms, null)) return null;
+            if (terms is null) 
+                return null;
             return ReferenceEquals(terms, M.Terms) ? M : Product.New(terms);
         }
 
         protected override Expression VisitSet(Set S)
         {
             IEnumerable<Expression> members = VisitList(S.Members);
-            if (ReferenceEquals(members, null)) return null;
+            if (members is null)
+                return null;
             return ReferenceEquals(members, S.Members) ? S : Set.New(members);
         }
 
         protected override Expression VisitCall(Call F)
         {
             IEnumerable<Expression> arguments = VisitList(F.Arguments);
-            if (ReferenceEquals(arguments, null)) return null;
+            if (arguments is null)
+                return null;
             return ReferenceEquals(arguments, F.Arguments) ? F : Call.New(F.Target, arguments);
         }
 
         protected override Expression VisitMatrix(Matrix A)
         {
             IEnumerable<Expression> elements = VisitList(A);
-            if (ReferenceEquals(elements, null)) return null;
+            if (elements is null)
+                return null;
             return ReferenceEquals(elements, A) ? A : Matrix.New(A.M, A.N, elements);
         }
 
         protected override Expression VisitIndex(Index I)
         {
             IEnumerable<Expression> indices = VisitList(I.Indices);
-            if (ReferenceEquals(indices, null)) return null;
+            if ((indices is null)) return null;
             return ReferenceEquals(indices, I.Indices) ? I : Index.New(I.Target, indices);
         }
     }

@@ -30,7 +30,7 @@ namespace ComputerAlgebra
 
         public override bool Matches(Expression E, MatchContext Matched)
         {
-            return (ReferenceEquals(Ring, null) || Ring.Contains(E)) && Matched.Matches(this, E);
+            return (Ring is null || Ring.Contains(E)) && Matched.Matches(this, E);
         }
 
         protected override int TypeRank { get { return 1; } }

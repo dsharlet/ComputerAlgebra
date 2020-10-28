@@ -50,8 +50,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static Expression Prime(Expression Operand)
         {
-            Call f = Operand as Call;
-            if (!ReferenceEquals(f, null) && f.Arguments.Count() == 1)
+            if (Operand is Call f && f.Arguments.Count() == 1)
                 return Call.D(f, f.Arguments.First());
             return new Unary(Operator.Prime, Operand);
         }
@@ -122,18 +121,16 @@ namespace ComputerAlgebra
         public override int GetHashCode() { return Operator.GetHashCode() ^ Operand.GetHashCode(); }
         public override bool Equals(Expression E)
         {
-            Unary U = E as Unary;
-            if (ReferenceEquals(U, null)) return base.Equals(E);
-
-            return Operator.Equals(U.Operator) && Operand.Equals(U.Operand);
+            if (E is Unary U)
+                return Operator.Equals(U.Operator) && Operand.Equals(U.Operand);
+            return base.Equals(E);
         }
 
         // Expression interface.
         public override IEnumerable<Atom> Atoms { get { return Operand.Atoms; } }
         public override int CompareTo(Expression R)
         {
-            Unary RU = R as Unary;
-            if (!ReferenceEquals(RU, null))
+            if (R is Unary RU)
                 return LexicalCompareTo(
                     () => Operator.CompareTo(RU.Operator),
                     () => Operand.CompareTo(RU.Operand));

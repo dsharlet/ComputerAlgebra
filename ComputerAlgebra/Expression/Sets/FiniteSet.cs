@@ -37,19 +37,16 @@ namespace ComputerAlgebra
         }
         public override int CompareTo(Expression R)
         {
-            FiniteSet RS = R as FiniteSet;
-            if (!ReferenceEquals(RS, null))
+            if (R is FiniteSet RS)
                 return members.LexicalCompareTo(RS.Members);
-
             return base.CompareTo(R);
         }
 
         public override bool Equals(Expression E)
         {
-            FiniteSet S = E as FiniteSet;
-            if (ReferenceEquals(S, null)) return base.Equals(E);
-
-            return Members.SequenceEqual(S.Members);
+            if (E is FiniteSet S) 
+                return Members.SequenceEqual(S.Members);
+            return base.Equals(E);
         }
         public override int GetHashCode() { return Members.UnorderedHashCode(); }
 

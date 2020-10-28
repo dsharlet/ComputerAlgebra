@@ -157,8 +157,7 @@ namespace ComputerAlgebra
 
         public override bool Matches(Expression E, MatchContext Matched)
         {
-            Binary BE = E as Binary;
-            if (!ReferenceEquals(BE, null) && BE.Operator == Operator)
+            if (E is Binary BE && BE.Operator == Operator)
                 return Matched.TryMatch(() => Left.Matches(BE.Left, Matched) && Right.Matches(BE.Right, Matched));
 
             return false;
@@ -171,17 +170,14 @@ namespace ComputerAlgebra
         public override IEnumerable<Atom> Atoms { get { return Left.Atoms.Concat(Right.Atoms); } }
         public override bool Equals(Expression E)
         {
-            Binary B = E as Binary;
-            if (ReferenceEquals(B, null)) return base.Equals(E);
+            if (E is Binary B) 
+                return Operator.Equals(B.Operator) && Left.Equals(B.Left) && Right.Equals(B.Right);
 
-            return Operator.Equals(B.Operator) &&
-                Left.Equals(B.Left) &&
-                Right.Equals(B.Right);
+            return base.Equals(E);
         }
         public override int CompareTo(Expression R)
         {
-            Binary RB = R as Binary;
-            if (!ReferenceEquals(RB, null))
+            if (R is Binary RB)
                 return LexicalCompareTo(
                     () => Operator.CompareTo(RB.Operator),
                     () => Left.CompareTo(RB.Left),
