@@ -30,9 +30,6 @@ namespace ComputerAlgebra
 
         public SimplifyVisitor(CostVisitor Cost) { cost = Cost; }
 
-        // In the case of revisiting an expression, just return it to avoid stack overflow.
-        protected override Expression Revisit(Expression E) { return E; }
-
         public override Expression Visit(Expression E)
         {
             E = base.Visit(E);

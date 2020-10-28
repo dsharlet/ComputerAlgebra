@@ -14,9 +14,6 @@ namespace ComputerAlgebra
 
         public EvaluateVisitor() { }
 
-        // In the case of revisiting an expression, just return it to avoid stack overflow.
-        protected override Expression Revisit(Expression E) { return E; }
-
         public static Expression EvaluateSum(IEnumerable<Expression> Terms)
         {
             // Map terms to their coefficients.
@@ -185,7 +182,12 @@ namespace ComputerAlgebra
 
             // Evaluate substitution operators.
             if (B is Substitute)
-                return Visit(L.Substitute(Set.MembersOf(R).Cast<Arrow>()));
+            {
+                Expression result = L.Substitute(Set.MembersOf(R).Cast<Arrow>());
+                if (result.Equals(B))
+                    return result;
+                return Visit(result);
+            }
 
             Real? LR = AsReal(L);
             Real? RR = AsReal(R);
