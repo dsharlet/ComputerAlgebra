@@ -67,7 +67,7 @@ namespace ComputerAlgebra
                 return base.Visit(E);
         }
 
-        protected override Expression VisitSum(Sum A) { return Sum.New(A.Terms.Select(i => Visit(i)).Where(i => !i.EqualsZero())); }
+        protected override Expression VisitSum(Sum A) { return Sum.New(A.Terms.Where(i => i.DependsOn(x)).Select(i => Visit(i))); }
 
         protected Expression ProductRule(Expression L, IEnumerable<Expression> R)
         {
