@@ -9,21 +9,28 @@ namespace ComputerAlgebra
 
         protected Constant(Real x) { this.x = x; }
 
-        private static readonly Constant One = new Constant(1);
+        private static readonly Constant NegativeOne = new Constant(-1);
         private static readonly Constant Zero = new Constant(0);
+        private static readonly Constant One = new Constant(1);
+        private static readonly Constant Two = new Constant(2);
 
-        public static Constant New(int x) { return new Constant(x); }
+        public static Constant New(int x) {
+            if (x == -1) return NegativeOne;
+            if (x == 0) return Zero;
+            if (x == 1) return One;
+            return new Constant(x); 
+        }
         public static Constant New(double x) { return new Constant(x); }
         public static Constant New(decimal x) { return new Constant(x); }
         public static Constant New(Real x) { return new Constant(x); }
         public static Constant New(bool x) { return x ? One : Zero; }
         public static Expression New(object x)
         {
-            if (x.GetType() == typeof(int)) return New((int)x);
-            if (x.GetType() == typeof(double)) return New((double)x);
-            if (x.GetType() == typeof(decimal)) return New((decimal)x);
-            if (x.GetType() == typeof(bool)) return New((bool)x);
-            if (x.GetType() == typeof(Real)) return New((Real)x);
+            if (x is int i) return New(i);
+            if (x is double dbl) return New(dbl);
+            if (x is decimal d) return New(d);
+            if (x is bool b) return New(b);
+            if (x is Real r) return New(r);
             throw new InvalidCastException();
         }
 
@@ -52,15 +59,13 @@ namespace ComputerAlgebra
         {
             if (R is Constant RC)
                 return Real.Abs(RC.Value).CompareTo(Real.Abs(Value));
-
             return base.CompareTo(R);
         }
         public override bool Equals(Expression E)
         {
-            Constant C = E as Constant;
-            if ((C is null)) return base.Equals(E);
-
-            return Value.Equals(C.Value);
+            if (E is Constant C) 
+                return Value.Equals(C.Value);
+            return base.Equals(E);
         }
     }
 }
