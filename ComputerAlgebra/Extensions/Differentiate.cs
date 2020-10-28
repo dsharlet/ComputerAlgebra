@@ -57,48 +57,36 @@ namespace ComputerAlgebra
 
         public static Expression Transform(Expression f, Expression x) { return new DifferentiateTransform(x).Visit(f); }
 
-        public override Expression Visit(Expression E)
-        {
-            if (x.Equals(E))
-                return 1;
-            else if (!E.DependsOn(x))
-                return 0;
-            else
-                return base.Visit(E);
-        }
-
-        protected override Expression VisitSum(Sum A) { return Sum.New(A.Terms.Where(i => i.DependsOn(x)).Select(i => Visit(i))); }
+        protected override Expression VisitSum(Sum A) { return Sum.New(A.Terms.Select(i => Visit(i))).Evaluate(); }
 
         protected Expression ProductRule(Expression L, IEnumerable<Expression> R)
         {
             if (R.Empty())
                 return Visit(L);
 
-            bool Lx = L.DependsOn(x);
-            bool Rx = R.DependsOn(x);
-
-            if (Lx && Rx)
-            {
-                // Product rule.
-                return Sum.New(
-                    Product.New(new Expression[] { Visit(L) }.Concat(R)),
-                    Product.New(L, ProductRule(R.First(), R.Skip(1)))).Evaluate();
-            }
-            else if (!Lx)
-            {
-                // L is constant w.r.t. x.
-                return Product.New(L, ProductRule(R.First(), R.Skip(1))).Evaluate();
-            }
-            else
-            {
-                // R is constant w.r.t. x.
-                return Product.New(R.Append(Visit(L))).Evaluate();
-            }
+            // Product rule.
+            return Sum.New(
+                Product.New(new Expression[] { Visit(L) }.Concat(R)),
+                Product.New(L, ProductRule(R.First(), R.Skip(1))));
         }
 
         protected override Expression VisitProduct(Product M)
         {
-            return ProductRule(M.Terms.First(), M.Terms.Skip(1));
+            List<Expression> independent = new List<Expression>();
+            List<Expression> dependent = new List<Expression>();
+            foreach (Expression i in M.Terms)
+            {
+                if (i.DependsOn(x))
+                    dependent.Add(i);
+                else
+                    independent.Add(i);
+            }
+            if (dependent.Count == 0)
+                return 0;
+            else
+                return Product.New(
+                    Product.New(independent),
+                    ProductRule(dependent.First(), dependent.Skip(1))).Evaluate();
         }
 
         protected override Expression VisitPower(Power P)
@@ -141,7 +129,12 @@ namespace ComputerAlgebra
 
         protected override Expression VisitUnknown(Expression E)
         {
-            return rules.Transform(Call.D(E, x));
+            if (E.Equals(x))
+                return 1;
+            else if (E.DependsOn(x))
+                return rules.Transform(Call.D(E, x));
+            else
+                return 0;
         }
     }
 
