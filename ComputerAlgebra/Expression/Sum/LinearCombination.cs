@@ -62,7 +62,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static LinearCombination New(IEnumerable<Expression> B, Expression x)
         {
-            B = B.AsBuffer();
+            B = B.Buffer();
 
             LinearCombination ret = new LinearCombination();
             foreach (Expression t in Sum.TermsOf(x.Expand()))

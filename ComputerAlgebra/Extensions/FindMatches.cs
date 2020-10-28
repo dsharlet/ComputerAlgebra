@@ -40,7 +40,7 @@ namespace ComputerAlgebra
         /// <returns>Enumerable of MatchContext for the successful matches.</returns>
         public static IEnumerable<MatchContext> FindMatches(this Expression f, IEnumerable<Expression> Patterns)
         {
-            FindMatchesVisitor V = new FindMatchesVisitor(Patterns.AsBuffer());
+            FindMatchesVisitor V = new FindMatchesVisitor(Patterns.Buffer());
             V.Visit(f);
             return V.Matches;
         }

@@ -27,8 +27,7 @@ namespace ComputerAlgebra
         {
             if (E is Set S)
                 return S.Members;
-            else
-                return new[] { E };
+            return new[] { E };
         }
     }
 }

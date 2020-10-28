@@ -30,12 +30,12 @@ namespace ComputerAlgebra
         /// <returns>true if f is a function of any variable in x.</returns>
         public static bool DependsOn(this Expression f, IEnumerable<Expression> x)
         {
-            return ReferenceEquals(new SearchVisitor(x.AsBuffer()).Visit(f), null);
+            return new SearchVisitor(x.Buffer()).Visit(f) is null;
         }
         public static bool DependsOn(this IEnumerable<Expression> f, IEnumerable<Expression> x)
         {
-            SearchVisitor V = new SearchVisitor(x.AsBuffer());
-            return f.Any(i => ReferenceEquals(V.Visit(i), null));
+            SearchVisitor V = new SearchVisitor(x.Buffer());
+            return f.Any(i => V.Visit(i) is null);
         }
 
         /// <summary>
