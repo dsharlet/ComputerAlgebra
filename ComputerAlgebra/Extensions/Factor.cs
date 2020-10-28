@@ -66,21 +66,23 @@ namespace ComputerAlgebra
             // Just factor out common sub-expressions.
             if (f is Sum s)
             {
-                IEnumerable<Expression> terms = s.Terms.Select(i => i.Factor()).Buffer();
+                // Make a list of each terms' products.
+                List<List<Expression>> terms = s.Terms.Select(i => FactorsOf(i).ToList()).ToList();
 
                 // All of the distinct factors.
-                IEnumerable<Expression> factors = terms.SelectMany(i => FactorsOf(i).Except(1, -1)).Distinct();
-                // Choose the most common factor to use.
-                Expression factor = factors.ArgMax(i => terms.Count(j => FactorsOf(j).Contains(i)));
+                IEnumerable<Expression> factors = terms.SelectMany(i => i.Except(1, -1)).Distinct();
+                // Choose the most common factor to factor.
+                Expression factor = factors.ArgMax(i => terms.Count(j => j.Contains(i)));
                 // Find the terms that contain the factor.
-                IEnumerable<Expression> contains = terms.Where(i => FactorsOf(i).Contains(factor)).Buffer();
-                // If more than one term contains the factor, pull it out and factor the resulting expression (again).
+                List<List<Expression>> contains = terms.Where(i => i.Contains(factor)).ToList();
+                // If more than one term contains the factor, pull it out and factor the resulting expressions (again).
                 if (contains.Count() > 1)
-                    return Sum.New(
-                        Product.New(factor, Sum.New(contains.Select(i => Binary.Divide(i, factor))).Evaluate()),
-                        Sum.New(terms.Except(contains, Expression.RefComparer))).Factor(null);
+                {
+                    Expression factored = Sum.New(contains.Select(i => Product.New(i.Except(factor))));
+                    Expression not_factored = Sum.New(terms.Except(contains).Select(i => Product.New(i)));
+                    return Sum.New(Product.New(factor, factored), not_factored).Factor(null);
+                }
             }
-
             return f;
         }
 
