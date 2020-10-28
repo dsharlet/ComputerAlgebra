@@ -177,7 +177,7 @@ namespace ComputerAlgebra
 
         private Matrix RowReduce(Matrix Aug)
         {
-            Matrix This = new Matrix(this);
+            Matrix reduced = new Matrix(this);
 
             // Gaussian elimination, .m[ A I ] ~ .m[ I, A^-1 ]
             for (int i = 0; i < M; ++i)
@@ -185,19 +185,19 @@ namespace ComputerAlgebra
                 // Find pivot row.
                 int p;
                 for (p = i; p < N; ++p)
-                    if (!This.m[p, i].EqualsZero())
+                    if (!reduced.m[p, i].EqualsZero())
                         break;
                 if (p >= N)
                     throw new ArgumentException("Singular matrix");
 
                 // Swap pivot row with row i.
-                SwapRows(This, i, p);
+                SwapRows(reduced, i, p);
                 if (Aug is object)
                     SwapRows(Aug, i, p);
 
                 // Put a 1 in the pivot position.
-                Expression s = 1 / This.m[i, i];
-                ScaleRow(This, i, s);
+                Expression s = 1 / reduced.m[i, i];
+                ScaleRow(reduced, i, s);
                 if (Aug is object)
                     ScaleRow(Aug, i, s);
 
@@ -206,15 +206,15 @@ namespace ComputerAlgebra
                 {
                     if (i != p)
                     {
-                        Expression a = -This.m[p, i];
-                        ScaleAddRow(This, i, a, p);
+                        Expression a = -reduced.m[p, i];
+                        ScaleAddRow(reduced, i, a, p);
                         if (Aug is object)
                             ScaleAddRow(Aug, i, a, p);
                     }
                 }
             }
 
-            return This;
+            return reduced;
         }
 
         public Matrix RowReduce()
