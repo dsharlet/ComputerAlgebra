@@ -52,7 +52,8 @@ namespace ComputerAlgebra
 
             public bool DependsOn(IEnumerable<Expression> x)
             {
-                return this.Any(i => i.Key.DependsOn(x) || i.Value.DependsOn(x));
+                SearchVisitor v = new SearchVisitor(x);
+                return this.Any(i => v.Visit(i.Key) == null || v.Visit(i.Value) == null);
             }
             public bool DependsOn(params Expression[] x) { return DependsOn(x.AsEnumerable()); }
 
