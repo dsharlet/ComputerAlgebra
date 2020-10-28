@@ -38,8 +38,8 @@ namespace ComputerAlgebra
         {
             foreach (Expression i in Terms)
             {
-                if (i is Product)
-                    foreach (Expression j in FlattenTerms(((Product)i).Terms))
+                if (i is Product product)
+                    foreach (Expression j in FlattenTerms(product.Terms))
                         yield return j;
                 else if (!i.EqualsOne())
                     yield return i;

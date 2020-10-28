@@ -38,8 +38,8 @@ namespace ComputerAlgebra
         {
             foreach (Expression i in Terms)
             {
-                if (i is Sum)
-                    foreach (Expression j in FlattenTerms(((Sum)i).Terms))
+                if (i is Sum sum)
+                    foreach (Expression j in FlattenTerms(sum.Terms))
                         yield return j;
                 else if (!i.EqualsZero())
                     yield return i;

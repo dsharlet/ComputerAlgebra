@@ -25,8 +25,8 @@ namespace ComputerAlgebra
 
         public static IEnumerable<Expression> MembersOf(Expression E)
         {
-            if (E is Set)
-                return (E as Set).Members;
+            if (E is Set S)
+                return S.Members;
             else
                 return new[] { E };
         }
