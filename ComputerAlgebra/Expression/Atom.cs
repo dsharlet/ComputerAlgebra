@@ -17,8 +17,7 @@ namespace ComputerAlgebra
         public override abstract int GetHashCode();
         public override int CompareTo(Expression R)
         {
-            Atom RA = R as Atom;
-            if (!ReferenceEquals(RA, null))
+            if (R is Atom RA)
                 return TypeRank.CompareTo(RA.TypeRank);
 
             return base.CompareTo(R);
@@ -49,13 +48,14 @@ namespace ComputerAlgebra
         public override int GetHashCode() { return name.GetHashCode(); }
         public override bool Equals(Expression E)
         {
-            if (ReferenceEquals(E, null) || GetType() != E.GetType()) return base.Equals(E);
-            return Equals(name, ((NamedAtom)E).name);
+            NamedAtom A = E as NamedAtom;
+            if (E is null || A is null) 
+                return base.Equals(E);
+            return Equals(name, A.name);
         }
         public override int CompareTo(Expression R)
         {
-            NamedAtom RA = R as NamedAtom;
-            if (!ReferenceEquals(RA, null))
+            if (R is NamedAtom RA)
             {
                 int c = TypeRank.CompareTo(RA.TypeRank);
                 if (c != 0) return c;

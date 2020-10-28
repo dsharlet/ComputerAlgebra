@@ -192,13 +192,13 @@ namespace ComputerAlgebra
 
                 // Swap pivot row with row i.
                 SwapRows(This, i, p);
-                if (!ReferenceEquals(Aug, null))
+                if (Aug is object)
                     SwapRows(Aug, i, p);
 
                 // Put a 1 in the pivot position.
                 Expression s = 1 / This.m[i, i];
                 ScaleRow(This, i, s);
-                if (!ReferenceEquals(Aug, null))
+                if (Aug is object)
                     ScaleRow(Aug, i, s);
 
                 // Zero the pivot column elsewhere.
@@ -208,7 +208,7 @@ namespace ComputerAlgebra
                     {
                         Expression a = -This.m[p, i];
                         ScaleAddRow(This, i, a, p);
-                        if (!ReferenceEquals(Aug, null))
+                        if (Aug is object)
                             ScaleAddRow(Aug, i, a, p);
                     }
                 }
@@ -297,7 +297,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Matrix A = E as Matrix;
-            if (ReferenceEquals(M, null))
+            if (A is null)
                 return base.Equals(E);
 
             if (M != A.M || N != A.N)
@@ -314,7 +314,7 @@ namespace ComputerAlgebra
         public override bool Matches(Expression Expr, MatchContext Matched)
         {
             Matrix A = Expr as Matrix;
-            if (ReferenceEquals(A, null))
+            if (A is null)
                 return false;
 
             if (M != A.M || N != A.N)

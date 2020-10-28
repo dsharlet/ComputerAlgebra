@@ -27,8 +27,7 @@ namespace ComputerAlgebra
 
         public override bool Matches(Expression E, MatchContext Matched)
         {
-            Index I = E as Index;
-            if (!ReferenceEquals(I, null))
+            if (E is Index I)
             {
                 if (Indices.Count() != I.Indices.Count())
                     return false;
@@ -45,7 +44,8 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             Index I = E as Index;
-            if (ReferenceEquals(I, null)) return base.Equals(E);
+            if (ReferenceEquals(I, null)) 
+                return base.Equals(E);
 
             return target.Equals(I.Target) && indices.SequenceEqual(I.Indices);
         }
@@ -55,8 +55,7 @@ namespace ComputerAlgebra
         protected override int TypeRank { get { return 5; } }
         public override int CompareTo(Expression R)
         {
-            Index RF = R as Index;
-            if (!ReferenceEquals(RF, null))
+            if (R is Index RF)
                 return LexicalCompareTo(
                     () => target.CompareTo(RF.Target),
                     () => indices.LexicalCompareTo(RF.Indices));
