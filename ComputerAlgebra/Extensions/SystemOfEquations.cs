@@ -204,8 +204,9 @@ namespace ComputerAlgebra
 
             Equation S = equations[s];
 
-            Expression scale = -T[p] / S[p];
-            foreach (Expression j in Columns)
+            // This is a pretty hot path, so avoid unnecessary evaluations.
+            Expression scale = Product.New(-1, T[p], Binary.Power(S[p], -1));
+            foreach (Expression j in Columns.Except(p))
                 T[j] += Product.New(S[j], scale);
             T[p] = 0;
         }

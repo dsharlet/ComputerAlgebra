@@ -29,10 +29,7 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static Dictionary<Expression, Expression> Gradient(this Expression f, IEnumerable<Expression> x)
         {
-            Dictionary<Expression, Expression> gradient = new Dictionary<Expression, Expression>();
-            foreach (Expression j in x)
-                gradient[j] = f.Differentiate(j);
-            return gradient;
+            return x.ToDictionary(i => i, i => f.Differentiate(i));
         }
 
         /// <summary>
@@ -41,9 +38,9 @@ namespace ComputerAlgebra
         /// <param name="F"></param>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static IEnumerable<Dictionary<Expression, Expression>> Jacobian(this IEnumerable<Expression> F, IEnumerable<Expression> x)
+        public static List<Dictionary<Expression, Expression>> Jacobian(this IEnumerable<Expression> F, IEnumerable<Expression> x)
         {
-            return F.Select(i => i.Gradient(x));
+            return F.Select(i => i.Gradient(x)).ToList();
         }
 
         // Use neton's method to solve F(x) = 0, with initial guess x0.
