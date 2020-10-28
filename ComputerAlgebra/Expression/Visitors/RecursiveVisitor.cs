@@ -12,7 +12,7 @@ namespace ComputerAlgebra
         protected virtual IEnumerable<Expression> VisitList(IEnumerable<Expression> List)
         {
             List<Expression> list = new List<Expression>();
-            bool Equal = true;
+            bool equal = true;
             foreach (Expression i in List)
             {
                 Expression Vi = Visit(i);
@@ -20,9 +20,9 @@ namespace ComputerAlgebra
                     return null;
                 list.Add(Vi);
 
-                Equal = Equal && ReferenceEquals(Vi, i);
+                equal = equal && ReferenceEquals(Vi, i);
             }
-            return Equal ? List : list;
+            return equal ? List : list;
         }
 
         protected override Expression VisitBinary(Binary B)
