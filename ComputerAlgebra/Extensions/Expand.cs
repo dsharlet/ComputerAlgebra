@@ -109,8 +109,8 @@ namespace ComputerAlgebra
             if (!(x is null))
             {
                 Expression d = Product.Denominator(f).Factor(x);
-                if (d is Product)
-                    return ExpandPartialFractions(Product.Numerator(f), (Product)d, x);
+                if (d is Product product)
+                    return ExpandPartialFractions(Product.Numerator(f), product, x);
             }
 
             // If f contains an add expression, distribute it.
@@ -134,14 +134,14 @@ namespace ComputerAlgebra
         {
             if (f is Product)
                 return ExpandMultiply(f, x);
-            else if (f is Sum)
-                return Sum.New(((Sum)f).Terms.Select(i => i.Expand(x)));
-            else if (f is Power)
-                return ExpandPower((Power)f, x);
-            else if (f is Binary)
-                return Binary.New(((Binary)f).Operator, ((Binary)f).Left.Expand(), ((Binary)f).Right.Expand());
-            else if (f is Unary)
-                return Unary.New(((Unary)f).Operator, ((Unary)f).Operand.Expand());
+            else if (f is Sum sum)
+                return Sum.New(sum.Terms.Select(i => i.Expand(x)));
+            else if (f is Power power)
+                return ExpandPower(power, x);
+            else if (f is Binary binary)
+                return Binary.New(binary.Operator, binary.Left.Expand(x), binary.Right.Expand(x));
+            else if (f is Unary unary)
+                return Unary.New(unary.Operator, unary.Operand.Expand());
 
             return f;
         }
