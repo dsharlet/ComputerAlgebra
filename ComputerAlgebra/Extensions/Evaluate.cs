@@ -66,7 +66,7 @@ namespace ComputerAlgebra
                     Real Ci = (Real)i;
                     // Early exit if 0.
                     if (Ci.EqualsZero())
-                        return 0;
+                        return i;  // Zero
                     C *= Ci;
                 }
                 else
@@ -83,7 +83,7 @@ namespace ComputerAlgebra
             {
                 // Find a sum term that has a constant term to distribute into.
                 KeyValuePair<Expression, Real> A = terms.FirstOrDefault(i => Real.Abs(i.Value).EqualsOne() && i.Key is Sum);
-                if (!ReferenceEquals(A.Key, null))
+                if (A.Key is object)
                 {
                     terms.Remove(A.Key);
                     terms[ExpandExtension.Distribute(C ^ A.Value, A.Key)] += A.Value;
@@ -107,7 +107,7 @@ namespace ComputerAlgebra
                 if (C.Target.CanCall(C.Arguments))
                 {
                     Expression call = C.Target.Call(C.Arguments);
-                    if (!(call is null))
+                    if (call is object)
                         return call;
                 }
             }
@@ -161,15 +161,15 @@ namespace ComputerAlgebra
 
             // Handle identities.
             Real? LR = AsReal(L);
-            if (EqualsZero(LR)) return 0;
-            if (EqualsOne(LR)) return 1;
+            if (EqualsZero(LR)) return L;
+            if (EqualsOne(LR)) return L;
 
             Real? RR = AsReal(R);
             if (EqualsZero(RR)) return 1;
             if (EqualsOne(RR)) return L;
 
             // Evaluate result.
-            if (!(LR is null) && !(RR is null))
+            if (LR is object && RR is object)
                 return Constant.New(LR.Value ^ RR.Value);
             else
                 return Power.New(L, R);
@@ -185,7 +185,7 @@ namespace ComputerAlgebra
             {
                 Expression result = L.Substitute(Set.MembersOf(R).Cast<Arrow>());
                 if (result.Equals(B))
-                    return result;
+                    return B;
                 return Visit(result);
             }
 
@@ -205,7 +205,6 @@ namespace ComputerAlgebra
                     case Operator.GreaterEqual: return Constant.New(LR.Value >= RR.Value);
                     case Operator.ApproxEqual:
                         return Constant.New(
-                            LR.Value == RR.Value ||
                             Real.Abs(LR.Value - RR.Value) <= 1e-12 * Real.Max(Real.Abs(LR.Value), Real.Abs(RR.Value)));
                 }
             }
@@ -214,16 +213,20 @@ namespace ComputerAlgebra
             switch (B.Operator)
             {
                 case Operator.And:
-                    if (IsFalse(LR) || IsFalse(RR))
-                        return Constant.New(false);
+                    if (IsFalse(LR))
+                        return L;
+                    else if (IsFalse(RR))
+                        return R;
                     else if (IsTrue(LR) && IsTrue(RR))
-                        return Constant.New(true);
+                        return L;
                     break;
                 case Operator.Or:
-                    if (IsTrue(LR) || IsTrue(RR))
-                        return Constant.New(true);
+                    if (IsTrue(LR))
+                        return L;
+                    else if (IsTrue(RR))
+                        return R;
                     else if (IsFalse(LR) && IsFalse(RR))
-                        return Constant.New(false);
+                        return L;
                     break;
 
                 case Operator.Equal:
@@ -276,10 +279,10 @@ namespace ComputerAlgebra
                 return Default;
         }
 
-        protected static bool EqualsZero(Real? R) { return R != null ? R.Value.EqualsZero() : false; }
-        protected static bool EqualsOne(Real? R) { return R != null ? R.Value.EqualsOne() : false; }
-        protected static bool IsTrue(Real? R) { return R != null ? !R.Value.EqualsZero() : false; }
-        protected static bool IsFalse(Real? R) { return R != null ? R.Value.EqualsZero() : false; }
+        protected static bool EqualsZero(Real? R) { return R != null && R.Value.EqualsZero(); }
+        protected static bool EqualsOne(Real? R) { return R != null && R.Value.EqualsOne(); }
+        protected static bool IsTrue(Real? R) { return R != null && !R.Value.EqualsZero(); }
+        protected static bool IsFalse(Real? R) { return R != null && R.Value.EqualsZero(); }
     }
 
     public static class EvaluateExtension
