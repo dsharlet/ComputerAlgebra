@@ -57,17 +57,12 @@ namespace ComputerAlgebra
 
         public static Expression Transform(Expression f, Expression x) { return new DifferentiateTransform(x).Visit(f); }
 
-        protected override Expression VisitSum(Sum A) { return Sum.New(A.Terms.Select(i => Visit(i))).Evaluate(); }
-
-        protected Expression ProductRule(Expression L, IEnumerable<Expression> R)
+        protected override Expression VisitSum(Sum A) 
         {
-            if (R.Empty())
-                return Visit(L);
-
-            // Product rule.
-            return Sum.New(
-                Product.New(new Expression[] { Visit(L) }.Concat(R)),
-                Product.New(L, ProductRule(R.First(), R.Skip(1))));
+            List<Expression> terms = new List<Expression>();
+            foreach (Expression i in A.Terms)
+                terms.Add(Visit(i));
+            return EvaluateVisitor.EvaluateSum(terms); 
         }
 
         protected override Expression VisitProduct(Product M)
@@ -83,10 +78,21 @@ namespace ComputerAlgebra
             }
             if (dependent.Count == 0)
                 return 0;
-            else
-                return Product.New(
-                    Product.New(independent),
-                    ProductRule(dependent.First(), dependent.Skip(1))).Evaluate();
+
+            List<Expression> products = new List<Expression>(dependent.Count);
+            foreach (Expression i in dependent)
+            {
+                List<Expression> terms = new List<Expression>(dependent.Count);
+                foreach (Expression j in dependent)
+                {
+                    if (ReferenceEquals(i, j))
+                        terms.Add(Visit(i));
+                    else
+                        terms.Add(j);
+                }
+                products.Add(Product.New(terms));
+            }
+            return Product.New(Product.New(independent), Sum.New(products)).Evaluate();
         }
 
         protected override Expression VisitPower(Power P)
