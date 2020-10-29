@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace ComputerAlgebra
@@ -53,7 +54,10 @@ namespace ComputerAlgebra
             public bool DependsOn(IEnumerable<Expression> x)
             {
                 SearchVisitor v = new SearchVisitor(x);
-                return this.Any(i => v.Visit(i.Key) == null || v.Visit(i.Value) == null);
+                // It's faster to check the keys first.
+                return 
+                    this.Any(i => v.Visit(i.Key) == null) || 
+                    this.Any(i => v.Visit(i.Value) == null);
             }
             public bool DependsOn(params Expression[] x) { return DependsOn(x.AsEnumerable()); }
 
@@ -207,8 +211,9 @@ namespace ComputerAlgebra
 
             // This is a pretty hot path, so avoid unnecessary evaluations.
             Expression scale = Product.New(-1, T[p], Binary.Power(S[p], -1));
-            foreach (Expression j in Columns.Except(p))
-                T[j] += Product.New(S[j], scale);
+            foreach (Expression j in Columns)
+                if (!S[j].EqualsZero())
+                    T[j] += Product.New(S[j], scale);
             T[p] = 0;
         }
 
