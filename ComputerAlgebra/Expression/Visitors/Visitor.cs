@@ -25,14 +25,14 @@
             if (E is Sum sum) return VisitSum(sum);
             else if (E is Product product) return VisitProduct(product);
             else if (E is Constant constant) return VisitConstant(constant);
+            else if (E is Call call) return VisitCall(call);
             else if (E is Variable variable) return VisitVariable(variable);
-            else if (E is Set set) return VisitSet(set);
             else if (E is Power power) return VisitPower(power);
             else if (E is Binary binary) return VisitBinary(binary);
             else if (E is Unary unary) return VisitUnary(unary);
-            else if (E is Call call) return VisitCall(call);
-            else if (E is Matrix matrix) return VisitMatrix(matrix);
             else if (E is Index index) return VisitIndex(index);
+            else if (E is Matrix matrix) return VisitMatrix(matrix);
+            else if (E is Set set) return VisitSet(set);
             else return VisitUnknown(E);
         }
     }
