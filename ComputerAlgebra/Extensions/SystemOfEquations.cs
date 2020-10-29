@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace ComputerAlgebra
@@ -55,8 +54,8 @@ namespace ComputerAlgebra
             {
                 SearchVisitor v = new SearchVisitor(x);
                 // It's faster to check the keys first.
-                return 
-                    this.Any(i => v.Visit(i.Key) == null) || 
+                return
+                    this.Any(i => v.Visit(i.Key) == null) ||
                     this.Any(i => v.Visit(i.Value) == null);
             }
             public bool DependsOn(params Expression[] x) { return DependsOn(x.AsEnumerable()); }

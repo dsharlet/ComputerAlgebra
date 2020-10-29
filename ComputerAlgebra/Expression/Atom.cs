@@ -49,7 +49,7 @@ namespace ComputerAlgebra
         public override bool Equals(Expression E)
         {
             NamedAtom A = E as NamedAtom;
-            if (E is null || A is null) 
+            if (E is null || A is null)
                 return base.Equals(E);
             return Equals(name, A.name);
         }

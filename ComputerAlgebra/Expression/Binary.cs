@@ -170,7 +170,7 @@ namespace ComputerAlgebra
         public override IEnumerable<Atom> Atoms { get { return Left.Atoms.Concat(Right.Atoms); } }
         public override bool Equals(Expression E)
         {
-            if (E is Binary B) 
+            if (E is Binary B)
                 return Operator.Equals(B.Operator) && Left.Equals(B.Left) && Right.Equals(B.Right);
 
             return base.Equals(E);

@@ -14,11 +14,12 @@ namespace ComputerAlgebra
         private static readonly Constant One = new Constant(1);
         private static readonly Constant Two = new Constant(2);
 
-        public static Constant New(int x) {
+        public static Constant New(int x)
+        {
             if (x == -1) return NegativeOne;
             if (x == 0) return Zero;
             if (x == 1) return One;
-            return new Constant(x); 
+            return new Constant(x);
         }
         public static Constant New(double x) { return new Constant(x); }
         public static Constant New(decimal x) { return new Constant(x); }
@@ -63,7 +64,7 @@ namespace ComputerAlgebra
         }
         public override bool Equals(Expression E)
         {
-            if (E is Constant C) 
+            if (E is Constant C)
                 return Value.Equals(C.Value);
             return base.Equals(E);
         }

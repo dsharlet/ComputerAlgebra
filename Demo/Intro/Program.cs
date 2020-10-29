@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ComputerAlgebra;
+﻿using ComputerAlgebra;
 using ComputerAlgebra.LinqCompiler;
-using ComputerAlgebra.Plotting;
+using System;
+using System.Collections.Generic;
 
 namespace Intro
 {
@@ -21,9 +16,9 @@ namespace Intro
             // Create some variables.
             Expression x = "x";
             Variable y = Variable.New("y");
-            
+
             // Create a basic expressions.
-            Expression f = A*x + B*y + 4;
+            Expression f = A * x + B * y + 4;
 
             // This expression uses the implicit conversion from string to
             // Expression, which parses the string.
@@ -35,7 +30,7 @@ namespace Intro
                 Equal.New(f, 0),
                 Equal.New(g, 0),
             };
-            
+
             // We can now solve the system of equations for x and y. Since the
             // equations have a variable 'C', the solutions will not be
             // constants.

@@ -45,7 +45,7 @@ namespace ComputerAlgebra
         {
             if (E is Index I)
                 return target.Equals(I.Target) && indices.SequenceEqual(I.Indices);
-        
+
             return base.Equals(E);
         }
         public override int GetHashCode() { return target.GetHashCode() ^ indices.OrderedHashCode(); }

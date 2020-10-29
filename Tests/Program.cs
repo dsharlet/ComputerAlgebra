@@ -1,9 +1,8 @@
-﻿using System;
+﻿using ComputerAlgebra;
+using ComputerAlgebra.LinqCompiler;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ComputerAlgebra;
-using ComputerAlgebra.LinqCompiler;
 
 namespace Tests
 {
@@ -77,7 +76,7 @@ namespace Tests
             Test("Sech[x]", x => 1 / Math.Cosh(x));
             Test("Csch[x]", x => 1 / Math.Sinh(x));
             Test("Coth[x]", x => 1 / Math.Tanh(x));
-                
+
             Test("Sqrt[x]", Math.Sqrt);
             Test("Exp[x]", Math.Exp);
             Test("Ln[x]", Math.Log);
@@ -87,7 +86,7 @@ namespace Tests
             Test("Floor[x]", Math.Floor);
             Test("Ceiling[x]", Math.Ceiling);
             Test("Round[x]", Math.Round);
-                        
+
             // Basic operations.
             Test("IsConstant[3]", "1");
             Test("IsConstant[x]", "IsConstant[x]");
@@ -124,7 +123,7 @@ namespace Tests
             Test("Sqrt[x*A]", "(A*x)^(1/2)");
             Test("Exp[x]", "e^x");
             Test("Exp[2*x]", "e^(2*x)");
-                
+
             // Basic arithmetic.
             Test("x + x", "2*x");
             Test("2*-x", "-2*x");
@@ -156,7 +155,7 @@ namespace Tests
             Test("Expand[(a + b)*(c + d)]", "a*c + a*d + b*c + b*d");
             Test("Expand[(a + b)*(c + d)*(f + g)]", "a*c*f + a*d*f + b*c*f + b*d*f + a*c*g + a*d*g + b*c*g + b*d*g");
             Test("Expand[1/(s^3 + s), s]", "1/s - s/(s^2 + 1)");
-                
+
             // Factor.
             //Test("Factor[A*x^2 + B*x + C]", "(x - ((-B + Sqrt[B^2 - 4*A*C])/(2*A)))*(x - ((-B - Sqrt[B^2 - 4*A*C])/(2*A)))");
             Test("Factor[x^2 - x, x]", "x*(x - 1)");
@@ -203,7 +202,7 @@ namespace Tests
             Test("D[Sech[x], x]", "-Sech[x]*Tanh[x]");
             Test("D[Csch[x], x]", "-Csch[x]*Coth[x]");
             Test("D[Coth[x], x]", "-Csch[x]^2");
-                
+
             Test("D[A*x + B*x^2, x]", "A + 2*B*x");
             Test("D[(x^2 + 1)^5, x]", "5*(2*x)*(x^2 + 1)^4");
             Test("D[Ln[x], x]", "1/x");
@@ -218,7 +217,7 @@ namespace Tests
             Test("Solve[y == A*x + B, x]", "x -> (y - B)/A");
             Test("Solve[{2*x + 4*y == 8, x == 2*y + 3}, {x, y}]", "{x -> 7/2, y -> 1/4}");
             Test("Solve[{2*x + 4*y == A, x == 2*y + B}, {x, y}]", "{x->A/4 + B/2, y->A/8 - B/4}");
-                
+
             // NSolve.
             Test("NSolve[x == Cos[x], x->0.5]", "x->0.739085");
             Test("NSolve[2 == Exp[x] - Exp[-x], x->0.5]", "x->0.881374");
@@ -241,7 +240,7 @@ namespace Tests
             Test("DSolve[D[y[t], t]==y[t]/3, y[t], y[0]->C, t]", "y[t]->C*Exp[t/3]");
             Test("DSolve[D[y[t], t] + y[t]==0, y[t], y[0]->1, t]", "y[t]->Exp[-t]");
             Test("DSolve[D[y[t], t]==Sin[t], y[t], y[0]->0, t]", "y[t]->1 - Cos[t]");
-                
+
             //Test("DSolve[I[y[t], t]==y[t], y[t], y[0]->1, t]", "y[t]->Exp[t]");
             Test("DSolve[I[y[t], t]==t, y[t], y[0]->1, t]", "y[t]->1");
             Test("DSolve[I[y[t], t]==t^2/2, y[t], y[0]->1, t]", "y[t]->t");

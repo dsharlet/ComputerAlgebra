@@ -63,7 +63,7 @@ namespace ComputerAlgebra
         {
             if (E is Call C)
                 return Equals(C.Target) && Arguments.SequenceEqual(C.Arguments);
-      
+
             return false;
         }
 

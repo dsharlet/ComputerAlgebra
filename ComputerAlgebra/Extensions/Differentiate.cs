@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace ComputerAlgebra
 {
@@ -57,12 +56,12 @@ namespace ComputerAlgebra
 
         public static Expression Transform(Expression f, Expression x) { return new DifferentiateTransform(x).Visit(f); }
 
-        protected override Expression VisitSum(Sum A) 
+        protected override Expression VisitSum(Sum A)
         {
             List<Expression> terms = new List<Expression>();
             foreach (Expression i in A.Terms)
                 terms.Add(Visit(i));
-            return EvaluateVisitor.EvaluateSum(terms); 
+            return EvaluateVisitor.EvaluateSum(terms);
         }
 
         protected override Expression VisitProduct(Product M)

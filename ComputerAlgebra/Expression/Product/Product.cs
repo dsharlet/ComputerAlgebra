@@ -117,7 +117,7 @@ namespace ComputerAlgebra
         {
             if (E is Product P)
                 return Terms.SequenceEqual(P.Terms);
-            
+
             return base.Equals(E);
         }
 

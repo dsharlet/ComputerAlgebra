@@ -1,9 +1,6 @@
-﻿using System;
+﻿using ComputerAlgebra;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ComputerAlgebra;
-using ComputerAlgebra.LinqCompiler;
 
 namespace Console
 {
@@ -21,7 +18,7 @@ namespace Console
             foreach (Expression i in Set.MembersOf(f))
                 p.Series.Add(new ComputerAlgebra.Plotting.Function(ExprFunction.New(i, x)) { Name = i.ToString() });
         }
-        
+
         static void Main(string[] args)
         {
             List<KeyValuePair<Expression, Expression>> InOut = new List<KeyValuePair<Expression, Expression>>();

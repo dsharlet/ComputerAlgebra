@@ -127,7 +127,7 @@ namespace ComputerAlgebra
 
         public override bool Equals(Expression E)
         {
-            if (E is Polynomial P) 
+            if (E is Polynomial P)
                 return Equals(P);
             return base.Equals(E);
         }

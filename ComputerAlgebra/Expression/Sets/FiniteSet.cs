@@ -44,7 +44,7 @@ namespace ComputerAlgebra
 
         public override bool Equals(Expression E)
         {
-            if (E is FiniteSet S) 
+            if (E is FiniteSet S)
                 return Members.SequenceEqual(S.Members);
             return base.Equals(E);
         }

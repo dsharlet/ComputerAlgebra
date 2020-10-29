@@ -121,7 +121,7 @@ namespace ComputerAlgebra
         {
             if (E is NativeFunction F)
                 return Equals(method, F.method) && Equals(_this, F._this);
-          
+
             return base.Equals(E);
         }
         public override int GetHashCode() { return method.GetHashCode(); }

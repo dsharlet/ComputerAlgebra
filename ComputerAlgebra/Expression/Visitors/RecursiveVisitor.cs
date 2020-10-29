@@ -16,7 +16,7 @@ namespace ComputerAlgebra
             foreach (Expression i in List)
             {
                 Expression Vi = Visit(i);
-                if (Vi is null) 
+                if (Vi is null)
                     return null;
                 list.Add(Vi);
 
@@ -41,7 +41,7 @@ namespace ComputerAlgebra
         protected override Expression VisitUnary(Unary U)
         {
             Expression O = Visit(U.Operand);
-            if (O is null) 
+            if (O is null)
                 return null;
 
             if (ReferenceEquals(O, U.Operand))
@@ -61,7 +61,7 @@ namespace ComputerAlgebra
         protected override Expression VisitProduct(Product M)
         {
             IEnumerable<Expression> terms = VisitList(M.Terms);
-            if (terms is null) 
+            if (terms is null)
                 return null;
             return ReferenceEquals(terms, M.Terms) ? M : Product.New(terms);
         }
