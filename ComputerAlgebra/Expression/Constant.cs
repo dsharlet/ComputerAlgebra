@@ -12,7 +12,6 @@ namespace ComputerAlgebra
         private static readonly Constant NegativeOne = new Constant(-1);
         private static readonly Constant Zero = new Constant(0);
         private static readonly Constant One = new Constant(1);
-        private static readonly Constant Two = new Constant(2);
 
         public static Constant New(int x)
         {

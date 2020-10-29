@@ -230,8 +230,8 @@ namespace ComputerAlgebra
 
         private static Expression EqualToZero(Expression i)
         {
-            if (i is Equal)
-                return ((Equal)i).Left - ((Equal)i).Right;
+            if (i is Equal equal)
+                return equal.Left - equal.Right;
             else
                 return i;
         }
