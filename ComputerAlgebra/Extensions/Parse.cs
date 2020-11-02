@@ -33,9 +33,9 @@ namespace ComputerAlgebra
             return S.ToString();
         }
 
-        static string Name = @"[a-zA-Z_]\w*";
-        static string Literal = @"[0-9]*[\.,]?[0-9]+([eE][-+]?[0-9]+)?";
-        static Regex token = new Regex(
+        static readonly string Name = @"[a-zA-Z_]\w*";
+        static readonly string Literal = @"[0-9]*[\.,]?[0-9]+([eE][-+]?[0-9]+)?";
+        static readonly Regex token = new Regex(
             "(" + Name + ")|(" + Literal + ")" +
             Escape("==", "=", "!=", ">=", ">", "<=", "<", "~=", "->",
             "+", "-", "*", "/", "^", "'",
@@ -250,11 +250,9 @@ namespace ComputerAlgebra
             {
                 string tok = tokens.Consume();
 
-                decimal dec = 0;
-                double dbl = 0.0;
-                if (decimal.TryParse(tok, NumberStyles.Float, culture, out dec))
+                if (decimal.TryParse(tok, NumberStyles.Float, culture, out decimal dec))
                     return Constant.New(dec);
-                if (double.TryParse(tok, NumberStyles.Float, culture, out dbl))
+                else if (double.TryParse(tok, NumberStyles.Float, culture, out double dbl))
                     return Constant.New(dbl);
                 else if (tok == "True")
                     return Constant.New(true);
