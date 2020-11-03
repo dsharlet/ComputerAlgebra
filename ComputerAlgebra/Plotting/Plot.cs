@@ -21,43 +21,50 @@ namespace ComputerAlgebra.Plotting
         /// <summary>
         /// Width of the plot window.
         /// </summary>
-        public int Width { get { return form.Width; } set { form.Width = value; } }
+        public int Width { get { return form.Width; } set { Invoke(() => form.Width = value); } }
         /// <summary>
         /// Height of the plot window.
         /// </summary>
-        public int Height { get { return form.Height; } set { form.Height = value; } }
+        public int Height { get { return form.Height; } set { Invoke(() => form.Height = value); } }
 
         private double _x0 = -10.0, _x1 = 10.0;
         private double _y0 = double.NaN, _y1 = double.NaN;
         /// <summary>
         /// Plot area bounds.
         /// </summary>
-        public double x0 { get { return _x0; } set { _x0 = value; Invalidate(); } }
-        public double y0 { get { return _y0; } set { _y0 = value; Invalidate(); } }
-        public double x1 { get { return _x1; } set { _x1 = value; Invalidate(); } }
-        public double y1 { get { return _y1; } set { _y1 = value; Invalidate(); } }
+        public double x0 { get { return _x0; } set { Invoke(() => { _x0 = value; Invalidate(); }); } }
+        public double y0 { get { return _y0; } set { Invoke(() => { _y0 = value; Invalidate(); }); } }
+        public double x1 { get { return _x1; } set { Invoke(() => { _x1 = value; Invalidate(); }); } }
+        public double y1 { get { return _y1; } set { Invoke(() => { _y1 = value; Invalidate(); }); } }
 
         private string xlabel = null, ylabel = null;
         /// <summary>
         /// Axis labels.
         /// </summary>
-        public string xLabel { get { return xlabel; } set { xlabel = value; Invalidate(); } }
-        public string yLabel { get { return ylabel; } set { ylabel = value; Invalidate(); } }
+        public string xLabel { get { return xlabel; } set { Invoke(() => { xlabel = value; Invalidate(); }); } }
+        public string yLabel { get { return ylabel; } set { Invoke(() => { ylabel = value; Invalidate(); }); } }
 
         string title = null;
         /// <summary>
         /// Title of the plot window.
         /// </summary>
-        public string Title { get { return title; } set { form.Text = title = value; Invalidate(); } }
+        public string Title { get { return title; } set { Invoke(() => { form.Text = title = value; Invalidate(); }); } }
 
         private bool showLegend = true;
         /// <summary>
         /// Show or hide the legend.
         /// </summary>
-        public bool ShowLegend { get { return showLegend; } set { showLegend = value; Invalidate(); } }
+        public bool ShowLegend { get { return showLegend; } set { Invoke(() => { showLegend = value; Invalidate(); }); } }
 
         protected Thread thread;
         protected Form form = new Form();
+        protected bool shown = false;
+        private void Invoke(Action action)
+        {
+            while (!shown)
+                Thread.Sleep(0);
+            form.Invoke((Delegate)action);
+        }
 
         public Plot()
         {
@@ -73,11 +80,18 @@ namespace ComputerAlgebra.Plotting
             };
             form.Paint += Plot_Paint;
             form.SizeChanged += Plot_SizeChanged;
+            form.Shown += (o, e) => shown = true;
 
-            // The sleep is a lame hack to avoid errors when using the properties
-            // to change the form in a racy way.
-            thread = new Thread(() => { Thread.Sleep(100); Application.Run(form); });
+            thread = new Thread(() => Application.Run(form));
             thread.Start();
+        }
+
+        public void Save(string Filename)
+        {
+            Rectangle bounds = form.Bounds;
+            Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+            Invoke(() => form.DrawToBitmap(bitmap, bounds));
+            bitmap.Save(Filename);
         }
 
         private RectangleF PaintTitle(Graphics G, RectangleF Area)
