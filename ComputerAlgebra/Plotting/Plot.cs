@@ -88,8 +88,8 @@ namespace ComputerAlgebra.Plotting
 
         public void Save(string Filename)
         {
-            Rectangle bounds = form.Bounds;
-            Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+            Rectangle bounds = new Rectangle(0, 0, Width, Height);
+            Bitmap bitmap = new Bitmap(Width, Height);
             Invoke(() => form.DrawToBitmap(bitmap, bounds));
             bitmap.Save(Filename);
         }
