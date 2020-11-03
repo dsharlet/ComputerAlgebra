@@ -81,6 +81,7 @@ namespace ComputerAlgebra.Plotting
             form.Paint += Plot_Paint;
             form.SizeChanged += Plot_SizeChanged;
             form.Shown += (o, e) => shown = true;
+            form.KeyDown += (o, e) => { if (e.KeyCode == Keys.Escape) form.Close(); };
 
             thread = new Thread(() => Application.Run(form));
             thread.Start();
