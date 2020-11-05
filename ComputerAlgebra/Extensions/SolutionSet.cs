@@ -19,7 +19,8 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public abstract bool DependsOn(Expression x);
+        public abstract bool DependsOn(IEnumerable<Expression> x);
+        public bool DependsOn(Expression x) { return DependsOn(new[] { x }); }
     }
 
     /// <summary>
@@ -37,7 +38,7 @@ namespace ComputerAlgebra
 
         public LinearSolutions(IEnumerable<Arrow> Solutions) { solutions = Solutions.ToList(); }
 
-        public override bool DependsOn(Expression x) { return solutions.Any(i => i.Right.DependsOn(x)); }
+        public override bool DependsOn(IEnumerable<Expression> x) { return solutions.Any(i => i.Right.DependsOn(x)); }
     }
 
     /// <summary>
@@ -92,7 +93,7 @@ namespace ComputerAlgebra
             guesses = Guesses.Buffer();
         }
 
-        public override bool DependsOn(Expression x)
+        public override bool DependsOn(IEnumerable<Expression> x)
         {
             if (knowns != null && knowns.Any(i => i.Right.DependsOn(x)))
                 return true;
