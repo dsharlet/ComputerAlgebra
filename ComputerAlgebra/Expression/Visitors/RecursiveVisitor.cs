@@ -89,12 +89,5 @@ namespace ComputerAlgebra
                 return null;
             return ReferenceEquals(elements, A) ? A : Matrix.New(A.M, A.N, elements);
         }
-
-        protected override Expression VisitIndex(Index I)
-        {
-            IEnumerable<Expression> indices = VisitList(I.Indices);
-            if ((indices is null)) return null;
-            return ReferenceEquals(indices, I.Indices) ? I : Index.New(I.Target, indices);
-        }
     }
 }

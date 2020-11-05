@@ -18,7 +18,6 @@
         protected virtual T VisitPower(Power P) { return VisitBinary(P); }
         protected virtual T VisitCall(Call F) { return VisitUnknown(F); }
         protected virtual T VisitMatrix(Matrix A) { return VisitUnknown(A); }
-        protected virtual T VisitIndex(Index I) { return VisitUnknown(I); }
 
         public virtual T Visit(Expression E)
         {
@@ -30,7 +29,6 @@
             else if (E is Power power) return VisitPower(power);
             else if (E is Binary binary) return VisitBinary(binary);
             else if (E is Unary unary) return VisitUnary(unary);
-            else if (E is Index index) return VisitIndex(index);
             else if (E is Matrix matrix) return VisitMatrix(matrix);
             else if (E is Set set) return VisitSet(set);
             else return VisitUnknown(E);

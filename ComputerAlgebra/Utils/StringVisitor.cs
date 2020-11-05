@@ -104,11 +104,6 @@ namespace ComputerAlgebra
             return s.ToString();
         }
 
-        protected override string VisitIndex(Index I)
-        {
-            return Visit(I.Target) + "[" + Join(I.Indices, ", ") + "]";
-        }
-
         protected override string VisitBinary(Binary B)
         {
             int pr = Parser.Precedence(B.Operator);
