@@ -118,7 +118,7 @@ namespace ComputerAlgebra
         public void AddRange(IEnumerable<IEnumerable<KeyValuePair<Expression, Expression>>> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i))); }
 
         // Find the best pivot in column j.
-        private KeyValuePair<int, Real> PartialPivot(int i1, int i2, Expression j)
+        private KeyValuePair<int, Real> PartialPivot(int i1, int i2, Expression j, IEnumerable<Arrow> PivotConditions)
         {
             int row = -1;
             Real max = -1;
@@ -131,11 +131,16 @@ namespace ComputerAlgebra
                     if (row == -1)
                         row = i;
 
-                    // Select the larger pivot if this is a constant.
-                    if (ij is Constant && Real.Abs((Real)ij) > max)
+                    // Select the larger pivot if this is a constant, using the PivotConditions.
+                    Expression ijc;
+                    if (ij is Constant || PivotConditions is null)
+                        ijc = ij;
+                    else
+                        ijc = ij.Evaluate(PivotConditions);
+                    if (ijc is Constant && Real.Abs((Real)ijc) > max)
                     {
                         row = i;
-                        max = Real.Abs((Real)ij);
+                        max = Real.Abs((Real)ijc);
                     }
                 }
             }
@@ -144,7 +149,7 @@ namespace ComputerAlgebra
         }
 
         // Find the best pivot from all of the columns. This is important to avoid non-constant terms from blowing up the system.
-        private KeyValuePair<int, int> FullPivot(int i1, int i2, int j1, IList<Expression> Columns)
+        private KeyValuePair<int, int> FullPivot(int i1, int i2, int j1, IList<Expression> Columns, IEnumerable<Arrow> PivotConditions)
         {
             int row = -1;
             Real max = -2;
@@ -152,7 +157,7 @@ namespace ComputerAlgebra
             int elims = i2 - i1 + 1;
             for (int j = j1; j < Columns.Count; ++j)
             {
-                KeyValuePair<int, Real> partial = PartialPivot(i1, i2, Columns[j]);
+                KeyValuePair<int, Real> partial = PartialPivot(i1, i2, Columns[j], PivotConditions);
                 if (partial.Key == -1)
                     continue;
 
@@ -175,12 +180,12 @@ namespace ComputerAlgebra
         }
 
         // Find the best pivot using full or partial pivoting.
-        private KeyValuePair<int, int> Pivot(int i1, int i2, int j, IList<Expression> Columns, bool FullPivoting)
+        private KeyValuePair<int, int> Pivot(int i1, int i2, int j, IList<Expression> Columns, bool FullPivoting, IEnumerable<Arrow> PivotConditions)
         {
             if (FullPivoting)
-                return FullPivot(i1, i2, j, Columns);
+                return FullPivot(i1, i2, j, Columns, PivotConditions);
             else
-                return new KeyValuePair<int, int>(PartialPivot(i1, i2, Columns[j]).Key, j);
+                return new KeyValuePair<int, int>(PartialPivot(i1, i2, Columns[j], PivotConditions).Key, j);
         }
 
         // Swap rows i1 and i2.
@@ -216,13 +221,13 @@ namespace ComputerAlgebra
             T[p] = 0;
         }
 
-        private void RowReduce(int i1, IList<Expression> Columns, bool FullPivoting)
+        private void RowReduce(int i1, IList<Expression> Columns, bool FullPivoting, IEnumerable<Arrow> PivotConditions)
         {
             List<Expression> elim = unknowns.Append(1).ToList();
             for (int i2 = equations.Count, _j = 0; _j < Columns.Count; ++_j)
             {
                 // Find the best pivot to use.
-                KeyValuePair<int, int> pivot = Pivot(i1, i2, _j, Columns, FullPivoting);
+                KeyValuePair<int, int> pivot = Pivot(i1, i2, _j, Columns, FullPivoting, PivotConditions);
                 if (pivot.Key != -1)
                 {
                     // Found a pivot, swap the rows and eliminate the remaining rows.
@@ -244,17 +249,28 @@ namespace ComputerAlgebra
         /// <summary>
         /// Row reduce the system in terms of the given columns with partial pivoting.
         /// </summary>
-        /// <param name="Columns"></param>
-        public void RowReduce(IEnumerable<Expression> Columns) { RowReduce(0, Columns.AsList(), false); }
+        /// <param name="Columns">Columns to perform row reduction on.</param>
+        /// <param name="PivotConditions">Substitutions to use when considering an element as a pivot.</param>
+        public void RowReduce(IEnumerable<Expression> Columns, IEnumerable<Arrow> PivotConditions = null)
+        {
+            RowReduce(0, Columns.AsList(), false, PivotConditions);
+        }
+
         /// <summary>
         /// Row reduce the system in terms of the given columns with full pivoting. The Columns will be reordered according to a full pivot solution.
         /// </summary>
-        /// <param name="Columns"></param>
-        public void RowReduce(IList<Expression> Columns) { RowReduce(0, Columns, true); }
+        /// <param name="Columns">Columns to perform row reduction on.</param>
+        /// <param name="PivotConditions">Substitutions to use when considering an element as a pivot.</param>
+        public void RowReduce(IList<Expression> Columns, IEnumerable<Arrow> PivotConditions = null)
+        {
+            RowReduce(0, Columns, true, PivotConditions);
+        }
+
         /// <summary>
         /// Row reduce the system. The unknowns will be reorderd to reflect the full pivot solution.
         /// </summary>
-        public void RowReduce() { RowReduce(unknowns); }
+        /// <param name="PivotConditions">Substitutions to use when considering an element as a pivot.</param>
+        public void RowReduce(IEnumerable<Arrow> PivotConditions = null) { RowReduce(unknowns, PivotConditions); }
 
         private void BackSubstitute(IList<Expression> x)
         {
