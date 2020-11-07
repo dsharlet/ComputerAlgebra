@@ -7,36 +7,36 @@ namespace ComputerAlgebra.LinqCompiler
     /// </summary>
     public class StandardMath
     {
-        public static double Abs(double x) { return Math.Abs(x); }
-        public static double Sign(double x) { return Math.Sign(x); }
+        public static double Abs(double x) { return x < 0 ? -x : x; }
+        public static double Sign(double x) { return x < 0 ? -1 : 1; }
 
-        public static double Min(double x, double y) { return Math.Min(x, y); }
-        public static double Max(double x, double y) { return Math.Max(x, y); }
+        public static double Min(double x, double y) { return x < y ? x : y; }
+        public static double Max(double x, double y) { return x > y ? x : y; }
 
         public static double Sin(double x) { return Math.Sin(x); }
         public static double Cos(double x) { return Math.Cos(x); }
         public static double Tan(double x) { return Math.Tan(x); }
-        public static double Sec(double x) { return 1 / Cos(x); }
-        public static double Csc(double x) { return 1 / Sin(x); }
-        public static double Cot(double x) { return 1 / Tan(x); }
+        public static double Sec(double x) { return 1 / Math.Cos(x); }
+        public static double Csc(double x) { return 1 / Math.Sin(x); }
+        public static double Cot(double x) { return 1 / Math.Tan(x); }
 
         public static double ArcSin(double x) { return Math.Asin(x); }
         public static double ArcCos(double x) { return Math.Acos(x); }
         public static double ArcTan(double x) { return Math.Atan(x); }
-        public static double ArcSec(double x) { return ArcCos(1 / x); }
-        public static double ArcCsc(double x) { return ArcSin(1 / x); }
-        public static double ArcCot(double x) { return ArcTan(1 / x); }
+        public static double ArcSec(double x) { return Math.Acos(1 / x); }
+        public static double ArcCsc(double x) { return Math.Asin(1 / x); }
+        public static double ArcCot(double x) { return Math.Atan(1 / x); }
 
         public static double Sinh(double x) { return Math.Sinh(x); }
         public static double Cosh(double x) { return Math.Cosh(x); }
         public static double Tanh(double x) { return Math.Tanh(x); }
-        public static double Sech(double x) { return 1 / Cosh(x); }
-        public static double Csch(double x) { return 1 / Sinh(x); }
-        public static double Coth(double x) { return 1 / Tanh(x); }
+        public static double Sech(double x) { return 1 / Math.Cosh(x); }
+        public static double Csch(double x) { return 1 / Math.Sinh(x); }
+        public static double Coth(double x) { return 1 / Math.Tanh(x); }
 
-        public static double ArcSinh(double x) { return Ln(x + Sqrt(x * x + 1)); }
-        public static double ArcCosh(double x) { return Ln(x + Sqrt(x * x - 1)); }
-        public static double ArcTanh(double x) { return (Ln(1 + x) - Ln(1 - x)) / 2; }
+        public static double ArcSinh(double x) { return Math.Log(x + Math.Sqrt(x * x + 1)); }
+        public static double ArcCosh(double x) { return Math.Log(x + Math.Sqrt(x * x - 1)); }
+        public static double ArcTanh(double x) { return (Math.Log(1 + x) - Math.Log(1 - x)) / 2; }
         public static double ArcSech(double x) { return ArcCosh(1 / x); }
         public static double ArcCsch(double x) { return ArcSinh(1 / x); }
         public static double ArcCoth(double x) { return ArcTanh(1 / x); }
@@ -52,13 +52,13 @@ namespace ComputerAlgebra.LinqCompiler
         public static double Round(double x) { return Math.Round(x); }
 
         public static double If(bool x, double t, double f) { return x ? t : f; }
-        public static double If(double x, double t, double f) { return If(x != 0, t, f); }
+        public static double If(double x, double t, double f) { return x != 0 ? t : f; }
 
-        public static float Abs(float x) { return Math.Abs(x); }
-        public static float Sign(float x) { return Math.Sign(x); }
+        public static float Abs(float x) { return x < 0.0f ? -x : x; }
+        public static float Sign(float x) { return x < 0.0f ? -1.0f : 1.0f; }
 
-        public static float Min(float x, float y) { return Math.Min(x, y); }
-        public static float Max(float x, float y) { return Math.Max(x, y); }
+        public static float Min(float x, float y) { return x < y ? x : y; }
+        public static float Max(float x, float y) { return x > y ? x : y; }
 
         public static float Sin(float x) { return (float)Math.Sin(x); }
         public static float Cos(float x) { return (float)Math.Cos(x); }
@@ -99,6 +99,6 @@ namespace ComputerAlgebra.LinqCompiler
         public static float Round(float x) { return (float)Math.Round(x); }
 
         public static float If(bool x, float t, float f) { return x ? t : f; }
-        public static float If(float x, float t, float f) { return If(x != 0.0f, t, f); }
+        public static float If(float x, float t, float f) { return x != 0.0f ? t : f; }
     }
 }
