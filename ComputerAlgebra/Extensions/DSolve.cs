@@ -13,6 +13,7 @@ namespace ComputerAlgebra
         BackwardEuler,
         Trapezoid,
         BackwardDifferenceFormula2,
+        BackwardDifferenceFormula3,
     }
 
     /// <summary>
@@ -84,6 +85,15 @@ namespace ComputerAlgebra
                         4 * DOf(i.Left).Substitute(t, t - h) / 3 -
                         DOf(i.Left).Substitute(t, t - 2 * h) / 3 +
                         2 * h * i.Right / 3));
+
+                // y[t] = (2/11)*y[t - 3h] - (9/11)*y[t - 2h] + (18/11)*y[t - h] + (6h/11)*f[t, y[t]]
+                case IntegrationMethod.BackwardDifferenceFormula3:
+                    return dy_dt.Select(i => Arrow.New(
+                        DOf(i.Left),
+                        2 * DOf(i.Left).Substitute(t, t - 3 * h) / 11 -
+                        9 * DOf(i.Left).Substitute(t, t - 2 * h) / 11 +
+                        18 * DOf(i.Left).Substitute(t, t - h) / 11 +
+                        6 * h * i.Right / 11));
 
                 default:
                     throw new NotImplementedException(method.ToString());
