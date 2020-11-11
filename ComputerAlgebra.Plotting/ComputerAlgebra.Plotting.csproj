@@ -1,9 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
+    <OutputType>Library</OutputType>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
-    <OutputType>Exe</OutputType>
-    <AssemblyName>Tests</AssemblyName>
-    <Product>Tests</Product>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>ComputerAlgebra.Plotting</AssemblyName>
+    <Product>ComputerAlgebra.Plotting</Product>
     <Copyright>Copyright ©  2020</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
@@ -11,8 +12,5 @@
   <ItemGroup>
     <ProjectReference Include="..\ComputerAlgebra\ComputerAlgebra.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
+
 </Project>
