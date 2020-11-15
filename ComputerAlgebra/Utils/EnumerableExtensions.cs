@@ -40,6 +40,20 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
+        /// Cast This to List.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="This"></param>
+        /// <returns></returns>
+        [DebuggerStepThrough]
+        public static T[] AsArray<T>(this IEnumerable<T> This)
+        {
+            if (This is T[] a)
+                return a;
+            return This.ToArray();
+        }
+
+        /// <summary>
         /// Ensure This is some form of buffered enumerable (List or Array).
         /// </summary>
         /// <typeparam name="T"></typeparam>
