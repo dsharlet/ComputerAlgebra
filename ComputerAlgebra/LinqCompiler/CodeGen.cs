@@ -34,7 +34,7 @@ namespace ComputerAlgebra.LinqCompiler
 
         public CodeGen() : this(null) { }
 
-        public CodeGen(Module Module) : base(Module != null ? Module : new Module())
+        public CodeGen(Module Module) : base(Module ?? new Module())
         {
             expressionCompiler = new CompileExpression(this);
             statementCompiler = new CompileStatement(this);
@@ -127,8 +127,7 @@ namespace ComputerAlgebra.LinqCompiler
         /// <returns>null if the expression was not found.</returns>
         public new LinqExpr LookUp(Expression Expr)
         {
-            LinqExpr ret;
-            if (intermediates.TryGetValue(Expr, out ret))
+            if (intermediates.TryGetValue(Expr, out LinqExpr ret))
                 return ret;
             return scope.LookUp(Expr);
         }
