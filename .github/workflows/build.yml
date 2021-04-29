@@ -1,0 +1,36 @@
+name: build
+
+env:
+  BuildParameters: "-c Release /p:RepositoryUrl=https://github.com/Voxel8/ComputerAlgebra"
+  RepositoryUrl: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+
+on:
+  push:
+    tags: [ '*' ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    - name: Get the version
+      if: startsWith(github.ref, 'refs/tags/')
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+      shell: bash
+
+    - name: Pack
+      run: dotnet pack ComputerAlgebra/ComputerAlgebra.csproj ${{ env.BuildParameters }} /p:BuildVersion=${{ steps.get_version.outputs.VERSION }}
+
+    - name: Publish
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      run: dotnet nuget push ComputerAlgebra\bin\Release\*.nupkg --source ${{ env.RepositoryUrl }} --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --no-symbols true

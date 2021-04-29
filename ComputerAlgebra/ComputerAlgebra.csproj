@@ -13,3 +13,18 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project> 
+    <TargetFramework>net45</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    
+    <Description>Library for symbolic manipulation of mathematical expressions.</Description>
+
+    <Version Condition="$(BuildVersion) != ''">$(BuildVersion)</Version>
+    <Version Condition="$(Version) == ''">0.0.1-dev</Version>
+
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  
+</Project>
