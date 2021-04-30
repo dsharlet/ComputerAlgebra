@@ -7,24 +7,14 @@
     <Copyright>Copyright ©  2020</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+
+    <Description>Library for symbolic manipulation of mathematical expressions.</Description>
+
+    <Version Condition="$(BuildVersion) != ''">$(BuildVersion)</Version>
+    <Version Condition="$(Version) == ''">0.0.1-dev</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project> 
-    <TargetFramework>net45</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    
-    <Description>Library for symbolic manipulation of mathematical expressions.</Description>
-
-    <Version Condition="$(BuildVersion) != ''">$(BuildVersion)</Version>
-    <Version Condition="$(Version) == ''">0.0.1-dev</Version>
-
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-  
-</Project>
