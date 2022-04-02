@@ -7,6 +7,7 @@ namespace ComputerAlgebra.LinqCompiler
     /// </summary>
     public class StandardMath
     {
+        public static double Ln1Exp(double x) => x < -50d ? 0d : (x > 50d ? x : Math.Log(1d + Math.Exp(x)));
         public static double Abs(double x) { return x < 0 ? -x : x; }
         public static double Sign(double x) { return x > 0 ? 1 : (x < 0 ? -1 : 0); }
 
