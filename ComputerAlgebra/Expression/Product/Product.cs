@@ -15,7 +15,13 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="Terms">The list of terms in the product expression.</param>
         /// <returns></returns>
-        public static Expression New(IEnumerable<Expression> Terms) { return Multiply.New(Terms); }
+        public static Expression New(IEnumerable<Expression> Terms) 
+        {
+            if (Terms.Any())
+                return Multiply.New(Terms);
+            else
+                return 1;
+        }
         public static Expression New(params Expression[] Terms) { return Multiply.New(Terms); }
 
         public override bool Matches(Expression E, MatchContext Matched)

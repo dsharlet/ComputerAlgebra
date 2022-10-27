@@ -15,7 +15,13 @@ namespace ComputerAlgebra
         /// </summary>
         /// <param name="Terms">The list of terms in the sum expression.</param>
         /// <returns></returns>
-        public static Expression New(IEnumerable<Expression> Terms) { return Add.New(Terms); }
+        public static Expression New(IEnumerable<Expression> Terms) 
+        {
+            if (Terms.Any())
+                return Add.New(Terms);
+            else
+                return 0;
+        }
         public static Expression New(params Expression[] Terms) { return Add.New(Terms); }
 
         public override bool Matches(Expression E, MatchContext Matched)
