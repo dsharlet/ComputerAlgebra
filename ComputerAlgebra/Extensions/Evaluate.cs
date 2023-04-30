@@ -69,12 +69,22 @@ namespace ComputerAlgebra
                         return i;  // Zero
                     C *= Ci;
                 }
-                else
+                else 
                 {
-                    if (i is Power Pi && Pi.Right is Constant)
-                        terms[Pi.Left] += (Real)Pi.Right;
+                    // TODO: Maybe this can just be ConstantExponentOf, but need to be careful about roots.
+                    Real e = Power.IntegralExponentOf(i);
+                    Expression b = e.EqualsOne() ? i : ((Power)i).Left;
+
+                    // If b is a sum, we might be able to pull a negative one out of it and re-use an existing term.
+                    if (!terms.Empty() && b is Sum && terms.ContainsKey(-b))
+                    {
+                        terms[-b] += e;
+                        C *= -1 ^ e;
+                    }
                     else
-                        terms[i] += 1;
+                    {
+                        terms[b] += e;
+                    }
                 }
             }
 

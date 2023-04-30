@@ -135,6 +135,7 @@ namespace Tests
             Test("x*x^2", "x^3");
             Test("x^3*x^2", "x^5");
             Test("x/x", "1");
+            Test("x/-x", "-1");
             Test("x/x^2", "1/x");
             Test("x^3/x^2", "x");
             Test("x^-1 - 1/x", "0");
@@ -142,6 +143,11 @@ namespace Tests
             Test("x/(y/z)", "(z*x)/y");
             Test("(x/y)/z", "x/(y*z)");
             Test("(x/y)/(z/w)", "(x*w)/(y*z)");
+            Test("(x - y)/(y - x)", "-1");
+            Test("(x - y)^3/(y - x)", "-(x - y)^2");
+            Test("(x - y)^3/(y - x)^2", "(x - y)");
+            Test("(x - y)/(y - x)^2", "1/(x - y)");
+            Test("(x - y)/(y - x)^3", "-1/(x - y)^2");
 
             // Expand.
             // Some of these fail only because the order of the results is wrong.

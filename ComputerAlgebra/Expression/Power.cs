@@ -6,7 +6,7 @@
         public static Expression New(Expression L, Expression R) { return new Power(L, R); }
 
         /// <summary>
-        /// If x is of the form a^b, return b and replace x with a.
+        /// If x is of the form a^b, return b, otherwise return 1.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -18,7 +18,7 @@
         }
 
         /// <summary>
-        /// If x is of the form a^n where n is an integer, return n and replace x with a.
+        /// If x is of the form a^n where n is an integer, return n, otherwise return 1.
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
@@ -27,6 +27,19 @@
             Expression n = ExponentOf(x);
             if (n.IsInteger())
                 return (int)(Real)n;
+            return 1;
+        }
+
+        /// <summary>
+        /// If x is of the form a^b where b is constant, return b, otherwise return 1.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        public static Real ConstantExponentOf(Expression x)
+        {
+            Expression n = ExponentOf(x);
+            if (n is Constant C)
+                return C.Value;
             return 1;
         }
 
