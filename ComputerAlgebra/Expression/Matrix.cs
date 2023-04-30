@@ -311,6 +311,27 @@ namespace ComputerAlgebra
             return true;
         }
 
+        public override int CompareTo(Expression R)
+        {
+            Matrix RM = R as Matrix;
+            if (RM is null) return base.CompareTo(R);
+
+            int compare_dims = LexicalCompareTo(
+                () => M.CompareTo(RM.M),
+                () => N.CompareTo(RM.N));
+            if (compare_dims != 0) return compare_dims;
+
+            for (int i = 0; i < M; ++i)
+            {
+                for (int j = 0; j < N; ++j)
+                {
+                    int compare_ij = m[i, j].CompareTo(RM.m[i, j]);
+                    if (compare_ij != 0) return compare_ij;
+                }
+            }
+            return 0;
+        }
+
         public override bool Matches(Expression Expr, MatchContext Matched)
         {
             Matrix A = Expr as Matrix;

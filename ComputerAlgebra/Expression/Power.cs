@@ -61,9 +61,6 @@
 
         public override int CompareTo(Expression R)
         {
-            if (Left.Equals(R))
-                return Right.CompareTo(1);
-
             if (R is Power RP)
                 return LexicalCompareTo(
                     () => Left.CompareTo(RP.Left),

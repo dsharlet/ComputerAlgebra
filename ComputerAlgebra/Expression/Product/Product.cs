@@ -136,6 +136,11 @@ namespace ComputerAlgebra
                         yield return j;
             }
         }
-        public override int CompareTo(Expression R) { return Terms.LexicalCompareTo(TermsOf(R)); }
+        public override int CompareTo(Expression R)
+        {
+            if (R is Product P)
+                return Terms.LexicalCompareTo(P.Terms);
+            return base.CompareTo(R);
+        }
     }
 }
