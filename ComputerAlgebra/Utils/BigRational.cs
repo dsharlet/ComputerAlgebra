@@ -153,6 +153,9 @@ namespace ComputerAlgebra
 
         public static implicit operator BigRational(double x)
         {
+            Debug.Assert(!double.IsNaN(x));
+            Debug.Assert(!double.IsInfinity(x));
+
             // http://stackoverflow.com/questions/389993/extracting-mantissa-and-exponent-from-double-in-c-sharp
 
             // Translate the double into sign, exponent and mantissa.

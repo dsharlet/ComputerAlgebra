@@ -70,7 +70,13 @@ namespace ComputerAlgebra
         public static Real operator *(Real a, Real b) { return a.r * b.r; }
         public static Real operator %(Real a, Real b) { return a.r % b.r; }
         public static Real operator /(Real a, Real b) { return a.r / b.r; }
-        public static Real operator ^(Real a, Real b) { return a.r ^ b.r; }
+        public static Real operator ^(Real a, Real b)
+        {
+            if (b.IsInteger())
+                return a.r ^ (int)b.r;
+            else
+                return Math.Pow((double)a.r, (double)b.r);
+        }
         public static Real operator -(Real x) { return -x.r; }
 
         public static readonly Real Pi = Math.PI;
