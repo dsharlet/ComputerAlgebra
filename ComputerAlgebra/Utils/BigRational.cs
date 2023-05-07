@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Numerics;
 
 namespace ComputerAlgebra
@@ -209,11 +210,23 @@ namespace ComputerAlgebra
                 BigInteger.Pow(10, exponent));
         }
 
-        public static explicit operator BigInteger(BigRational x) { return x.n / x.d; }
-        public static explicit operator decimal(BigRational x) { return (decimal)x.n / (decimal)x.d; }
-        public static explicit operator long(BigRational x) { return (long)(x.n / x.d); }
-        public static explicit operator int(BigRational x) { return (int)(x.n / x.d); }
-        public static explicit operator double(BigRational x) { return (double)x.n / (double)x.d; }
+        public static explicit operator BigInteger(BigRational x) { Debug.Assert(x.d != 0); return x.n / x.d; }
+        public static explicit operator decimal(BigRational x) { Debug.Assert(x.d != 0); return (decimal)x.n / (decimal)x.d; }
+        public static explicit operator long(BigRational x) { Debug.Assert(x.d != 0); return (long)(x.n / x.d); }
+        public static explicit operator int(BigRational x) { Debug.Assert(x.d != 0); return (int)(x.n / x.d); }
+        public static explicit operator double(BigRational x) 
+        { 
+            if (x.d == 0)
+            {
+                if (x.n > 0)
+                    return double.PositiveInfinity;
+                else if (x.n < 0)
+                    return double.NegativeInfinity;
+                else
+                    return double.NaN;
+            }
+            return (double)x.n / (double)x.d; 
+        }
 
         // Useful functions.
         public static BigRational Abs(BigRational x) { return BigRational.Unchecked(BigInteger.Abs(x.n), x.d); }
