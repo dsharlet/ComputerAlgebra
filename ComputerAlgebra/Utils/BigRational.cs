@@ -196,7 +196,7 @@ namespace ComputerAlgebra
             if (exponent > 0)
                 return new BigRational(new BigInteger(sign * mantissa) << exponent);
             else
-                return new BigRational(new BigInteger(sign * mantissa), new BigInteger(1) << -exponent);
+                return new BigRational(new BigInteger(sign * mantissa), BigInteger.One << -exponent);
         }
 
         private static BigInteger b1 = 1UL << 32;
@@ -228,7 +228,23 @@ namespace ComputerAlgebra
                 else
                     return double.NaN;
             }
-            return (double)x.n / (double)x.d; 
+            if (x.n == 0)
+                return 0.0;
+
+            double logn = BigInteger.Log(BigInteger.Abs(x.n), 2);
+            double logd = BigInteger.Log(BigInteger.Abs(x.d), 2);
+            BigInteger n = x.n;
+            BigInteger d = x.d;
+            const double MaxMagnitude = 1000;
+            if (logn > MaxMagnitude || logd > MaxMagnitude)
+            {
+                // The max value a double can hold is about 2^1024. If these rationals are bigger than that,
+                // we need to reduce them before attempting to convert them to doubles.
+                BigInteger scale = BigInteger.One << (int)(Math.Max(logn, logd) - MaxMagnitude);
+                n /= scale;
+                d /= scale;
+            }
+            return (double)n / (double)d;
         }
 
         // Useful functions.
