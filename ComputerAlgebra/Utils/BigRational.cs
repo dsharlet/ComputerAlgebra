@@ -231,17 +231,16 @@ namespace ComputerAlgebra
             if (x.n == 0)
                 return 0.0;
 
-            // TODO: Use Log2 when upgrading to .net7
-            double logn = BigInteger.Log(BigInteger.Abs(x.n), 2);
-            double logd = BigInteger.Log(BigInteger.Abs(x.d), 2);
             BigInteger n = x.n;
             BigInteger d = x.d;
+            // TODO: Use Log2 when upgrading to .net7
+            double magnitude = BigInteger.Log(BigInteger.Max(BigInteger.Abs(n), BigInteger.Abs(d)), 2);
             const double MaxMagnitude = 1000;
-            if (logn > MaxMagnitude || logd > MaxMagnitude)
+            if (magnitude > MaxMagnitude)
             {
                 // The max value a double can hold is about 2^1024. If these rationals are bigger than that,
                 // we need to reduce them before attempting to convert them to doubles.
-                int scale = (int)(Math.Max(logn, logd) - MaxMagnitude);
+                int scale = (int)(magnitude - MaxMagnitude);
                 n >>= scale;
                 d >>= scale;
             }
