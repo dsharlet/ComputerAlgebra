@@ -231,6 +231,7 @@ namespace ComputerAlgebra
             if (x.n == 0)
                 return 0.0;
 
+            // TODO: Use Log2 when upgrading to .net7
             double logn = BigInteger.Log(BigInteger.Abs(x.n), 2);
             double logd = BigInteger.Log(BigInteger.Abs(x.d), 2);
             BigInteger n = x.n;
