@@ -240,9 +240,9 @@ namespace ComputerAlgebra
             {
                 // The max value a double can hold is about 2^1024. If these rationals are bigger than that,
                 // we need to reduce them before attempting to convert them to doubles.
-                BigInteger scale = BigInteger.One << (int)(Math.Max(logn, logd) - MaxMagnitude);
-                n /= scale;
-                d /= scale;
+                int scale = (int)(Math.Max(logn, logd) - MaxMagnitude);
+                n >>= scale;
+                d >>= scale;
             }
             return (double)n / (double)d;
         }
