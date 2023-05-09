@@ -165,28 +165,33 @@ namespace ComputerAlgebra
             int besti = -1;
             int bestj = -1;
             Real score = Real.NegativeInfinity;
+            // To avoid computing the number of zeros unnecessarily, -1 means uncomputed.
             int zeros = -1;
 
             for (int i = row; i < equations.Count; ++i)
             {
                 for (int j = col; j <= maxj; ++j)
                 {
+                    // Check if we found a bigger pivot first.
                     Real s = PivotScore(i, j, Columns, PivotConditions);
                     int compare = s.CompareTo(score);
                     if (compare > 0)
                     {
                         score = s;
+                        // We don't know the tie-breakre cost yet.
                         zeros = -1;
                         besti = i;
                         bestj = j;
                     } 
                     else if (compare == 0 && besti >= 0)
                     {
+                        // The pivots are equal. Break ties by finding the pivot which involves the least amount of arithmetic.
                         if (zeros == -1)
                             zeros = PivotEliminationZeros(row, col, besti, bestj, Columns);
                         int e = PivotEliminationZeros(row, col, i, j, Columns);
                         if (e > zeros)
                         {
+                            // The pivot magnitude is the same, this pivot just has less arithmetic.
                             zeros = e;
                             besti = i;
                             bestj = j;
