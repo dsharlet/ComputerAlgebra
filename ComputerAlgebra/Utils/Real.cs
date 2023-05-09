@@ -12,10 +12,10 @@ namespace ComputerAlgebra
     {
         private BigRational r;
 
-        private static BigRational PositiveInfinity = BigRational.Unchecked(1, 0);
-        private static BigRational NegativeInfinity = BigRational.Unchecked(-1, 0);
+        public static BigRational PositiveInfinity = BigRational.Unchecked(1, 0);
+        public static BigRational NegativeInfinity = BigRational.Unchecked(-1, 0);
 
-        private static BigRational NaN = BigRational.Unchecked(0, 0);
+        public static BigRational NaN = BigRational.Unchecked(0, 0);
 
         public Real(int x) { r = x; }
         public Real(decimal x) { r = x; }
