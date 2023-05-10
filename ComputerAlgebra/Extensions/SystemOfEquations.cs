@@ -117,75 +117,88 @@ namespace ComputerAlgebra
         public void AddRange(IEnumerable<Equal> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i, unknowns))); }
         public void AddRange(IEnumerable<IEnumerable<KeyValuePair<Expression, Expression>>> Eqs) { equations.AddRange(Eqs.Select(i => new Equation(i))); }
 
-        // Find the best pivot in column j.
-        private KeyValuePair<int, Real> PartialPivot(int i1, int i2, Expression j, IEnumerable<Arrow> PivotConditions)
+        // The first pivot cost function is the magnitude of the pivot.
+        private Real PivotScore(int i, int j, IList<Expression> Columns, IEnumerable<Arrow> PivotConditions)
         {
-            int row = -1;
-            Real max = -1;
-            for (int i = i1; i < i2; ++i)
-            {
-                Expression ij = equations[i][j];
-                if (!ij.EqualsZero())
-                {
-                    // If we don't a pivot yet, just grab this one.
-                    if (row == -1)
-                        row = i;
+            Expression ij = equations[i][Columns[j]];
+            if (ij.EqualsZero())
+                return Real.NegativeInfinity;
 
-                    // Select the larger pivot if this is a constant, using the PivotConditions.
-                    Expression ijc;
-                    if (ij is Constant || PivotConditions is null)
-                        ijc = ij;
-                    else
-                        ijc = ij.Evaluate(PivotConditions);
-                    if (ijc is Constant && Real.Abs((Real)ijc) > max)
-                    {
-                        row = i;
-                        max = Real.Abs((Real)ijc);
-                    }
-                }
-            }
-
-            return new KeyValuePair<int, Real>(row, max);
+            // Select the larger pivot if this is a constant, using the PivotConditions.
+            if (!(ij is Constant) && PivotConditions != null)
+                ij = ij.Evaluate(PivotConditions);
+            return (ij is Constant C) ? Real.Abs(C.Value) : 0;
         }
 
-        // Find the best pivot from all of the columns. This is important to avoid non-constant terms from blowing up the system.
-        private KeyValuePair<int, int> FullPivot(int i1, int i2, int j1, IList<Expression> Columns, IEnumerable<Arrow> PivotConditions)
+        // The second pivot cost function is the number of zeros in the elimination work.
+        private int PivotEliminationZeros(int row, int col, int pi, int pj, IList<Expression> Columns)
         {
-            int row = -1;
-            Real max = -2;
-            int col = -1;
-            int elims = i2 - i1 + 1;
-            for (int j = j1; j < Columns.Count; ++j)
+            int zeros = 0;
+            Equation S = equations[pi];
+            // The number of zeros after the pivot in the pivot row.
+            int zerosS = Enumerable.Range(col + 1, Math.Max(0, Columns.Count - 2 - col)).Count(j => S[Columns[pj]].EqualsZero());
+            for (int i = row + 1; i < equations.Count; ++i)
             {
-                KeyValuePair<int, Real> partial = PartialPivot(i1, i2, Columns[j], PivotConditions);
-                if (partial.Key == -1)
-                    continue;
+                if (i == pi) continue;
 
-                if (partial.Value > max)
+                Equation T = equations[i];
+                if (T[Columns[pj]].EqualsZero())
                 {
-                    bool constant = partial.Value > 0;
-                    // If the best pivot is a non-constant term, choose the non-constant term with the fewest eliminations.
-                    int es = !constant ? Enumerable.Range(i1, i2 - i1).Count(i => !equations[i][Columns[j]].EqualsZero()) : 0;
-                    if (constant || es < elims)
-                    {
-                        row = partial.Key;
-                        max = partial.Value;
-                        col = j;
-                        elims = es;
-                    }
+                    // If the pivot column is already 0, we aren't going to do anything to this row.
+                    zeros += Columns.Count - 1 - col;
+                }
+                else if (col + 1 < Columns.Count)
+                {
+                    // Otherwse, we're going to multiply the pivot row and add it to this row.
+                    zeros += zerosS;
                 }
             }
-
-            return new KeyValuePair<int, int>(row, col);
+            return zeros;
         }
 
         // Find the best pivot using full or partial pivoting.
-        private KeyValuePair<int, int> Pivot(int i1, int i2, int j, IList<Expression> Columns, bool FullPivoting, IEnumerable<Arrow> PivotConditions)
+        private Tuple<int, int> Pivot(int row, int col, IList<Expression> Columns, bool FullPivoting, IEnumerable<Arrow> PivotConditions)
         {
-            if (FullPivoting)
-                return FullPivot(i1, i2, j, Columns, PivotConditions);
-            else
-                return new KeyValuePair<int, int>(PartialPivot(i1, i2, Columns[j], PivotConditions).Key, j);
+            // If we are full pivoting, we can consider any column after j.
+            int maxj = FullPivoting ? Columns.Count - 1 : col;
+
+            int besti = -1;
+            int bestj = -1;
+            Real score = Real.NegativeInfinity;
+            // To avoid computing the number of zeros unnecessarily, -1 means uncomputed.
+            int zeros = -1;
+
+            for (int i = row; i < equations.Count; ++i)
+            {
+                for (int j = col; j <= maxj; ++j)
+                {
+                    // Check if we found a bigger pivot first.
+                    Real s = PivotScore(i, j, Columns, PivotConditions);
+                    if (s > score)
+                    {
+                        score = s;
+                        // We don't know the tie-breaker cost yet.
+                        zeros = -1;
+                        besti = i;
+                        bestj = j;
+                    } 
+                    else if (s > score / 2 && besti >= 0)
+                    {
+                        // The pivots are close enough. If another pivot has fewer non-zero eliminations, we should use that instead.
+                        if (zeros == -1)
+                            zeros = PivotEliminationZeros(row, col, besti, bestj, Columns);
+                        int e = PivotEliminationZeros(row, col, i, j, Columns);
+                        if (e > zeros)
+                        {
+                            // Don't update the score, so we don't repeatedly decay the score.
+                            zeros = e;
+                            besti = i;
+                            bestj = j;
+                        }
+                    }
+                }
+            }
+            return new Tuple<int, int>(besti, bestj);
         }
 
         // Swap rows i1 and i2.
@@ -221,27 +234,28 @@ namespace ComputerAlgebra
             T[p] = 0;
         }
 
-        private void RowReduce(int i1, IList<Expression> Columns, bool FullPivoting, IEnumerable<Arrow> PivotConditions)
+        private void RowReduce(IList<Expression> Columns, bool FullPivoting, IEnumerable<Arrow> PivotConditions)
         {
+            int row = 0;
             List<Expression> elim = unknowns.Append(1).ToList();
-            for (int i2 = equations.Count, _j = 0; _j < Columns.Count; ++_j)
+            for (int _j = 0; _j < Columns.Count; ++_j)
             {
                 // Find the best pivot to use.
-                KeyValuePair<int, int> pivot = Pivot(i1, i2, _j, Columns, FullPivoting, PivotConditions);
-                if (pivot.Key != -1)
+                Tuple<int, int> pivot = Pivot(row, _j, Columns, FullPivoting, PivotConditions);
+                if (pivot.Item1 != -1)
                 {
                     // Found a pivot, swap the rows and eliminate the remaining rows.
-                    if (pivot.Key != i1)
-                        Swap(pivot.Key, i1);
-                    if (_j != pivot.Value)
-                        Swap(Columns, _j, pivot.Value);
+                    if (pivot.Item1 != row)
+                        Swap(pivot.Item1, row);
+                    if (_j != pivot.Item2)
+                        Swap(Columns, _j, pivot.Item2);
 
                     Expression j = Columns[_j];
                     elim = elim.Except(j).ToList();
-                    for (int i = i1 + 1; i < i2; ++i)
-                        Eliminate(i1, i, j, elim);
+                    for (int i = row + 1; i < equations.Count; ++i)
+                        Eliminate(row, i, j, elim);
 
-                    ++i1;
+                    ++row;
                 }
             }
         }
@@ -253,7 +267,7 @@ namespace ComputerAlgebra
         /// <param name="PivotConditions">Substitutions to use when considering an element as a pivot.</param>
         public void RowReduce(IEnumerable<Expression> Columns, IEnumerable<Arrow> PivotConditions = null)
         {
-            RowReduce(0, Columns.AsList(), false, PivotConditions);
+            RowReduce(Columns.AsList(), false, PivotConditions);
         }
 
         /// <summary>
@@ -263,7 +277,7 @@ namespace ComputerAlgebra
         /// <param name="PivotConditions">Substitutions to use when considering an element as a pivot.</param>
         public void RowReduce(IList<Expression> Columns, IEnumerable<Arrow> PivotConditions = null)
         {
-            RowReduce(0, Columns, true, PivotConditions);
+            RowReduce(Columns, true, PivotConditions);
         }
 
         /// <summary>
