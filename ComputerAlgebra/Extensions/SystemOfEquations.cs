@@ -174,24 +174,23 @@ namespace ComputerAlgebra
                 {
                     // Check if we found a bigger pivot first.
                     Real s = PivotScore(i, j, Columns, PivotConditions);
-                    int compare = s.CompareTo(score);
-                    if (compare > 0)
+                    if (s > score)
                     {
                         score = s;
-                        // We don't know the tie-breakre cost yet.
+                        // We don't know the tie-breaker cost yet.
                         zeros = -1;
                         besti = i;
                         bestj = j;
                     } 
-                    else if (compare == 0 && besti >= 0)
+                    else if (s > score / 2 && besti >= 0)
                     {
-                        // The pivots are equal. Break ties by finding the pivot which involves the least amount of arithmetic.
+                        // The pivots are close enough. If another pivot has fewer non-zero eliminations, we should use that instead.
                         if (zeros == -1)
                             zeros = PivotEliminationZeros(row, col, besti, bestj, Columns);
                         int e = PivotEliminationZeros(row, col, i, j, Columns);
                         if (e > zeros)
                         {
-                            // The pivot magnitude is the same, this pivot just has less arithmetic.
+                            // Don't update the score, so we don't repeatedly decay the score.
                             zeros = e;
                             besti = i;
                             bestj = j;
