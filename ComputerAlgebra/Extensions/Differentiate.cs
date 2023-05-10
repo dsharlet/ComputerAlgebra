@@ -41,6 +41,7 @@ namespace ComputerAlgebra
             new SubstituteTransform("D[Abs[u], x]", "Sign[u]*D[u, x]"),
             new SubstituteTransform("D[Sign[u], x]", "0"),
             new SubstituteTransform("D[Exp[u], x]", "Exp[u]*D[u, x]"),
+            new SubstituteTransform("D[Pow[a, u], x]", "Ln[a]*Pow[a, u]*D[u, x]"),
             //new SubstituteTransform("D[Sqrt[u], x]", "D[u, x]/(2*Sqrt[u])"),
             new SubstituteTransform("D[Ln[u], x]", "D[u, x]/u"),
             new SubstituteTransform("D[I[u, x], x]", "u"),

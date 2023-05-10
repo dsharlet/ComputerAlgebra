@@ -218,6 +218,7 @@ namespace Tests
             Test("D[Exp[x^5], x]", "Exp[x^5]*5*x^4");
             //Test("D[Sqrt[2*x], x]", "1/Sqrt[2*x]");
             Test("D[Exp[u]:u->Sin[x], x]", "Exp[Sin[x]]*Cos[x]");
+            Test("D[Pow[e^2, x^2], x]", "2*x*Pow[e^2, x^2]*Ln[e^2]");
 
             // Solve.
             Test("Solve[y == A*x + B, x]", "x -> (y - B)/A");
