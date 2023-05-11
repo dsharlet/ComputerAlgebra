@@ -170,7 +170,7 @@ namespace ComputerAlgebra
                         besti = i;
                         bestj = j;
                     } 
-                    else if (s > score / 2 && besti >= 0)
+                    else if (s > score / 8 && besti >= 0)
                     {
                         // The pivots are close enough. If another pivot has fewer non-zero eliminations, we should use that instead.
                         if (zeros == -1)
