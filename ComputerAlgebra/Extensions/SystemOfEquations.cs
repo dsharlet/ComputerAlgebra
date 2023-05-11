@@ -130,28 +130,16 @@ namespace ComputerAlgebra
             return (ij is Constant C) ? Real.Abs(C.Value) : 0;
         }
 
-        // The second pivot cost function is the number of zeros in the elimination work.
+        // The second pivot cost function is the number of things already zero that don't need to be eliminated.
         private int PivotEliminationZeros(int row, int col, int pi, int pj, IList<Expression> Columns)
         {
             int zeros = 0;
-            Equation S = equations[pi];
-            // The number of zeros after the pivot in the pivot row.
-            int zerosS = Enumerable.Range(col + 1, Math.Max(0, Columns.Count - 2 - col)).Count(j => S[Columns[pj]].EqualsZero());
             for (int i = row + 1; i < equations.Count; ++i)
             {
                 if (i == pi) continue;
 
-                Equation T = equations[i];
-                if (T[Columns[pj]].EqualsZero())
-                {
-                    // If the pivot column is already 0, we aren't going to do anything to this row.
-                    zeros += Columns.Count - 1 - col;
-                }
-                else if (col + 1 < Columns.Count)
-                {
-                    // Otherwse, we're going to multiply the pivot row and add it to this row.
-                    zeros += zerosS;
-                }
+                if (equations[i][Columns[pj]].EqualsZero())
+                    zeros += 1;
             }
             return zeros;
         }
