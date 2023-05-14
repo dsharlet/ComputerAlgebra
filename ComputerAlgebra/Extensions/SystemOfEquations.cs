@@ -246,6 +246,7 @@ namespace ComputerAlgebra
                     ++row;
                 }
             }
+            equations.RemoveAll(i => i.Empty());
         }
 
         /// <summary>
@@ -295,6 +296,7 @@ namespace ComputerAlgebra
                     --i;
                 }
             }
+            equations.RemoveAll(i => i.Empty());
         }
 
         /// <summary>
