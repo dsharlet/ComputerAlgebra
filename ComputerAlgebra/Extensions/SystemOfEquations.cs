@@ -133,7 +133,10 @@ namespace ComputerAlgebra
         // The second pivot cost function is the number of things already zero that don't need to be eliminated.
         private int PivotEliminationZeros(int row, int col, int pi, int pj, IList<Expression> Columns)
         {
-            int zeros = 0;
+            // A pivot is better if the row containing the pivot has more zeros.
+            int zeros = Columns.Count - equations[pi].Count;
+
+            // A pivot is better if the column containing the pivot has more zeros.
             for (int i = row + 1; i < equations.Count; ++i)
             {
                 if (i == pi) continue;
@@ -141,6 +144,7 @@ namespace ComputerAlgebra
                 if (equations[i][Columns[pj]].EqualsZero())
                     zeros += 1;
             }
+
             return zeros;
         }
 
