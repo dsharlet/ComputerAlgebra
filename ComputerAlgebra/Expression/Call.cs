@@ -54,7 +54,13 @@ namespace ComputerAlgebra
 
         // object interface.
         public override bool Equals(Expression E) { return target.CallEquals(arguments, E) || base.Equals(E); }
-        public override int GetHashCode() { return target.GetHashCode() ^ arguments.OrderedHashCode(); }
+        private int hash = 0;
+        public override int GetHashCode()
+        {
+            if (hash == 0)
+                hash = target.GetHashCode() ^ arguments.OrderedHashCode();
+            return hash;
+        }
 
         protected override int TypeRank { get { return 2; } }
         public override int CompareTo(Expression R)
