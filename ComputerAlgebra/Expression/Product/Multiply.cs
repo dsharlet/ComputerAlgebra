@@ -21,10 +21,9 @@ namespace ComputerAlgebra
         /// <returns></returns>
         public static new Expression New(IEnumerable<Expression> Terms)
         {
-            Debug.Assert(!Terms.Contains(null));
-
             // Canonicalize the terms.
-            IEnumerable<Expression> terms = FlattenTerms(Terms).OrderBy(i => i).Buffer();
+            List<Expression> terms = FlattenTerms(Terms).ToList();
+            terms.Sort();
 
             switch (terms.Count())
             {
