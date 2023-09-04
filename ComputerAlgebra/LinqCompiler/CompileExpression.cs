@@ -110,6 +110,35 @@ namespace ComputerAlgebra.LinqCompiler
 
         protected override LinqExpr VisitCall(Call C)
         {
+            if (C.Target.Name == "Ln")
+            {
+                var arg = C.Arguments.Single();
+                if (arg is Sum sum)
+                {
+                    if (sum.Terms.Count() == 2)
+                    {
+                        var terms = sum.Terms.ToArray();
+                        var a = terms[0];
+                        var b = terms[1];
+
+                        var (match, lnArgs) = (a, b) switch
+                        {
+                            (Constant c, Call f) when c.Value == 1 && f.Target.Name == "Exp" => (true, f.Arguments),
+                            (Call f, Constant c) when c.Value == 1 && f.Target.Name == "Exp" => (true, f.Arguments),
+                            _ => (false, null),
+                        };
+
+                        if (match)
+                        {
+                            var compiledArgs = lnArgs.Select(i => Visit(i)).ToArray();
+                            return Int(C, LinqExpr.Call(
+                                target.Module.GetFunction("Ln1Exp", compiledArgs.Select(i => i.Type).ToArray()),
+                                compiledArgs));
+                        }
+                    }
+                }
+
+            }
             LinqExpr[] args = C.Arguments.Select(i => Visit(i)).ToArray();
             return Int(C, LinqExpr.Call(
                 target.Module.Compile(C.Target, args.Select(i => i.Type).ToArray()),
