@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace ComputerAlgebra
@@ -313,39 +314,50 @@ namespace ComputerAlgebra
         /// </summary>
         public void BackSubstitute() { BackSubstitute(unknowns); }
 
-        private List<Arrow> Solve(IList<Expression> x)
+        private bool Solve(Expression x_i, IList<Expression> x, List<Arrow> solutions)
         {
-            List<Arrow> solutions = new List<Arrow>();
-
-            for (int i = Math.Min(x.Count, equations.Count) - 1, _j = x.Count - 1; _j >= 0; --_j)
+            foreach (Equation eq in equations.Reverse<Equation>())
             {
-                Expression j = x[_j];
+                if (eq[x_i].EqualsZero()) continue;
 
-                // While we still haven't reached a pivot row...
-                while (i >= 0 && x.Take(_j).All(j2 => equations[i][j2].EqualsZero()))
+                if (equations.Except(eq).Any(i => i.DependsOn(x_i))) continue;
+
+                Expression s = eq.Solve(x_i);
+                if (!s.DependsOn(x_i))
                 {
-                    if (!equations[i][j].EqualsZero())
-                    {
-                        // Solve this row for the pivot.
-                        Expression s = equations[i].Solve(j);
-                        if (!s.DependsOn(x))
-                        {
-                            solutions.Add(Arrow.New(j, s));
+                    solutions.Add(Arrow.New(x_i, s));
 
-                            // Remove the equation and unknown.
-                            equations.RemoveAt(i--);
-                            x.RemoveAt(_j);
-                            if (!ReferenceEquals(x, unknowns))
-                                unknowns.Remove(j);
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        --i;
-                    }
+                    // Remove the equation and unknown.
+                    equations.Remove(eq);
+                    x.Remove(x_i);
+                    if (!ReferenceEquals(x, unknowns))
+                        unknowns.Remove(x_i);
+                    return true;
                 }
             }
+            return false;
+        }
+
+        private bool Solve(IList<Expression> x, List<Arrow> solutions)
+        {
+            foreach (Expression x_i in x)
+                if (Solve(x_i, x, solutions))
+                    return true;
+            return false;
+        }
+
+        private List<Arrow> Solve(IList<Expression> x)
+        {
+            List<Expression> u = x.ToList();
+            List<Arrow> solutions = new List<Arrow>();
+
+            while (!x.Empty())
+            {
+                if (!Solve(x, solutions)) break;
+            }
+
+            // The solutions depend on each other, produce them in the order such that the dependencies are "forward".
+            solutions.Reverse();
 
             return solutions;
         }
@@ -356,14 +368,9 @@ namespace ComputerAlgebra
         /// This method removes the equations and unknowns from the system as they are solved.
         /// </summary>
         /// <param name="x"></param>
-        /// <returns></returns>
+        /// <returns>The solutions for the unknowns that were successfully solved. If the system was not back substituted, solutions may
+        /// depend on previous solutions in the list.</returns>
         public List<Arrow> Solve(IEnumerable<Expression> x) { return Solve(x.AsList()); }
-        /// <summary>
-        /// Solve the system for all of the system variables. The system must already be in row-echelon form, optionally with back substitution.
-        /// 
-        /// This method removes the equations and unknowns from the system as they are solved.
-        /// </summary>
-        /// <returns></returns>
         public List<Arrow> Solve() { return Solve(unknowns); }
 
         /// <summary>
