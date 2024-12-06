@@ -314,52 +314,41 @@ namespace ComputerAlgebra
         /// </summary>
         public void BackSubstitute() { BackSubstitute(unknowns); }
 
-        private bool Solve(Expression x_i, IList<Expression> x, List<Arrow> solutions)
+        private bool Solve(Expression x_i, IList<Expression> x, List<Arrow> fwd, List<Arrow> back)
         {
             foreach (Equation eq in equations.Reverse<Equation>())
             {
                 if (eq[x_i].EqualsZero()) continue;
 
-                if (equations.Except(eq).Any(i => i.DependsOn(x_i))) continue;
+                bool allowFwd = !equations.Except(eq).Any(i => i.DependsOn(x_i));
 
                 Expression s = eq.Solve(x_i);
-                if (!s.DependsOn(x_i))
-                {
-                    solutions.Add(Arrow.New(x_i, s));
+                allowFwd = allowFwd && !s.DependsOn(x_i);
+                bool allowBack = back != null && !s.DependsOn(unknowns);
 
-                    // Remove the equation and unknown.
-                    equations.Remove(eq);
-                    x.Remove(x_i);
-                    if (!ReferenceEquals(x, unknowns))
-                        unknowns.Remove(x_i);
-                    return true;
-                }
+                if (allowFwd)
+                    fwd.Add(Arrow.New(x_i, s));
+                else if (allowBack)
+                    back.Add(Arrow.New(x_i, s));
+                else
+                    continue;
+
+                // Remove the equation and unknown.
+                equations.Remove(eq);
+                x.Remove(x_i);
+                if (!ReferenceEquals(x, unknowns))
+                    unknowns.Remove(x_i);
+                return true;
             }
             return false;
         }
 
-        private bool Solve(IList<Expression> x, List<Arrow> solutions)
+        private bool SolveOne(IList<Expression> x, List<Arrow> fwd, List<Arrow> back)
         {
             foreach (Expression x_i in x)
-                if (Solve(x_i, x, solutions))
+                if (Solve(x_i, x, fwd, back))
                     return true;
             return false;
-        }
-
-        private List<Arrow> Solve(IList<Expression> x)
-        {
-            List<Expression> u = x.ToList();
-            List<Arrow> solutions = new List<Arrow>();
-
-            while (!x.Empty())
-            {
-                if (!Solve(x, solutions)) break;
-            }
-
-            // The solutions depend on each other, produce them in the order such that the dependencies are "forward".
-            solutions.Reverse();
-
-            return solutions;
         }
 
         /// <summary>
@@ -370,8 +359,31 @@ namespace ComputerAlgebra
         /// <param name="x"></param>
         /// <returns>The solutions for the unknowns that were successfully solved. If the system was not back substituted, solutions may
         /// depend on previous solutions in the list.</returns>
-        public List<Arrow> Solve(IEnumerable<Expression> x) { return Solve(x.AsList()); }
+        public List<Arrow> Solve(IEnumerable<Expression> x) {
+            List<Arrow> fwd = new List<Arrow>();
+            PartialSolve(x.AsList(), fwd, null);
+            return fwd;
+        }
         public List<Arrow> Solve() { return Solve(unknowns); }
+
+        /// <summary>
+        /// Solve the system for the given variables. The system must already be in row-echelon form, optionally with back substitution.
+        /// 
+        /// This method removes the equations and unknowns from the system as they are solved.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="fwd"></param>
+        /// <param name="back"></param>
+        public void PartialSolve(IList<Expression> x, List<Arrow> fwd, List<Arrow> back)
+        {
+            fwd.Reverse();
+            while (!x.Empty())
+            {
+                if (!SolveOne(x, fwd, back)) break;
+            }
+            fwd.Reverse();
+        }
+        public void PartialSolve(List<Arrow> fwd, List<Arrow> back) { PartialSolve(unknowns, fwd, back); }
 
         /// <summary>
         /// Find independent systems of equations within this system.
