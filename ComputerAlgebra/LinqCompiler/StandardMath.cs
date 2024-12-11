@@ -7,6 +7,13 @@ namespace ComputerAlgebra.LinqCompiler
     /// </summary>
     public class StandardMath
     {
+        private static double ExpKnee = 50;
+        static StandardMath()
+        {
+            _knee = Math.Exp(ExpKnee);
+            _b = _knee - _knee * ExpKnee;
+        }
+        public static double Ln1Exp(double x) => x > 50d ? x : Math.Log(1d + Math.Exp(x));
         public static double Abs(double x) { return x < 0 ? -x : x; }
         public static double Sign(double x) { return x > 0 ? 1 : (x < 0 ? -1 : 0); }
 
@@ -42,7 +49,11 @@ namespace ComputerAlgebra.LinqCompiler
         public static double ArcCoth(double x) { return ArcTanh(1 / x); }
 
         public static double Sqrt(double x) { return Math.Sqrt(x); }
-        public static double Exp(double x) { return Math.Exp(x); }
+
+        private static double _knee;
+        private static double _b;
+
+        public static double Exp(double x) => x > ExpKnee ? _knee * x + _b : Math.Exp(x);
         public static double Ln(double x) { return Math.Log(x); }
         public static double Log(double x, double b) { return Math.Log(x, b); }
         public static double Pow(double x, double y) { return Math.Pow(x, y); }
