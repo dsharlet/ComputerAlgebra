@@ -1,4 +1,5 @@
 ﻿using ComputerAlgebra;
+using ComputerAlgebra.LinqCompiler;
 using System;
 using System.Collections.Generic;
 
@@ -16,7 +17,7 @@ namespace Console
                 xLabel = x.ToString(),
             };
             foreach (Expression i in Set.MembersOf(f))
-                p.Series.Add(new ComputerAlgebra.Plotting.Function(ExprFunction.New(i, x)) { Name = i.ToString() });
+                p.Series.Add(new ComputerAlgebra.Plotting.Function(ExprFunction.New(i, x).Compile<Func<double, double>>()) { Name = i.ToString() });
         }
 
         static void Main(string[] args)

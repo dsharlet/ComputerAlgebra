@@ -1,5 +1,4 @@
-﻿using ComputerAlgebra.LinqCompiler;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -60,7 +59,6 @@ namespace ComputerAlgebra.Plotting
     {
         protected Func<double, double> f;
         public Function(Func<double, double> f) { this.f = f; }
-        public Function(ComputerAlgebra.Function f) { this.f = f.Compile<Func<double, double>>(); }
 
         public override List<PointF[]> Evaluate(double x0, double x1)
         {
